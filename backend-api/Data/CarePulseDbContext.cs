@@ -1,6 +1,7 @@
 using CarePulse.Api.Entities.Base;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using CarePulse.Api.Entities.Dispatch;
 
 namespace CarePulse.Api.Data;
 
@@ -9,6 +10,10 @@ public class CarePulseDbContext : IdentityDbContext
     public CarePulseDbContext(DbContextOptions<CarePulseDbContext> options) : base(options) { }
 
     // Placeholders for DbSets (Students 1-4 will attach entities here)
+    public DbSet<NurseProfiles> NurseProfiles { get; set; }
+    public DbSet<DispatchTickets> DispatchTickets { get; set; }
+    public DbSet<RouteLogs> RouteLogs { get; set; }
+    public DbSet<OnSiteVitalsRecords> OnSiteVitalsRecords { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
