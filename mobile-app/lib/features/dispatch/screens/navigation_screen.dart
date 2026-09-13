@@ -206,7 +206,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
                               points: [_currentPosition!, _destination],
                               color: const Color(0xFF3B82F6),
                               strokeWidth: 4,
-                              isDotted: _status == 'EnRoute',
                             ),
                           ],
                         ),
