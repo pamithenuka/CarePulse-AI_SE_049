@@ -1,23 +1,24 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import TriageDashboard from './components/TriageDashboard';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header className="app-header glass-panel">
+        <div className="logo-container">
+          <div className="pulse-dot"></div>
+          <h1>CarePulse</h1>
+        </div>
+        <div className="user-profile">
+          <span className="doctor-name">Dr. Sarah Jenkins</span>
+          <div className="avatar">SJ</div>
+        </div>
       </header>
+      
+      <main className="main-content">
+        <TriageDashboard />
+      </main>
     </div>
   );
 }

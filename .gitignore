@@ -1,0 +1,44 @@
+# =========================
+# .NET
+# =========================
+**/bin/
+**/obj/
+
+# =========================
+# Flutter
+# =========================
+mobile-app/.dart_tool/
+mobile-app/build/
+mobile-app/.flutter-plugins
+mobile-app/.flutter-plugins-dependencies
+mobile-app/.flutter_tool_state
+
+# =========================
+# Node / React
+# =========================
+node_modules/
+coverage/
+build/
+dist/
+
+# =========================
+# Environment files
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# IDE / OS
+# =========================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# =========================
+# Logs
+# =========================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

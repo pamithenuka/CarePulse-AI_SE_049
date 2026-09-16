@@ -68,6 +68,9 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+// Register Triage in-memory service
+builder.Services.AddSingleton<CarePulse.Api.Services.ITriageService, CarePulse.Api.Services.TriageService>();
+
 // 6. Swagger / OpenAPI Configuration
 builder.Services.AddSwaggerGen(c =>
 {
