@@ -1,0 +1,29 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\backend-api\\wwwroot\\uploads\\.gitkeep",
+      "PackagePath": "staticwebassets\\uploads\\.gitkeep"
+    },
+    {
+      "Id": "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\backend-api\\wwwroot\\uploads\\patients\\f114fbb1-9644-48d9-9c5e-b4b553091a8f\\e57f38ae-5846-4fbc-81b0-a94f65877336_test-scan.txt",
+      "PackagePath": "staticwebassets\\uploads\\patients\\f114fbb1-9644-48d9-9c5e-b4b553091a8f\\e57f38ae-5846-4fbc-81b0-a94f65877336_test-scan.txt"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.backend-api.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.backend-api.props",
+      "PackagePath": "build\\backend-api.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.backend-api.props",
+      "PackagePath": "buildMultiTargeting\\backend-api.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.backend-api.props",
+      "PackagePath": "buildTransitive\\backend-api.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

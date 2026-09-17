@@ -199,6 +199,22 @@
           "lib/netstandard2.0/_._": {}
         }
       },
+      "Microsoft.EntityFrameworkCore.InMemory/8.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "8.0.0"
+        },
+        "compile": {
+          "lib/net8.0/Microsoft.EntityFrameworkCore.InMemory.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.EntityFrameworkCore.InMemory.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Microsoft.EntityFrameworkCore.Relational/8.0.0": {
         "type": "package",
         "dependencies": {
@@ -2973,6 +2989,20 @@
         "lib/netstandard2.0/_._",
         "microsoft.entityframeworkcore.analyzers.8.0.0.nupkg.sha512",
         "microsoft.entityframeworkcore.analyzers.nuspec"
+      ]
+    },
+    "Microsoft.EntityFrameworkCore.InMemory/8.0.0": {
+      "sha512": "/pT9FOO0BxGSRscK/ekEb6TdiP3+nnyhPLElE1yuVG/QaZLaBAuM3RoywBHdIxWoFALaOS7ktXlKzuMX3khJ4A==",
+      "type": "package",
+      "path": "microsoft.entityframeworkcore.inmemory/8.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "lib/net8.0/Microsoft.EntityFrameworkCore.InMemory.dll",
+        "lib/net8.0/Microsoft.EntityFrameworkCore.InMemory.xml",
+        "microsoft.entityframeworkcore.inmemory.8.0.0.nupkg.sha512",
+        "microsoft.entityframeworkcore.inmemory.nuspec"
       ]
     },
     "Microsoft.EntityFrameworkCore.Relational/8.0.0": {
@@ -8070,6 +8100,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "Microsoft.EntityFrameworkCore.InMemory >= 8.0.0",
       "Microsoft.NET.Test.Sdk >= 17.8.0",
       "backend-api >= 1.0.0",
       "coverlet.collector >= 6.0.0",
@@ -8078,19 +8109,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/pamithkaluarachchi/.nuget/packages/": {}
+    "C:\\Users\\gayan\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Api.Tests/CarePulse.Api.Tests.csproj",
+      "projectUniqueName": "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\tests\\CarePulse.Api.Tests\\CarePulse.Api.Tests.csproj",
       "projectName": "CarePulse.Api.Tests",
-      "projectPath": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Api.Tests/CarePulse.Api.Tests.csproj",
-      "packagesPath": "/Users/pamithkaluarachchi/.nuget/packages/",
-      "outputPath": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Api.Tests/obj/",
+      "projectPath": "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\tests\\CarePulse.Api.Tests\\CarePulse.Api.Tests.csproj",
+      "packagesPath": "C:\\Users\\gayan\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\tests\\CarePulse.Api.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/pamithkaluarachchi/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\gayan\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -8102,8 +8133,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/backend-api/backend-api.csproj": {
-              "projectPath": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/backend-api/backend-api.csproj"
+            "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\backend-api\\backend-api.csproj": {
+              "projectPath": "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\backend-api\\backend-api.csproj"
             }
           }
         }
@@ -8123,6 +8154,10 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "Microsoft.EntityFrameworkCore.InMemory": {
+            "target": "Package",
+            "version": "[8.0.0, )"
+          },
           "Microsoft.NET.Test.Sdk": {
             "target": "Package",
             "version": "[17.8.0, )"
@@ -8156,7 +8191,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.423/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.423/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -1,0 +1,157 @@
+.register-patient-page .back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: #0b5f6b;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.register-patient-page .back-link:hover {
+  text-decoration: underline;
+}
+
+.register-patient-page .page-subtitle {
+  color: #666;
+  margin-top: -0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.register-form {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.register-form h2 {
+  font-size: 1rem;
+  margin: 1.25rem 0 0.75rem;
+  color: #0b5f6b;
+}
+
+.register-form h2:first-of-type {
+  margin-top: 0;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.9rem;
+}
+
+.form-grid label,
+.register-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.form-grid label.span-2 {
+  grid-column: span 2;
+}
+
+.register-form input,
+.register-form select {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #ccd3d6;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.field-error {
+  color: #b3261e;
+  font-size: 0.75rem;
+}
+
+.field-error.span-full {
+  grid-column: 1 / -1;
+}
+
+.contact-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr auto auto;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.contact-row input {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #ccd3d6;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: #0b5f6b;
+  border: 1px solid #cfe3e1;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.btn-danger-link {
+  background: none;
+  border: none;
+  color: #b3261e;
+  cursor: pointer;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.form-actions {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eef1f2;
+}
+
+.form-actions button[type="submit"] {
+  background: #0b5f6b;
+  color: #fff;
+  border: none;
+  padding: 0.65rem 1.5rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.form-actions button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.alert {
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.alert-error {
+  background: #fdecea;
+  color: #b3261e;
+  border: 1px solid #f5c2c0;
+}
+
+@media (max-width: 700px) {
+  .contact-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid label.span-2 {
+    grid-column: span 1;
+  }
+}

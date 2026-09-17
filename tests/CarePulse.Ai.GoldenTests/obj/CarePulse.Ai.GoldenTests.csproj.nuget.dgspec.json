@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Ai.GoldenTests/CarePulse.Ai.GoldenTests.csproj": {}
+    "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\tests\\CarePulse.Ai.GoldenTests\\CarePulse.Ai.GoldenTests.csproj": {}
   },
   "projects": {
-    "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/backend-api/backend-api.csproj": {
+    "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\backend-api\\backend-api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/backend-api/backend-api.csproj",
+        "projectUniqueName": "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\backend-api\\backend-api.csproj",
         "projectName": "backend-api",
-        "projectPath": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/backend-api/backend-api.csproj",
-        "packagesPath": "/Users/pamithkaluarachchi/.nuget/packages/",
-        "outputPath": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/backend-api/obj/",
+        "projectPath": "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\backend-api\\backend-api.csproj",
+        "packagesPath": "C:\\Users\\gayan\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\backend-api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/pamithkaluarachchi/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\gayan\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -101,21 +101,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.423/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.423/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Ai.GoldenTests/CarePulse.Ai.GoldenTests.csproj": {
+    "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\tests\\CarePulse.Ai.GoldenTests\\CarePulse.Ai.GoldenTests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Ai.GoldenTests/CarePulse.Ai.GoldenTests.csproj",
+        "projectUniqueName": "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\tests\\CarePulse.Ai.GoldenTests\\CarePulse.Ai.GoldenTests.csproj",
         "projectName": "CarePulse.Ai.GoldenTests",
-        "projectPath": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Ai.GoldenTests/CarePulse.Ai.GoldenTests.csproj",
-        "packagesPath": "/Users/pamithkaluarachchi/.nuget/packages/",
-        "outputPath": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Ai.GoldenTests/obj/",
+        "projectPath": "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\tests\\CarePulse.Ai.GoldenTests\\CarePulse.Ai.GoldenTests.csproj",
+        "packagesPath": "C:\\Users\\gayan\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\tests\\CarePulse.Ai.GoldenTests\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/pamithkaluarachchi/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\gayan\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -127,8 +127,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/backend-api/backend-api.csproj": {
-                "projectPath": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/backend-api/backend-api.csproj"
+              "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\backend-api\\backend-api.csproj": {
+                "projectPath": "C:\\Users\\gayan\\OneDrive\\デスクトップ\\Y3S1\\SEF\\Project\\CarePulse-AI_SE_049\\backend-api\\backend-api.csproj"
               }
             }
           }
@@ -181,7 +181,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.423/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.423/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

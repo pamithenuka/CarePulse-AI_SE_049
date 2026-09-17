@@ -1,6 +1,11 @@
 using System.Text;
 using CarePulse.Api.Data;
+using CarePulse.Api.Entities.Identity;
 using CarePulse.Api.Middleware;
+using CarePulse.Api.Services.Auth;
+using CarePulse.Api.Services.Common;
+using CarePulse.Api.Services.Notifications;
+using CarePulse.Api.Services.Patients;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +27,7 @@ builder.Services.AddDbContext<CarePulseDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 // 3. ASP.NET Core Identity Setup
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 8;
@@ -95,7 +100,19 @@ builder.Services.AddSwaggerGen(c =>
 // 7. Health Checks
 builder.Services.AddHealthChecks();
 
+// 8. Application Services
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IPatientService, PatientService>();
+builder.Services.AddScoped<INotificationService, SimulatedSmsNotificationService>();
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    await DbSeeder.SeedAsync(scope.ServiceProvider);
+}
 
 // Configure HTTP Request Pipeline
 app.UseMiddleware<GlobalExceptionMiddleware>();
@@ -106,6 +123,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CarePulse API v1"));
 }
 
+app.UseStaticFiles();
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,0 +1,289 @@
+.detail-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.detail-card h2 {
+  margin-top: 0;
+}
+
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hint-text {
+  color: #888;
+  font-size: 0.8rem;
+  margin-top: -0.5rem;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.9rem;
+  margin: 0;
+}
+
+.detail-grid dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 0.15rem;
+}
+
+.detail-grid dd {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* ---- Lists ---- */
+
+.contact-list,
+.document-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contact-list li,
+.document-list li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #eef1f2;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-block;
+  background: #e1f0ee;
+  color: #0b5f6b;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+
+.badge-warning {
+  background: #fdf1dc;
+  color: #935700;
+}
+
+.badge-success {
+  background: #e2f3e5;
+  color: #227a3d;
+}
+
+.badge-row {
+  display: flex;
+  gap: 0.4rem;
+  margin: 0.35rem 0;
+}
+
+.timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+}
+
+.timeline li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eef1f2;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.timeline p {
+  margin: 0.35rem 0;
+  color: #555;
+  font-size: 0.88rem;
+}
+
+.medication-line {
+  font-style: italic;
+}
+
+.row-actions {
+  display: flex;
+  gap: 0.9rem;
+  margin-top: 0.35rem;
+}
+
+.row-actions button {
+  background: none;
+  border: none;
+  color: #0b5f6b;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-danger-link {
+  color: #b3261e !important;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #0b5f6b;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.9rem;
+}
+
+/* ---- Forms (add / inline edit) ---- */
+
+.inline-add-form,
+.inline-edit-form {
+  border-top: 1px dashed #ccd3d6;
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+}
+
+.inline-edit-form {
+  border-top: none;
+  padding-top: 0;
+  width: 100%;
+}
+
+.inline-add-form h3 {
+  margin-top: 0;
+  font-size: 1rem;
+}
+
+.history-form-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.inline-add-form input,
+.inline-add-form textarea,
+.inline-add-form select,
+.inline-edit-form input,
+.inline-edit-form textarea,
+.inline-edit-form select {
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #ccd3d6;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  margin-bottom: 0.6rem;
+}
+
+.inline-add-form input[type="text"],
+.inline-add-form input:not([type]) {
+  flex: 1;
+  min-width: 200px;
+}
+
+.inline-add-form textarea,
+.inline-edit-form textarea {
+  width: 100%;
+  min-height: 70px;
+  box-sizing: border-box;
+  resize: vertical;
+  display: block;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  margin-bottom: 0.9rem;
+}
+
+.inline-add-form > button,
+.form-actions button {
+  background: #0b5f6b;
+  color: #fff;
+  border: none;
+  padding: 0.55rem 1.1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.inline-add-form > button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.form-actions .btn-secondary {
+  background: #fff;
+  color: #0b5f6b;
+  border: 1px solid #cfe3e1;
+}
+
+/* ---- Overview edit form ---- */
+
+.edit-form .form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.edit-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.edit-form label.span-2 {
+  grid-column: span 2;
+}
+
+.edit-form input,
+.edit-form select {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #ccd3d6;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+.field-error {
+  color: #b3261e;
+  font-size: 0.75rem;
+}
+
+.alert {
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.alert-error {
+  background: #fdecea;
+  color: #b3261e;
+  border: 1px solid #f5c2c0;
+}
+
+@media (max-width: 600px) {
+  .edit-form label.span-2 {
+    grid-column: span 1;
+  }
+}
