@@ -21,16 +21,9 @@ jobs:
 
     - name: Restore dependencies
       run: dotnet restore
-      working-directory: ./backend-api
 
-    - name: Build backend
+    - name: Build solution
       run: dotnet build --no-restore --configuration Release
-      working-directory: ./backend-api
 
-    - name: Run Integration Tests
+    - name: Run Tests
       run: dotnet test --no-build --configuration Release --verbosity normal
-      working-directory: ./tests/CarePulse.Api.Tests
-
-    - name: Run AI Golden Tests
-      run: dotnet test --no-build --configuration Release --verbosity normal
-      working-directory: ./tests/CarePulse.Ai.GoldenTests
