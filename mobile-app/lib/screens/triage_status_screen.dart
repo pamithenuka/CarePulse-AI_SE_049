@@ -22,12 +22,14 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
     super.initState();
     _fetchAuditLogs();
     
-    // Poll the audit log to see if it gets approved (Mocking live status updates)
-    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      if (!_isApproved) {
-        _fetchAuditLogs();
-      }
-    });
+    // Only poll if it's high risk and needs approval
+    if (widget.triageData['requiresDoctorApproval'] == true) {
+      _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+        if (!_isApproved) {
+          _fetchAuditLogs();
+        }
+      });
+    }
   }
 
   @override
@@ -42,8 +44,7 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
       if (mounted) {
         setState(() {
           _auditLogs = logs;
-          // Check if any log contains "approved by doctor"
-          _isApproved = logs.any((log) => log['logMessage'].toString().toLowerCase().contains('approved'));
+          _isApproved = logs.any((log) => log['logMessage'].toString().toLowerCase().contains('approved by doctor'));
         });
       }
     } catch (e) {
@@ -105,11 +106,134 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
     );
   }
 
+  Widget _buildLowRiskUI(int riskScore) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Row(
+          children: [
+            Text("🟢 ", style: TextStyle(fontSize: 24)),
+            Text("Low Risk", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green)),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Text("Risk Assessment: $riskScore/10", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 20),
+        const Text(
+          "The information provided does not indicate an immediate emergency.\n\nYou can monitor your symptoms and seek medical care if they worsen.",
+          style: TextStyle(fontSize: 16),
+        ),
+        const SizedBox(height: 30),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {}, // Stub
+            style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(15)),
+            child: const Text("Book a Doctor"),
+          ),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton(
+            onPressed: () {}, // Stub
+            style: OutlinedButton.styleFrom(padding: const EdgeInsets.all(15)),
+            child: const Text("View Triage Details"),
+          ),
+        ),
+        const SizedBox(height: 30),
+        _buildStep("Submitted", "Intake form received", true, true),
+        _buildStep("Evaluated", "Risk Assessed", true, true),
+        _buildStep("Recommendation", "Self-care Monitoring", true, true),
+      ],
+    );
+  }
+
+  Widget _buildMediumRiskUI(int riskScore) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Row(
+          children: [
+            Text("🟡 ", style: TextStyle(fontSize: 24)),
+            Text("Medical Consultation Recommended", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange)),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Text("Risk Assessment: $riskScore/10", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 20),
+        const Text(
+          "Based on the information provided, a medical consultation is recommended.",
+          style: TextStyle(fontSize: 16),
+        ),
+        const SizedBox(height: 30),
+        Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {}, // Stub
+                style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(15)),
+                child: const Text("Find a Doctor"),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {}, // Stub
+                style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(15)),
+                child: const Text("Book Appointment"),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton(
+            onPressed: () {}, // Stub
+            style: OutlinedButton.styleFrom(padding: const EdgeInsets.all(15)),
+            child: const Text("View Triage Details"),
+          ),
+        ),
+        const SizedBox(height: 30),
+        _buildStep("Submitted", "Intake form received", true, true),
+        _buildStep("Evaluated", "Risk Assessed", true, true),
+        _buildStep("Recommendation", "Consultation Recommended", true, true),
+      ],
+    );
+  }
+
+  Widget _buildHighRiskUI(int riskScore) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Row(
+          children: [
+            Text("🔴 ", style: TextStyle(fontSize: 24)),
+            Text("High Risk", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.red)),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Text("Risk Assessment: $riskScore/10", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 20),
+        const Text(
+          "Doctor approval is required before emergency action can proceed.\n\nWaiting for doctor review...",
+          style: TextStyle(fontSize: 16, color: Colors.red),
+        ),
+        const SizedBox(height: 30),
+        
+        _buildStep("Submitted", "Intake form received", true, true),
+        _buildStep("Evaluated", "Risk Assessed", true, true),
+        _buildStep("Pending Doctor Review", "Waiting for clinical review", !_isApproved, _isApproved),
+        _buildStep("Doctor Decision", _isApproved ? "Approved" : "Requires Authorization", _isApproved, false),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final riskLevel = widget.triageData['riskLevel'];
     final riskScore = widget.triageData['riskScore'];
-    final isHighRisk = riskLevel == 'HIGH';
 
     return Scaffold(
       appBar: AppBar(
@@ -117,67 +241,21 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
         backgroundColor: Colors.blue.shade800,
         foregroundColor: Colors.white,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                color: isHighRisk ? Colors.red.shade50 : Colors.green.shade50,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: isHighRisk ? Colors.red.shade200 : Colors.green.shade200),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    isHighRisk ? Icons.warning_amber_rounded : Icons.check_circle_outline,
-                    color: isHighRisk ? Colors.red : Colors.green,
-                    size: 40,
-                  ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Risk Level: $riskLevel",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: isHighRisk ? Colors.red.shade800 : Colors.green.shade800,
-                          ),
-                        ),
-                        Text("Score: $riskScore/10"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
+            if (riskLevel == 'LOW') _buildLowRiskUI(riskScore),
+            if (riskLevel == 'MEDIUM') _buildMediumRiskUI(riskScore),
+            if (riskLevel == 'HIGH') _buildHighRiskUI(riskScore),
+            
             const SizedBox(height: 30),
-            const Text(
-              "Live Tracking",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            
-            // Stepper UI
-            _buildStep("Submitted", "Intake form received", true, true),
-            _buildStep("AI Risk Assessment", "Scored $riskScore/10 ($riskLevel)", true, true),
-            
-            if (isHighRisk)
-              _buildStep("Doctor Approval", "Waiting for clinical review", !_isApproved, _isApproved),
-            
-            _buildStep("Status", _isApproved || !isHighRisk ? "Pending Dispatch" : "Requires Authorization", _isApproved || !isHighRisk, false),
-            
-            const Spacer(),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              child: TextButton(
                 onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
+                style: TextButton.styleFrom(
                   padding: const EdgeInsets.all(15),
                 ),
                 child: const Text("RETURN TO HOME"),

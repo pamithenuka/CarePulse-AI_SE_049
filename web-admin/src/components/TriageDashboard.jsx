@@ -79,6 +79,7 @@ const TriageDashboard = () => {
                 <th>Symptoms</th>
                 <th>Risk Score</th>
                 <th>Level</th>
+                <th>Recommended Action</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
@@ -86,7 +87,7 @@ const TriageDashboard = () => {
             <tbody>
               {filteredCases.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="empty-state">No pending approvals found.</td>
+                  <td colSpan="7" className="empty-state">No pending approvals found.</td>
                 </tr>
               ) : (
                 filteredCases.map(c => (
@@ -103,6 +104,7 @@ const TriageDashboard = () => {
                         {c.riskLevel}
                       </span>
                     </td>
+                    <td><span className="action-text">{c.recommendedAction ? c.recommendedAction.replace(/_/g, ' ') : ''}</span></td>
                     <td><span className="status-text">{c.status.replace(/_/g, ' ')}</span></td>
                     <td>
                       <button 

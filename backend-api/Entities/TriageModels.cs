@@ -8,6 +8,10 @@ public class TriageTicket
     public string Status { get; set; } = string.Empty;
     public int RiskScore { get; set; }
     public string RiskLevel { get; set; } = string.Empty;
+    public string RecommendedAction { get; set; } = string.Empty;
+    public bool RequiresDoctorApproval { get; set; }
+    public string Reason { get; set; } = string.Empty;
+    public bool FollowUpRecommended { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public bool IsDeleted { get; set; }
 }

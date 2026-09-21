@@ -6,13 +6,24 @@ class TriageApiService {
   // Change to localhost if running on Web/Desktop, or actual IP if on physical device.
   static const String baseUrl = 'http://10.0.2.2:5014/api/v1/triage';
 
-  Future<Map<String, dynamic>> submitTriage(String patientId, String symptoms) async {
+  Future<Map<String, dynamic>> submitTriage({
+    required String patientId,
+    required String symptoms,
+    required String duration,
+    required String severity,
+    required List<String> additionalSymptoms,
+    required bool hasPhotoAttachment,
+  }) async {
     final response = await http.post(
       Uri.parse('$baseUrl/submit'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'patientId': patientId,
         'symptoms': symptoms,
+        'duration': duration,
+        'severity': severity,
+        'additionalSymptoms': additionalSymptoms,
+        'hasPhotoAttachment': hasPhotoAttachment,
       }),
     );
 

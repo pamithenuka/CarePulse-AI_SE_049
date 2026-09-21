@@ -30,40 +30,45 @@ public class TriageService : ITriageService
         if (symptomsLower.Contains("severe chest pain"))
         {
             ticket.RiskScore = 9;
-            ticket.RiskLevel = "HIGH";
-            ticket.Status = "NEEDS_DOCTOR_APPROVAL";
+            ticket.RiskLevel = TriageConstants.RiskHigh;
+            ticket.RecommendedAction = TriageConstants.ActionDoctorApproval;
+            ticket.Status = TriageConstants.StatusNeedsApproval;
+            ticket.RequiresDoctorApproval = true;
+            ticket.FollowUpRecommended = true;
         }
-        else if (symptomsLower.Contains("difficulty breathing"))
+        else if (symptomsLower.Contains("fever and headache"))
         {
-            ticket.RiskScore = 8;
-            ticket.RiskLevel = "HIGH";
-            ticket.Status = "NEEDS_DOCTOR_APPROVAL";
-        }
-        else if (symptomsLower.Contains("moderate symptoms"))
-        {
-            ticket.RiskScore = 6;
-            ticket.RiskLevel = "MEDIUM";
-            ticket.Status = "PENDING_DISPATCH";
-        }
-        else if (symptomsLower.Contains("mild headache"))
-        {
-            ticket.RiskScore = 3;
-            ticket.RiskLevel = "LOW";
-            ticket.Status = "PENDING_DISPATCH";
+            ticket.RiskScore = 5;
+            ticket.RiskLevel = TriageConstants.RiskMedium;
+            ticket.RecommendedAction = TriageConstants.ActionConsultation;
+            ticket.Status = TriageConstants.StatusConsultationRecommended;
+            ticket.RequiresDoctorApproval = false;
+            ticket.FollowUpRecommended = true;
         }
         else
         {
-            ticket.RiskScore = 5;
-            ticket.RiskLevel = "MEDIUM";
-            ticket.Status = "PENDING_DISPATCH";
+            ticket.RiskScore = 2;
+            ticket.RiskLevel = TriageConstants.RiskLow;
+            ticket.RecommendedAction = TriageConstants.ActionSelfCare;
+            ticket.Status = TriageConstants.StatusCompleted;
+            ticket.RequiresDoctorApproval = false;
+            ticket.FollowUpRecommended = false;
         }
 
         _tickets.Add(ticket);
         
+        // Log generation based on risk
+        string logMessage = ticket.RiskLevel switch
+        {
+            TriageConstants.RiskHigh => $"Symptoms submitted\nRisk assessed: HIGH ({ticket.RiskScore}/10)\nDoctor approval required\nAdded to approval queue",
+            TriageConstants.RiskMedium => $"Symptoms submitted\nRisk assessed: MEDIUM ({ticket.RiskScore}/10)\nDoctor consultation recommended\nDoctor approval not required",
+            _ => $"Symptoms submitted\nRisk assessed: LOW ({ticket.RiskScore}/10)\nSelf-care monitoring recommended\nDoctor approval not required"
+        };
+
         _logs.Add(new AiTriageLog 
         { 
             TriageTicketId = ticket.Id, 
-            LogMessage = $"Triage submitted. Symptoms analyzed. Risk Level: {ticket.RiskLevel}, Score: {ticket.RiskScore}." 
+            LogMessage = logMessage 
         });
 
         return MapToDto(ticket);
@@ -72,7 +77,7 @@ public class TriageService : ITriageService
     public IEnumerable<TriageResponseDto> GetPendingApprovals()
     {
         return _tickets
-            .Where(t => t.Status == "NEEDS_DOCTOR_APPROVAL" && !t.IsDeleted)
+            .Where(t => t.RequiresDoctorApproval && t.Status == TriageConstants.StatusNeedsApproval && !t.IsDeleted)
             .Select(MapToDto);
     }
 
@@ -130,7 +135,11 @@ public class TriageService : ITriageService
             Symptoms = ticket.Symptoms,
             Status = ticket.Status,
             RiskScore = ticket.RiskScore,
-            RiskLevel = ticket.RiskLevel
+            RiskLevel = ticket.RiskLevel,
+            RecommendedAction = ticket.RecommendedAction,
+            RequiresDoctorApproval = ticket.RequiresDoctorApproval,
+            Reason = ticket.Reason,
+            FollowUpRecommended = ticket.FollowUpRecommended
         };
     }
 }
