@@ -1,0 +1,22 @@
+# .NET
+bin/
+obj/
+*.user
+
+# Node / React
+node_modules/
+dist/
+
+# Flutter
+.dart_tool/
+.flutter-plugin-dependencies
+build/
+mobile/android/.gradle/
+mobile/android/app/build/
+mobile/ios/Pods/
+*.lock
+
+# Editor
+.vs/
+.vscode/*
+!.vscode/extensions.json
