@@ -40,7 +40,9 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
 
   Future<void> _fetchAuditLogs() async {
     try {
+      debugPrint("Triage ID: ${widget.triageData['id']}");
       final logs = await _apiService.getAuditLog(widget.triageData['id']);
+      debugPrint("Audit logs received: $logs");
       if (mounted) {
         setState(() {
           _auditLogs = logs;
@@ -50,6 +52,59 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
     } catch (e) {
       debugPrint("Error fetching logs: $e");
     }
+  }
+
+  void _showTriageDetails() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Triage Details"),
+          content: _auditLogs.isEmpty
+              ? const Text("No triage details available.")
+              : SizedBox(
+                  width: double.maxFinite,
+                  height: 300,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _auditLogs.length,
+                    itemBuilder: (context, index) {
+                      final log = _auditLogs[index];
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                log['logMessage'] ?? '',
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                log['createdAt'] ?? '',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("CLOSE"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildStep(String title, String subtitle, bool isActive, bool isCompleted) {
@@ -136,7 +191,7 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
         SizedBox(
           width: double.infinity,
           child: OutlinedButton(
-            onPressed: () {}, // Stub
+            onPressed: _showTriageDetails,
             style: OutlinedButton.styleFrom(padding: const EdgeInsets.all(15)),
             child: const Text("View Triage Details"),
           ),
@@ -190,7 +245,7 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
         SizedBox(
           width: double.infinity,
           child: OutlinedButton(
-            onPressed: () {}, // Stub
+            onPressed: _showTriageDetails,
             style: OutlinedButton.styleFrom(padding: const EdgeInsets.all(15)),
             child: const Text("View Triage Details"),
           ),

@@ -1,8 +1,9 @@
+using CarePulse.Api.Entities.Base;
+
 namespace CarePulse.Api.Entities;
 
-public class TriageTicket
+public class TriageTicket : BaseEntity
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
     public Guid PatientId { get; set; }
     public string Symptoms { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
@@ -12,14 +13,38 @@ public class TriageTicket
     public bool RequiresDoctorApproval { get; set; }
     public string Reason { get; set; } = string.Empty;
     public bool FollowUpRecommended { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public bool IsDeleted { get; set; }
+    
+    // Navigation properties
+    public ICollection<AiTriageLog> AiTriageLogs { get; set; } = new List<AiTriageLog>();
+    public RiskAssessment? RiskAssessment { get; set; }
+    public ApprovalQueue? ApprovalQueue { get; set; }
 }
 
-public class AiTriageLog
+public class AiTriageLog : BaseEntity
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
     public Guid TriageTicketId { get; set; }
     public string LogMessage { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public TriageTicket? TriageTicket { get; set; }
+}
+
+public class RiskAssessment : BaseEntity
+{
+    public Guid TriageTicketId { get; set; }
+    public int Score { get; set; }
+    public string Level { get; set; } = string.Empty;
+    public string Reason { get; set; } = string.Empty;
+    public string RecommendedAction { get; set; } = string.Empty;
+
+    public TriageTicket? TriageTicket { get; set; }
+}
+
+public class ApprovalQueue : BaseEntity
+{
+    public Guid TriageTicketId { get; set; }
+    public string ReviewStatus { get; set; } = string.Empty;
+    public string? ReviewedByDoctorId { get; set; }
+    public DateTime? ReviewedAt { get; set; }
+
+    public TriageTicket? TriageTicket { get; set; }
 }

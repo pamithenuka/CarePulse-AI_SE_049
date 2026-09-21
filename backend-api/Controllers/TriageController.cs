@@ -17,36 +17,36 @@ public class TriageController : ControllerBase
     }
 
     [HttpPost("submit")]
-    public ActionResult<TriageResponseDto> SubmitTriage([FromBody] TriageSubmitRequestDto request)
+    public async Task<ActionResult<TriageResponseDto>> SubmitTriage([FromBody] TriageSubmitRequestDto request)
     {
         if (request == null || string.IsNullOrWhiteSpace(request.Symptoms))
         {
             return BadRequest("Invalid triage data.");
         }
 
-        var result = _triageService.SubmitTriage(request);
+        var result = await _triageService.SubmitTriageAsync(request);
         return Ok(result);
     }
 
     [HttpGet("pending-approvals")]
-    // [Authorize(Roles = "Doctor,Admin")] // Commented out for easier testing in memory mode without auth setup yet
-    public ActionResult<IEnumerable<TriageResponseDto>> GetPendingApprovals()
+    // [Authorize(Roles = "Doctor,Admin")]
+    public async Task<ActionResult<IEnumerable<TriageResponseDto>>> GetPendingApprovals()
     {
-        var result = _triageService.GetPendingApprovals();
+        var result = await _triageService.GetPendingApprovalsAsync();
         return Ok(result);
     }
 
     [HttpGet("{id}/audit-log")]
-    public ActionResult<IEnumerable<AiTriageLogDto>> GetAuditLog(Guid id)
+    public async Task<ActionResult<IEnumerable<AiTriageLogDto>>> GetAuditLog(Guid id)
     {
-        var result = _triageService.GetAuditLog(id);
+        var result = await _triageService.GetAuditLogAsync(id);
         return Ok(result);
     }
 
     [HttpDelete("{id}")]
-    public IActionResult DeleteTriage(Guid id)
+    public async Task<IActionResult> DeleteTriage(Guid id)
     {
-        var success = _triageService.DeleteTriage(id);
+        var success = await _triageService.DeleteTriageAsync(id);
         if (!success)
         {
             return NotFound("Triage ticket not found or already deleted.");
@@ -56,10 +56,10 @@ public class TriageController : ControllerBase
     }
 
     [HttpPost("{id}/approve")]
-    // [Authorize(Roles = "Doctor")] // Commented out for easier testing in memory mode
-    public IActionResult ApproveTriage(Guid id, [FromBody] ApproveTriageRequestDto request)
+    // [Authorize(Roles = "Doctor")]
+    public async Task<IActionResult> ApproveTriage(Guid id, [FromBody] ApproveTriageRequestDto request)
     {
-        var success = _triageService.ApproveTriage(id, request);
+        var success = await _triageService.ApproveTriageAsync(id, request);
         if (!success)
         {
             return BadRequest("Triage ticket not found or does not require approval.");

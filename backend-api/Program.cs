@@ -68,8 +68,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// Register Triage in-memory service
-builder.Services.AddSingleton<CarePulse.Api.Services.ITriageService, CarePulse.Api.Services.TriageService>();
+// Register Triage service
+builder.Services.AddScoped<CarePulse.Api.Services.ITriageService, CarePulse.Api.Services.TriageService>();
 
 // 6. Swagger / OpenAPI Configuration
 builder.Services.AddSwaggerGen(c =>
@@ -115,5 +115,28 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHealthChecks("/health");
+
+// --- DB Connectivity Verification Block ---
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<CarePulseDbContext>();
+    try
+    {
+        bool canConnect = await dbContext.Database.CanConnectAsync();
+        if (canConnect)
+        {
+            Log.Information("✅ Successfully connected to the PostgreSQL database: carepulse_dev_db");
+        }
+        else
+        {
+            Log.Error("❌ Failed to connect to the PostgreSQL database.");
+        }
+    }
+    catch (Exception ex)
+    {
+        Log.Error(ex, "❌ Exception occurred while trying to connect to the PostgreSQL database.");
+    }
+}
+// -------------------------------------------
 
 app.Run();
