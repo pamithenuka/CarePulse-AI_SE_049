@@ -16,6 +16,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\.gitkeep))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\patients\4cd5a090-9f85-4505-8c3e-5b4a4cd118d5\8a0db19f-8af1-4e6d-8726-0eac88103809_SELF GUIDED.pdf))">
+      <SourceType>Package</SourceType>
+      <SourceId>backend-api</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/backend-api</BasePath>
+      <RelativePath>uploads/patients/4cd5a090-9f85-4505-8c3e-5b4a4cd118d5/8a0db19f-8af1-4e6d-8726-0eac88103809_SELF GUIDED.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\patients\4cd5a090-9f85-4505-8c3e-5b4a4cd118d5\8a0db19f-8af1-4e6d-8726-0eac88103809_SELF GUIDED.pdf))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\uploads\patients\f114fbb1-9644-48d9-9c5e-b4b553091a8f\e57f38ae-5846-4fbc-81b0-a94f65877336_test-scan.txt))">
       <SourceType>Package</SourceType>
       <SourceId>backend-api</SourceId>

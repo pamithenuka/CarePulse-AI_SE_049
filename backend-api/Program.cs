@@ -2,6 +2,7 @@ using System.Text;
 using CarePulse.Api.Data;
 using CarePulse.Api.Entities.Identity;
 using CarePulse.Api.Middleware;
+using CarePulse.Api.Services.Ai;
 using CarePulse.Api.Services.Auth;
 using CarePulse.Api.Services.Common;
 using CarePulse.Api.Services.Notifications;
@@ -106,6 +107,17 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<INotificationService, SimulatedSmsNotificationService>();
+
+// 9. Agent 1 (Planner/Coordinator) — calls a local Ollama server
+builder.Services.AddHttpClient<IAiPlannerClient, OllamaAiPlannerClient>(client =>
+{
+    var ollamaBaseUrl = builder.Configuration["Ollama:BaseUrl"] ?? "http://localhost:11434";
+    client.BaseAddress = new Uri(ollamaBaseUrl);
+    // CPU-only local inference is slow and variable (observed 11-30s+ for a small model on
+    // modest hardware); 15s was cutting it too close and caused spurious safe-failures.
+    client.Timeout = TimeSpan.FromSeconds(60);
+});
+builder.Services.AddScoped<IAgentPlannerService, AgentPlannerService>();
 
 var app = builder.Build();
 

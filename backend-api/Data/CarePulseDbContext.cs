@@ -1,4 +1,5 @@
 using System.Text.Json;
+using CarePulse.Api.Entities.Ai;
 using CarePulse.Api.Entities.Base;
 using CarePulse.Api.Entities.Identity;
 using CarePulse.Api.Entities.Patients;
@@ -35,6 +36,9 @@ public class CarePulseDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<EmergencyAlertLog> EmergencyAlertLogs => Set<EmergencyAlertLog>();
     public DbSet<EmergencyAlertNotification> EmergencyAlertNotifications => Set<EmergencyAlertNotification>();
 
+    // Agent 1 (Planner/Coordinator) workflow runs
+    public DbSet<AiWorkflow> AiWorkflows => Set<AiWorkflow>();
+
     // Placeholders for DbSets (Students 2-4 will attach entities here)
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -64,6 +68,11 @@ public class CarePulseDbContext : IdentityDbContext<ApplicationUser>
         });
 
         builder.Entity<PatientAuditLog>(entity =>
+        {
+            entity.HasIndex(a => a.PatientProfileId);
+        });
+
+        builder.Entity<AiWorkflow>(entity =>
         {
             entity.HasIndex(a => a.PatientProfileId);
         });

@@ -8,6 +8,7 @@ import MedicalHistoryTab from "../components/patient/MedicalHistoryTab";
 import EmergencyContactsTab from "../components/patient/EmergencyContactsTab";
 import DocumentsTab from "../components/patient/DocumentsTab";
 import ConsultationHistoryTab from "../components/patient/ConsultationHistoryTab";
+import AiPlanTab from "../components/patient/AiPlanTab";
 import "../components/StatusView.css";
 import "./PatientDetailPage.css";
 
@@ -17,6 +18,7 @@ const TABS = [
   { key: "contacts", label: "Emergency Contacts" },
   { key: "documents", label: "Documents" },
   { key: "consultations", label: "Consultation History" },
+  { key: "ai-plan", label: "AI Care Plan" },
 ];
 
 export default function PatientDetailPage() {
@@ -168,6 +170,7 @@ export default function PatientDetailPage() {
           <DocumentsTab patientId={id} initialDocuments={profile.medicalDocuments} isAdmin={isAdmin} onChanged={loadProfile} />
         )}
         {activeTab === "consultations" && <ConsultationHistoryTab patientId={id} />}
+        {activeTab === "ai-plan" && <AiPlanTab patientId={id} />}
       </div>
     </div>
   );
