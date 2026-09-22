@@ -13,15 +13,14 @@ class ApiException implements Exception {
 }
 
 class ApiClient {
-  // 'localhost' works when running in Chrome (web) since the browser and
-  // the API are on the same machine. An Android EMULATOR can't reach your
-  // PC's localhost directly - it needs the special address 10.0.2.2,
-  // which the emulator maps back to your computer. A real phone on the
-  // same Wi-Fi would instead need your PC's actual local IP address.
+  // 'localhost' works in Chrome (web) since the browser and API are on
+  // the same machine. An Android EMULATOR needs 10.0.2.2 instead, which
+  // the emulator maps back to your computer. Port 5014 matches the
+  // shared backend-api project's configured launch port.
   static String get _baseUrl {
-    if (kIsWeb) return 'http://localhost:5000/api';
-    if (Platform.isAndroid) return 'http://10.0.2.2:5000/api';
-    return 'http://localhost:5000/api';
+    if (kIsWeb) return 'http://localhost:5014/api/v1';
+    if (Platform.isAndroid) return 'http://10.0.2.2:5014/api/v1';
+    return 'http://localhost:5014/api/v1';
   }
 
   Future<List<Doctor>> getDoctors() async {
