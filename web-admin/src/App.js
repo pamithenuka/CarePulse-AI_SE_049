@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Sidebar from './components/Sidebar';
+import { DoctorProvider } from './components/DoctorContext';
+import DoctorsPage from './pages/DoctorsPage';
+import RosterPage from './pages/RosterPage';
+import SlotsPage from './pages/SlotsPage';
+import ConsultationsPage from './pages/ConsultationsPage';
+import './styles.css';
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <DoctorProvider>
+        <div className="app-shell">
+          <Sidebar />
+          <main className="main">
+            <Routes>
+              <Route path="/" element={<Navigate to="/doctors" replace />} />
+              <Route path="/doctors" element={<DoctorsPage />} />
+              <Route path="/roster" element={<RosterPage />} />
+              <Route path="/slots" element={<SlotsPage />} />
+              <Route path="/consultations" element={<ConsultationsPage />} />
+            </Routes>
+          </main>
+        </div>
+      </DoctorProvider>
+    </BrowserRouter>
   );
 }
-
-export default App;

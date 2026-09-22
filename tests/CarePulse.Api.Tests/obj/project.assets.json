@@ -8078,19 +8078,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/pamithkaluarachchi/.nuget/packages/": {}
+    "C:\\Users\\hirun\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Api.Tests/CarePulse.Api.Tests.csproj",
+      "projectUniqueName": "C:\\Users\\hirun\\OneDrive\\Desktop\\CarePulse\\CarePulse-AI_SE_049\\tests\\CarePulse.Api.Tests\\CarePulse.Api.Tests.csproj",
       "projectName": "CarePulse.Api.Tests",
-      "projectPath": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Api.Tests/CarePulse.Api.Tests.csproj",
-      "packagesPath": "/Users/pamithkaluarachchi/.nuget/packages/",
-      "outputPath": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Api.Tests/obj/",
+      "projectPath": "C:\\Users\\hirun\\OneDrive\\Desktop\\CarePulse\\CarePulse-AI_SE_049\\tests\\CarePulse.Api.Tests\\CarePulse.Api.Tests.csproj",
+      "packagesPath": "C:\\Users\\hirun\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\hirun\\OneDrive\\Desktop\\CarePulse\\CarePulse-AI_SE_049\\tests\\CarePulse.Api.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/pamithkaluarachchi/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\hirun\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -8102,8 +8102,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/backend-api/backend-api.csproj": {
-              "projectPath": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/backend-api/backend-api.csproj"
+            "C:\\Users\\hirun\\OneDrive\\Desktop\\CarePulse\\CarePulse-AI_SE_049\\backend-api\\backend-api.csproj": {
+              "projectPath": "C:\\Users\\hirun\\OneDrive\\Desktop\\CarePulse\\CarePulse-AI_SE_049\\backend-api\\backend-api.csproj"
             }
           }
         }
@@ -8156,7 +8156,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.423/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.425/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

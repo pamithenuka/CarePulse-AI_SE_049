@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/backend-api/backend-api.csproj": {}
+    "C:\\Users\\hirun\\OneDrive\\Desktop\\CarePulse\\CarePulse-AI_SE_049\\backend-api\\backend-api.csproj": {}
   },
   "projects": {
-    "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/backend-api/backend-api.csproj": {
+    "C:\\Users\\hirun\\OneDrive\\Desktop\\CarePulse\\CarePulse-AI_SE_049\\backend-api\\backend-api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/backend-api/backend-api.csproj",
+        "projectUniqueName": "C:\\Users\\hirun\\OneDrive\\Desktop\\CarePulse\\CarePulse-AI_SE_049\\backend-api\\backend-api.csproj",
         "projectName": "backend-api",
-        "projectPath": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/backend-api/backend-api.csproj",
-        "packagesPath": "/Users/pamithkaluarachchi/.nuget/packages/",
-        "outputPath": "/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/backend-api/obj/",
+        "projectPath": "C:\\Users\\hirun\\OneDrive\\Desktop\\CarePulse\\CarePulse-AI_SE_049\\backend-api\\backend-api.csproj",
+        "packagesPath": "C:\\Users\\hirun\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\hirun\\OneDrive\\Desktop\\CarePulse\\CarePulse-AI_SE_049\\backend-api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/pamithkaluarachchi/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\hirun\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -101,7 +101,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.423/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.425/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
