@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 
 class ApiService {
-  // Update this to your backend URL
-  static const String baseUrl = 'http://10.0.2.2:5000/api/v1';
+  // Use localhost for Chrome/Web, and 10.0.2.2 for Android Emulators
+  static const String baseUrl = kIsWeb ? 'http://localhost:5014/api/v1' : 'http://10.0.2.2:5014/api/v1';
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   Future<String?> getToken() async {
