@@ -104,7 +104,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Dispatch #${widget.dispatch['id'].toString().substring(0, 8)}',
+          'Dispatch #${widget.dispatch['id'].toString().length > 8 ? widget.dispatch['id'].toString().substring(0, 8) : widget.dispatch['id'].toString()}',
           style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         ),
         actions: [

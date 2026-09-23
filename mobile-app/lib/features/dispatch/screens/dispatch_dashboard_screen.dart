@@ -167,7 +167,7 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen> {
                             child: Icon(_statusIcon(status), color: _statusColor(status)),
                           ),
                           title: Text(
-                            'Dispatch #${dispatch['id'].toString().substring(0, 8)}',
+                            'Dispatch #${dispatch['id'].toString().length > 8 ? dispatch['id'].toString().substring(0, 8) : dispatch['id'].toString()}',
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
