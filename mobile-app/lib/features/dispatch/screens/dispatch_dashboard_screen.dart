@@ -156,16 +156,18 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen> {
                             left: BorderSide(color: _statusColor(status), width: 4),
                           ),
                         ),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                          leading: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: _statusColor(status).withOpacity(0.15),
-                              borderRadius: BorderRadius.circular(12),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            leading: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: _statusColor(status).withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(_statusIcon(status), color: _statusColor(status)),
                             ),
-                            child: Icon(_statusIcon(status), color: _statusColor(status)),
-                          ),
                           title: Text(
                             'Dispatch #${dispatch['id'].toString().length > 8 ? dispatch['id'].toString().substring(0, 8) : dispatch['id'].toString()}',
                             style: const TextStyle(
@@ -203,6 +205,7 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen> {
                             );
                           },
                         ),
+                      ),
                       );
                     },
                   ),

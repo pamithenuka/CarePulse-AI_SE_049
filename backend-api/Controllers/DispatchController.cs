@@ -8,6 +8,7 @@ using CarePulse.Api.Services.Dispatch;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using CarePulse.Api.Services.Agents;
 
 namespace CarePulse.Api.Controllers;
 
@@ -17,11 +18,13 @@ public class DispatchController : ControllerBase
 {
     private readonly CarePulseDbContext _context;
     private readonly IGoogleMapsService _googleMapsService;
+    private readonly IValidationAgent _validationAgent;
 
-    public DispatchController(CarePulseDbContext context, IGoogleMapsService googleMapsService)
+    public DispatchController(CarePulseDbContext context, IGoogleMapsService googleMapsService, IValidationAgent validationAgent)
     {
         _context = context;
         _googleMapsService = googleMapsService;
+        _validationAgent = validationAgent;
     }
 
     [HttpPost("assign")]
@@ -54,6 +57,21 @@ public class DispatchController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok(ticket);
+    }
+
+    [HttpPost("test-ai")]
+    public async Task<IActionResult> TestAiAgent([FromQuery] double severity = 9.0, [FromQuery] int etaMins = 45)
+    {
+        // This is a special endpoint just for Student 4 to test their AI Agent!
+        var request = new CarePulse.Api.Services.Agents.ValidationAgentRequest
+        {
+            TriageId = Guid.NewGuid(),
+            SeverityScore = severity,
+            EtaMinutes = etaMins
+        };
+
+        var aiResponse = await _validationAgent.EvaluateDispatchSafetyAsync(request);
+        return Ok(aiResponse);
     }
 
     [HttpPut("{id}/location")]
