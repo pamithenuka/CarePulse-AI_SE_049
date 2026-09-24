@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { triageApi } from '../services/triageApi';
 import './DoctorApprovalModal.css';
 
-const DoctorApprovalModal = ({ triageCase, onClose, onApprove }) => {
+const DoctorApprovalModal = ({ triageCase, onClose, onApprove, onReject }) => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [confirmingReject, setConfirmingReject] = useState(false);
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -22,19 +23,54 @@ const DoctorApprovalModal = ({ triageCase, onClose, onApprove }) => {
     fetchLogs();
   }, [triageCase.id]);
 
-  const handleApprove = async () => {
+  const requireNotes = (actionLabel) => {
     if (!notes.trim()) {
-      alert("Please enter approval notes.");
+      alert(`Please enter doctor's notes before ${actionLabel}.`);
+      return false;
+    }
+    return true;
+  };
+
+  const handleApprove = async () => {
+    if (!requireNotes('approval')) {
       return;
     }
-    
+
     setSubmitting(true);
     try {
       await triageApi.approveTriage(triageCase.id, notes);
       onApprove();
     } catch (err) {
       console.error(err);
-      alert("Failed to approve. See console.");
+      alert(err.message || 'Failed to approve this triage case. Please try again.');
+      setSubmitting(false);
+    }
+  };
+
+  const handleRejectClick = () => {
+    if (!requireNotes('rejection')) {
+      return;
+    }
+    setConfirmingReject(true);
+  };
+
+  const handleConfirmReject = async () => {
+    if (!requireNotes('rejection')) {
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await triageApi.rejectTriage(triageCase.id, notes);
+      alert('Triage case rejected successfully.');
+      if (onReject) {
+        onReject();
+      } else {
+        onApprove();
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err.message || 'Failed to reject this triage case. Please try again.');
       setSubmitting(false);
     }
   };
@@ -91,24 +127,59 @@ const DoctorApprovalModal = ({ triageCase, onClose, onApprove }) => {
           </div>
 
           <div className="approval-section">
-            <label>Doctor's Notes (Required for Dispatch)</label>
+            <label>Doctor's Notes (Required)</label>
             <textarea 
               className="input-field" 
               rows="3" 
-              placeholder="Enter clinical rationale for approval..."
+              placeholder="Enter clinical rationale for approval or rejection..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
+              disabled={submitting}
             ></textarea>
           </div>
+
+          {confirmingReject && (
+            <div className="reject-confirm">
+              <p className="reject-confirm-title">Are you sure you want to reject this triage case?</p>
+              <p className="reject-confirm-copy">This will not dispatch a nurse. The clinical notes below will be saved on the audit log.</p>
+              <div className="detail-value symptoms-box reject-notes-preview">
+                {notes.trim()}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="modal-footer">
-          <button className="btn btn-secondary" onClick={onClose} disabled={submitting}>
-            Cancel
-          </button>
-          <button className="btn btn-danger" onClick={handleApprove} disabled={submitting}>
-            {submitting ? 'Approving...' : 'Approve for Dispatch'}
-          </button>
+          {confirmingReject ? (
+            <>
+              <button
+                className="btn btn-secondary"
+                onClick={() => setConfirmingReject(false)}
+                disabled={submitting}
+              >
+                Back
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={handleConfirmReject}
+                disabled={submitting}
+              >
+                {submitting ? 'Rejecting...' : 'Confirm Reject'}
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="btn btn-secondary" onClick={onClose} disabled={submitting}>
+                Cancel
+              </button>
+              <button className="btn btn-danger" onClick={handleRejectClick} disabled={submitting}>
+                Reject
+              </button>
+              <button className="btn btn-primary" onClick={handleApprove} disabled={submitting}>
+                {submitting ? 'Approving...' : 'Approve for Dispatch'}
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -33,6 +33,25 @@ export const triageApi = {
     return response.json();
   },
 
+  rejectTriage: async (id, notes) => {
+    const response = await fetch(`${API_BASE_URL}/${id}/reject`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notes }),
+    });
+    if (!response.ok) {
+      let detail = 'Failed to reject triage';
+      try {
+        const body = await response.json();
+        detail = body.message || body.title || detail;
+      } catch {
+        // keep default message when the body is not JSON
+      }
+      throw new Error(detail);
+    }
+    return response.json();
+  },
+
   deleteTriage: async (id) => {
     const response = await fetch(`${API_BASE_URL}/${id}`, {
       method: 'DELETE',

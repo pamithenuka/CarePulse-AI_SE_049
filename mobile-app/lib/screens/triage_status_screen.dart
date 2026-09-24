@@ -16,6 +16,9 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
   List<dynamic> _auditLogs = [];
   Timer? _timer;
   bool _isApproved = false;
+  bool _isRejected = false;
+
+  bool get _hasDoctorDecision => _isApproved || _isRejected;
 
   @override
   void initState() {
@@ -25,7 +28,7 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
     // Only poll if it's high risk and needs approval
     if (widget.triageData['requiresDoctorApproval'] == true) {
       _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-        if (!_isApproved) {
+        if (!_hasDoctorDecision) {
           _fetchAuditLogs();
         }
       });
@@ -46,12 +49,42 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
       if (mounted) {
         setState(() {
           _auditLogs = logs;
-          _isApproved = logs.any((log) => log['logMessage'].toString().toLowerCase().contains('approved by doctor'));
+          _isRejected = logs.any((log) => _isRejectionLog(log));
+          _isApproved = !_isRejected &&
+              logs.any((log) => _isApprovalLog(log));
         });
+        if (_hasDoctorDecision) {
+          _timer?.cancel();
+          _timer = null;
+        }
       }
     } catch (e) {
       debugPrint("Error fetching logs: $e");
     }
+  }
+
+  String _logMessage(dynamic log) => log['logMessage']?.toString() ?? '';
+
+  bool _isApprovalLog(dynamic log) {
+    final lower = _logMessage(log).toLowerCase();
+    return lower.contains('approved by doctor') && !lower.contains('rejected');
+  }
+
+  bool _isRejectionLog(dynamic log) {
+    return _logMessage(log).toLowerCase().contains('rejected by doctor');
+  }
+
+  String? _rejectionNotes() {
+    for (final log in _auditLogs.reversed) {
+      if (!_isRejectionLog(log)) continue;
+      final msg = _logMessage(log);
+      final markerIndex = msg.toLowerCase().indexOf('notes:');
+      if (markerIndex >= 0) {
+        final notes = msg.substring(markerIndex + 'notes:'.length).trim();
+        if (notes.isNotEmpty) return notes;
+      }
+    }
+    return null;
   }
 
   void _showTriageDetails() {
@@ -107,7 +140,10 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
     );
   }
 
-  Widget _buildStep(String title, String subtitle, bool isActive, bool isCompleted) {
+  Widget _buildStep(String title, String subtitle, bool isActive, bool isCompleted, {bool isError = false}) {
+    final Color stepColor = isError
+        ? Colors.red
+        : (isCompleted ? Colors.green : (isActive ? Colors.blue : Colors.grey.shade300));
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -118,10 +154,12 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
               height: 30,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isCompleted ? Colors.green : (isActive ? Colors.blue : Colors.grey.shade300),
+                color: stepColor,
               ),
               child: Icon(
-                isCompleted ? Icons.check : (isActive ? Icons.circle : null),
+                isError
+                    ? Icons.close
+                    : (isCompleted ? Icons.check : (isActive ? Icons.circle : null)),
                 color: Colors.white,
                 size: 20,
               ),
@@ -129,7 +167,7 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
             Container(
               width: 2,
               height: 50,
-              color: isCompleted ? Colors.green : Colors.grey.shade300,
+              color: (isCompleted || isError) ? stepColor : Colors.grey.shade300,
             ),
           ],
         ),
@@ -143,7 +181,9 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: (isActive || isCompleted) ? Colors.black87 : Colors.grey,
+                  color: isError
+                      ? Colors.red
+                      : ((isActive || isCompleted) ? Colors.black87 : Colors.grey),
                 ),
               ),
               const SizedBox(height: 4),
@@ -259,6 +299,45 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
   }
 
   Widget _buildHighRiskUI(int riskScore) {
+    final rejectionNotes = _rejectionNotes();
+
+    Widget statusMessage;
+    if (_isRejected) {
+      statusMessage = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Approval Rejected",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red.shade800),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            "A doctor has rejected this triage case.",
+            style: TextStyle(fontSize: 16, color: Colors.red),
+          ),
+          if (rejectionNotes != null) ...[
+            const SizedBox(height: 12),
+            const Text(
+              "Doctor's notes",
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(rejectionNotes, style: const TextStyle(fontSize: 16)),
+          ],
+        ],
+      );
+    } else if (_isApproved) {
+      statusMessage = const Text(
+        "Approved by Doctor\n\nA doctor has authorized this triage case.",
+        style: TextStyle(fontSize: 16, color: Colors.green),
+      );
+    } else {
+      statusMessage = const Text(
+        "Waiting for Doctor Approval\n\nDoctor approval is required before emergency action can proceed.\n\nWaiting for doctor review...",
+        style: TextStyle(fontSize: 16, color: Colors.red),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -271,16 +350,35 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
         const SizedBox(height: 10),
         Text("Risk Assessment: $riskScore/10", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         const SizedBox(height: 20),
-        const Text(
-          "Doctor approval is required before emergency action can proceed.\n\nWaiting for doctor review...",
-          style: TextStyle(fontSize: 16, color: Colors.red),
+        statusMessage,
+        const SizedBox(height: 20),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton(
+            onPressed: _showTriageDetails,
+            style: OutlinedButton.styleFrom(padding: const EdgeInsets.all(15)),
+            child: const Text("View Triage Details"),
+          ),
         ),
         const SizedBox(height: 30),
         
         _buildStep("Submitted", "Intake form received", true, true),
         _buildStep("Evaluated", "Risk Assessed", true, true),
-        _buildStep("Pending Doctor Review", "Waiting for clinical review", !_isApproved, _isApproved),
-        _buildStep("Doctor Decision", _isApproved ? "Approved" : "Requires Authorization", _isApproved, false),
+        _buildStep(
+          "Pending Doctor Review",
+          _hasDoctorDecision ? "Clinical review complete" : "Waiting for clinical review",
+          !_hasDoctorDecision,
+          _hasDoctorDecision,
+        ),
+        _buildStep(
+          "Doctor Decision",
+          _isRejected
+              ? "Approval Rejected"
+              : (_isApproved ? "Approved" : "Requires Authorization"),
+          _isApproved || _isRejected,
+          _isApproved,
+          isError: _isRejected,
+        ),
       ],
     );
   }

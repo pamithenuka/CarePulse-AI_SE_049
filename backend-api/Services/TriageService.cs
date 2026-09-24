@@ -12,6 +12,7 @@ public interface ITriageService
     Task<IEnumerable<AiTriageLogDto>> GetAuditLogAsync(Guid triageId);
     Task<bool> DeleteTriageAsync(Guid triageId);
     Task<bool> ApproveTriageAsync(Guid triageId, ApproveTriageRequestDto request);
+    Task<bool> RejectTriageAsync(Guid triageId, ApproveTriageRequestDto request, string? reviewedByDoctorId);
 }
 
 public class TriageService : ITriageService
@@ -162,6 +163,38 @@ public class TriageService : ITriageService
             LogMessage = $"Triage ticket approved by doctor. Notes: {request.Notes}" 
         };
         await _context.AiTriageLogs.AddAsync(approvalLog);
+
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> RejectTriageAsync(Guid triageId, ApproveTriageRequestDto request, string? reviewedByDoctorId)
+    {
+        var ticket = await _context.TriageTickets
+            .Include(t => t.ApprovalQueue)
+            .FirstOrDefaultAsync(t => t.Id == triageId);
+
+        if (ticket == null || ticket.Status != TriageConstants.StatusNeedsApproval)
+            return false;
+
+        ticket.Status = TriageConstants.StatusRejected;
+
+        if (ticket.ApprovalQueue != null)
+        {
+            ticket.ApprovalQueue.ReviewStatus = TriageConstants.StatusRejected;
+            ticket.ApprovalQueue.ReviewedAt = DateTime.UtcNow;
+            if (!string.IsNullOrWhiteSpace(reviewedByDoctorId))
+            {
+                ticket.ApprovalQueue.ReviewedByDoctorId = reviewedByDoctorId;
+            }
+        }
+
+        var rejectionLog = new AiTriageLog
+        {
+            TriageTicketId = ticket.Id,
+            LogMessage = $"Triage ticket rejected by doctor. Notes: {request.Notes}"
+        };
+        await _context.AiTriageLogs.AddAsync(rejectionLog);
 
         await _context.SaveChangesAsync();
         return true;

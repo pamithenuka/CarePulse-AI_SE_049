@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using CarePulse.Api.DTOs;
 using CarePulse.Api.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -66,5 +67,19 @@ public class TriageController : ControllerBase
         }
 
         return Ok(new { message = "Triage request approved successfully." });
+    }
+
+    [HttpPost("{id}/reject")]
+    // [Authorize(Roles = "Doctor")]
+    public async Task<IActionResult> RejectTriage(Guid id, [FromBody] ApproveTriageRequestDto request)
+    {
+        var doctorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var success = await _triageService.RejectTriageAsync(id, request, doctorId);
+        if (!success)
+        {
+            return BadRequest("Triage ticket not found or does not require approval.");
+        }
+
+        return Ok(new { message = "Triage case rejected successfully." });
     }
 }

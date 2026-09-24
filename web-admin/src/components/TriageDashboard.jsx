@@ -127,6 +127,7 @@ const TriageDashboard = () => {
           triageCase={selectedCase} 
           onClose={handleCloseModal}
           onApprove={handleApprove}
+          onReject={handleApprove}
         />
       )}
     </div>
