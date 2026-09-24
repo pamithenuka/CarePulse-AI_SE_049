@@ -215,6 +215,31 @@ public class PatientServiceTests
     }
 
     [Fact]
+    public async Task GetMyProfileAsync_ResolvesTheCallingUsersOwnProfile()
+    {
+        await using var db = CreateInMemoryContext();
+        var service = CreateService(db);
+        var created = await service.CreateProfileAsync("owner-user", BuildCreateDto());
+
+        var result = await service.GetMyProfileAsync("owner-user");
+
+        Assert.True(result.Succeeded);
+        Assert.Equal(created.Value!.Id, result.Value!.Id);
+    }
+
+    [Fact]
+    public async Task GetMyProfileAsync_NotFoundWhenNoProfileExistsYet()
+    {
+        await using var db = CreateInMemoryContext();
+        var service = CreateService(db);
+
+        var result = await service.GetMyProfileAsync("brand-new-user");
+
+        Assert.False(result.Succeeded);
+        Assert.Equal(ServiceErrorType.NotFound, result.ErrorType);
+    }
+
+    [Fact]
     public async Task UpdateProfileAsync_PatientCanOnlyChangePhoneAndAddress()
     {
         var databaseName = Guid.NewGuid().ToString();

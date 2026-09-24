@@ -63,6 +63,16 @@ public class PatientsController : ControllerBase
         return ToActionResult(result, value => CreatedAtAction(nameof(GetProfile), new { id = value.Id }, value));
     }
 
+    /// <summary>Lets the mobile app resolve the logged-in Patient's own profile GUID
+    /// without a Doctor/Admin-only search. 404 means they haven't onboarded yet.</summary>
+    [HttpGet("me")]
+    [Authorize(Roles = "Patient")]
+    public async Task<ActionResult<PatientProfileDetailDto>> GetMyProfile()
+    {
+        var result = await _patientService.GetMyProfileAsync(CurrentUserId);
+        return ToActionResult(result, value => Ok(value));
+    }
+
     [HttpGet("{id:guid}")]
     [Authorize(Roles = "Doctor,Admin,Patient")]
     public async Task<ActionResult<PatientProfileDetailDto>> GetProfile(Guid id)

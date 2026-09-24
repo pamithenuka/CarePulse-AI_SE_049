@@ -38,6 +38,10 @@ public interface IPatientService
 
     Task<ServiceResult<PatientProfileDetailDto>> GetProfileDetailAsync(Guid patientProfileId, string requestingUserId, IList<string> requestingRoles);
 
+    /// <summary>Resolves the calling Patient's own profile by their user id, so the mobile
+    /// app can find its GUID without a Doctor/Admin-only patient search.</summary>
+    Task<ServiceResult<PatientProfileDetailDto>> GetMyProfileAsync(string requestingUserId);
+
     Task<ServiceResult<PatientProfileDetailDto>> UpdateProfileAsync(
         Guid patientProfileId, string requestingUserId, IList<string> requestingRoles, UpdatePatientProfileDto dto);
 

@@ -14,7 +14,7 @@ namespace CarePulse.Api.Controllers.V1;
 /// </summary>
 [ApiController]
 [Route("api/v1/patients/{patientId:guid}/ai-plan")]
-[Authorize(Roles = "Doctor,Admin")]
+[Authorize]
 public class AiWorkflowsController : ControllerBase
 {
     private readonly IAgentPlannerService _plannerService;
@@ -26,21 +26,29 @@ public class AiWorkflowsController : ControllerBase
 
     private string CurrentUserId => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
+    private IList<string> CurrentRoles => User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
+
+    // A Patient submits their own reported symptoms (mirrors the future Flutter submission flow);
+    // Doctor/Admin may submit on behalf of any patient (e.g. relayed over the phone).
     [HttpPost]
+    [Authorize(Roles = "Doctor,Admin,Patient")]
     public async Task<ActionResult<AiWorkflowDto>> CreatePlan(Guid patientId, CreateAiPlanDto dto)
     {
-        var result = await _plannerService.CreatePlanAsync(patientId, CurrentUserId, dto);
+        var result = await _plannerService.CreatePlanAsync(patientId, CurrentUserId, CurrentRoles, dto);
         return ToActionResult(result, value => Ok(value));
     }
 
     [HttpGet]
+    [Authorize(Roles = "Doctor,Admin,Patient")]
     public async Task<ActionResult<List<AiWorkflowDto>>> GetPlans(Guid patientId)
     {
-        var result = await _plannerService.GetPlansAsync(patientId);
+        var result = await _plannerService.GetPlansAsync(patientId, CurrentUserId, CurrentRoles);
         return ToActionResult(result, value => Ok(value));
     }
 
+    // Approve/reject stays Doctor/Admin-only — a Patient cannot review their own submitted plan.
     [HttpPut("{workflowId:guid}/review")]
+    [Authorize(Roles = "Doctor,Admin")]
     public async Task<ActionResult<AiWorkflowDto>> ReviewPlan(Guid patientId, Guid workflowId, ReviewAiPlanDto dto)
     {
         var result = await _plannerService.ReviewPlanAsync(patientId, workflowId, CurrentUserId, dto);

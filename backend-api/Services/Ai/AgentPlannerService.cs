@@ -25,6 +25,10 @@ public class AgentPlannerService : IAgentPlannerService
         "DomainAnalysis", "ActionTool", "Validation"
     };
 
+    // Mirrors PatientService's ClinicalRoles/CanAccessProfile pattern: a Patient may only act on
+    // their own profile, Doctor/Admin may act on any profile.
+    private static readonly HashSet<string> ClinicalRoles = new() { "Doctor", "Admin" };
+
     // Deliberately does NOT ask the LLM to restate patient facts (age/blood type/allergies/etc.) —
     // a small local model will occasionally get those wrong (observed: it once reported an
     // invented blood type instead of the patient's real one). Safety-critical facts are only ever
@@ -63,8 +67,15 @@ public class AgentPlannerService : IAgentPlannerService
         _logger = logger;
     }
 
-    public async Task<ServiceResult<AiWorkflowDto>> CreatePlanAsync(Guid patientProfileId, string requestingUserId, CreateAiPlanDto dto)
+    public async Task<ServiceResult<AiWorkflowDto>> CreatePlanAsync(
+        Guid patientProfileId, string requestingUserId, IList<string> requestingRoles, CreateAiPlanDto dto)
     {
+        var access = await CheckAccessAsync(patientProfileId, requestingUserId, requestingRoles);
+        if (!access.Succeeded)
+        {
+            return ServiceResult<AiWorkflowDto>.Fail(access.ErrorType, access.ErrorMessage!);
+        }
+
         var objective = dto.Objective.Trim();
         if (objective.Length < 5)
         {
@@ -124,8 +135,15 @@ public class AgentPlannerService : IAgentPlannerService
         return ServiceResult<AiWorkflowDto>.Success(await MapToDtoAsync(workflow));
     }
 
-    public async Task<ServiceResult<List<AiWorkflowDto>>> GetPlansAsync(Guid patientProfileId)
+    public async Task<ServiceResult<List<AiWorkflowDto>>> GetPlansAsync(
+        Guid patientProfileId, string requestingUserId, IList<string> requestingRoles)
     {
+        var access = await CheckAccessAsync(patientProfileId, requestingUserId, requestingRoles);
+        if (!access.Succeeded)
+        {
+            return ServiceResult<List<AiWorkflowDto>>.Fail(access.ErrorType, access.ErrorMessage!);
+        }
+
         var workflows = await _db.AiWorkflows
             .Where(w => w.PatientProfileId == patientProfileId)
             .OrderByDescending(w => w.CreatedAt)
@@ -168,6 +186,26 @@ public class AgentPlannerService : IAgentPlannerService
         await _db.SaveChangesAsync();
 
         return ServiceResult<AiWorkflowDto>.Success(await MapToDtoAsync(workflow));
+    }
+
+    /// <summary>
+    /// A Patient may only create/view AI plans for their own profile; Doctor/Admin may act on any.
+    /// Mirrors PatientService's CanAccessProfile check.
+    /// </summary>
+    private async Task<ServiceResult<bool>> CheckAccessAsync(Guid patientProfileId, string requestingUserId, IList<string> requestingRoles)
+    {
+        var profile = await _db.PatientProfiles.FirstOrDefaultAsync(p => p.Id == patientProfileId);
+        if (profile is null)
+        {
+            return ServiceResult<bool>.Fail(ServiceErrorType.NotFound, "Patient profile not found.");
+        }
+
+        if (profile.UserId != requestingUserId && !requestingRoles.Any(ClinicalRoles.Contains))
+        {
+            return ServiceResult<bool>.Fail(ServiceErrorType.Forbidden, "You are not allowed to access this patient's AI plans.");
+        }
+
+        return ServiceResult<bool>.Success(true);
     }
 
     /// <summary>

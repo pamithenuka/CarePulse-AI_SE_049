@@ -233,6 +233,22 @@ public class PatientService : IPatientService
         return ServiceResult<PatientProfileDetailDto>.Success(MapToDetailDto(profile));
     }
 
+    public async Task<ServiceResult<PatientProfileDetailDto>> GetMyProfileAsync(string requestingUserId)
+    {
+        var profile = await _db.PatientProfiles
+            .Include(p => p.EmergencyContacts)
+            .Include(p => p.MedicalHistories)
+            .Include(p => p.MedicalDocuments)
+            .FirstOrDefaultAsync(p => p.UserId == requestingUserId);
+
+        if (profile is null)
+        {
+            return ServiceResult<PatientProfileDetailDto>.Fail(ServiceErrorType.NotFound, "No patient profile has been created for this account yet.");
+        }
+
+        return ServiceResult<PatientProfileDetailDto>.Success(MapToDetailDto(profile));
+    }
+
     public async Task<ServiceResult<PatientProfileDetailDto>> UpdateProfileAsync(
         Guid patientProfileId, string requestingUserId, IList<string> requestingRoles, UpdatePatientProfileDto dto)
     {
