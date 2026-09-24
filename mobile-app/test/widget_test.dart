@@ -1,30 +1,49 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 
-import 'package:mobile_app/main.dart';
+import 'package:mobile_app/providers/auth_provider.dart';
+import 'package:mobile_app/screens/auth/login_screen.dart';
+import 'package:mobile_app/screens/auth/register_screen.dart';
+
+/// Constructing AuthProvider() here does no I/O (see AuthProvider's
+/// constructor) - only login()/register()/tryAutoLogin() touch the network or
+/// secure storage, none of which this test triggers, since an empty-form
+/// submit is rejected by Form validation before AuthProvider is ever called.
+Widget _wrapWithProviders(Widget child) {
+  return ChangeNotifierProvider(
+    create: (_) => AuthProvider(),
+    child: MaterialApp(home: child),
+  );
+}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('LoginScreen shows validation errors on an empty submit', (WidgetTester tester) async {
+    await tester.pumpWidget(_wrapWithProviders(const LoginScreen()));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    await tester.tap(find.widgetWithText(FilledButton, 'Log in'));
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Enter a valid email address.'), findsOneWidget);
+    expect(find.text('Password is required.'), findsOneWidget);
+  });
+
+  testWidgets('LoginScreen renders the CarePulse branding and a register link', (WidgetTester tester) async {
+    await tester.pumpWidget(_wrapWithProviders(const LoginScreen()));
+
+    expect(find.text('CarePulse'), findsOneWidget);
+    expect(find.text("Don't have an account? Register"), findsOneWidget);
+  });
+
+  testWidgets('tapping the register link navigates to RegisterScreen', (WidgetTester tester) async {
+    await tester.pumpWidget(_wrapWithProviders(const LoginScreen()));
+
+    expect(find.byType(RegisterScreen), findsNothing);
+
+    await tester.tap(find.text("Don't have an account? Register"));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(RegisterScreen), findsOneWidget);
+    expect(find.text('Create your account'), findsOneWidget);
   });
 }
