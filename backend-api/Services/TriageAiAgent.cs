@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using CarePulse.Api.DTOs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using static CarePulse.Api.DTOs.TriageConstants;
 
 namespace CarePulse.Api.Services;
 
@@ -47,7 +48,22 @@ Risk Scoring Rules (1-10):
 Risk Level mapping MUST be consistent:
 - 1-3 = LOW
 - 4-6 = MEDIUM
-- 7-10 = HIGH";
+- 7-10 = HIGH
+
+Specialty Selection:
+Based on the symptoms, you MUST select the most appropriate medical specialty from these exact values:
+- GENERAL_MEDICINE: General health concerns, flu, minor illnesses
+- DERMATOLOGY: Skin rashes, itching, moles, skin conditions
+- CARDIOLOGY: Chest pain, heart issues, blood pressure concerns
+- NEUROLOGY: Headaches, seizures, nerve issues, brain-related symptoms
+- ORTHOPEDICS: Bone, joint, muscle injuries, back pain
+- PEDIATRICS: Child-specific medical concerns
+- ENT: Ear, nose, throat issues
+- OPHTHALMOLOGY: Eye-related problems
+- GYNECOLOGY: Women's health issues
+- PSYCHIATRY: Mental health concerns
+
+You MUST select exactly one specialty from this list. Do not invent or modify specialty names.";
 
             var userMessage = $@"Analyze these patient details:
 Symptoms: {request.Symptoms}
@@ -81,9 +97,10 @@ Additional Symptoms: {(request.AdditionalSymptoms != null && request.AdditionalS
                             { "RiskLevel", new { type = "STRING", @enum = new[] { "LOW", "MEDIUM", "HIGH" } } },
                             { "Reason", new { type = "STRING" } },
                             { "RecommendedAction", new { type = "STRING" } },
-                            { "FollowUpRecommended", new { type = "BOOLEAN" } }
+                            { "FollowUpRecommended", new { type = "BOOLEAN" } },
+                            { "RecommendedSpecialty", new { type = "STRING", @enum = new[] { "GENERAL_MEDICINE", "DERMATOLOGY", "CARDIOLOGY", "NEUROLOGY", "ORTHOPEDICS", "PEDIATRICS", "ENT", "OPHTHALMOLOGY", "GYNECOLOGY", "PSYCHIATRY" } } }
                         },
-                        required = new[] { "RiskScore", "RiskLevel", "Reason", "RecommendedAction", "FollowUpRecommended" }
+                        required = new[] { "RiskScore", "RiskLevel", "Reason", "RecommendedAction", "FollowUpRecommended", "RecommendedSpecialty" }
                     }
                 }
             };
@@ -135,6 +152,15 @@ Additional Symptoms: {(request.AdditionalSymptoms != null && request.AdditionalS
             else if (result.RiskScore >= 4) result.RiskLevel = "MEDIUM";
             else result.RiskLevel = "LOW";
 
+            // Validate RecommendedSpecialty
+            if (string.IsNullOrWhiteSpace(result.RecommendedSpecialty) ||
+                !AllowedSpecialties.Contains(result.RecommendedSpecialty.ToUpper()))
+            {
+                throw new InvalidOperationException($"Invalid specialty '{result.RecommendedSpecialty}'. Must be one of: {string.Join(", ", AllowedSpecialties)}");
+            }
+
+            result.RecommendedSpecialty = result.RecommendedSpecialty.ToUpper();
+
             return result;
         }
         catch (Exception ex)
@@ -142,13 +168,15 @@ Additional Symptoms: {(request.AdditionalSymptoms != null && request.AdditionalS
             _logger.LogError(ex, "AI Assessment failed.");
             
             // Fallback strategy: Fail safely into manual review (HIGH Risk)
+            // Note: RecommendedSpecialty is left empty as AI assessment failed
             return new TriageAssessmentResult
             {
                 RiskScore = 10,
                 RiskLevel = "HIGH",
                 Reason = "AI assessment unavailable. Manual doctor review is required.",
                 RecommendedAction = "Immediate manual review",
-                FollowUpRecommended = true
+                FollowUpRecommended = true,
+                RecommendedSpecialty = string.Empty
             };
         }
     }

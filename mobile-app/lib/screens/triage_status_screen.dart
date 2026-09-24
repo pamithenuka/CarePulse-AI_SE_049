@@ -202,6 +202,8 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
   }
 
   Widget _buildLowRiskUI(int riskScore) {
+    final recommendedSpecialty = widget.triageData['recommendedSpecialty']?.toString() ?? '';
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -218,6 +220,13 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
           "The information provided does not indicate an immediate emergency.\n\nYou can monitor your symptoms and seek medical care if they worsen.",
           style: TextStyle(fontSize: 16),
         ),
+        if (recommendedSpecialty.isNotEmpty) ...[
+          const SizedBox(height: 15),
+          Text(
+            "Recommended Specialty: ${recommendedSpecialty.replaceAll('_', ' ')}",
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue),
+          ),
+        ],
         const SizedBox(height: 30),
         SizedBox(
           width: double.infinity,
@@ -245,6 +254,8 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
   }
 
   Widget _buildMediumRiskUI(int riskScore) {
+    final recommendedSpecialty = widget.triageData['recommendedSpecialty']?.toString() ?? '';
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -261,6 +272,13 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
           "Based on the information provided, a medical consultation is recommended.",
           style: TextStyle(fontSize: 16),
         ),
+        if (recommendedSpecialty.isNotEmpty) ...[
+          const SizedBox(height: 15),
+          Text(
+            "Recommended Specialty: ${recommendedSpecialty.replaceAll('_', ' ')}",
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue),
+          ),
+        ],
         const SizedBox(height: 30),
         Row(
           children: [
@@ -300,6 +318,7 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
 
   Widget _buildHighRiskUI(int riskScore) {
     final rejectionNotes = _rejectionNotes();
+    final recommendedSpecialty = widget.triageData['recommendedSpecialty']?.toString() ?? '';
 
     Widget statusMessage;
     if (_isRejected) {
@@ -350,6 +369,13 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
         const SizedBox(height: 10),
         Text("Risk Assessment: $riskScore/10", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         const SizedBox(height: 20),
+        if (recommendedSpecialty.isNotEmpty) ...[
+          Text(
+            "Recommended Specialty: ${recommendedSpecialty.replaceAll('_', ' ')}",
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.blue),
+          ),
+          const SizedBox(height: 15),
+        ],
         statusMessage,
         const SizedBox(height: 20),
         SizedBox(

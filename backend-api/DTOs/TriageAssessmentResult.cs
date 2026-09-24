@@ -7,4 +7,5 @@ public class TriageAssessmentResult
     public string Reason { get; set; } = string.Empty;
     public string RecommendedAction { get; set; } = string.Empty;
     public bool FollowUpRecommended { get; set; }
+    public string RecommendedSpecialty { get; set; } = string.Empty;
 }

@@ -42,6 +42,7 @@ public class TriageService : ITriageService
         ticket.RecommendedAction = aiResult.RecommendedAction;
         ticket.Reason = aiResult.Reason;
         ticket.FollowUpRecommended = aiResult.FollowUpRecommended;
+        ticket.RecommendedSpecialty = aiResult.RecommendedSpecialty;
 
         // Apply Backend Business Rules (Doctor Approval override for HIGH risk)
         ticket.RequiresDoctorApproval = ticket.RiskLevel == TriageConstants.RiskHigh;
@@ -213,7 +214,8 @@ public class TriageService : ITriageService
             RecommendedAction = ticket.RecommendedAction,
             RequiresDoctorApproval = ticket.RequiresDoctorApproval,
             Reason = ticket.Reason,
-            FollowUpRecommended = ticket.FollowUpRecommended
+            FollowUpRecommended = ticket.FollowUpRecommended,
+            RecommendedSpecialty = ticket.RecommendedSpecialty
         };
     }
 }

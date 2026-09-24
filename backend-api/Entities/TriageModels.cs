@@ -13,6 +13,7 @@ public class TriageTicket : BaseEntity
     public bool RequiresDoctorApproval { get; set; }
     public string Reason { get; set; } = string.Empty;
     public bool FollowUpRecommended { get; set; }
+    public string RecommendedSpecialty { get; set; } = string.Empty;
     
     // Navigation properties
     public ICollection<AiTriageLog> AiTriageLogs { get; set; } = new List<AiTriageLog>();

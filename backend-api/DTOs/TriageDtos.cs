@@ -15,6 +15,20 @@ public static class TriageConstants
     public const String StatusNeedsApproval = "NEEDS_DOCTOR_APPROVAL";
     public const String StatusApproved = "APPROVED";
     public const String StatusRejected = "REJECTED";
+
+    public static readonly string[] AllowedSpecialties = new[]
+    {
+        "GENERAL_MEDICINE",
+        "DERMATOLOGY",
+        "CARDIOLOGY",
+        "NEUROLOGY",
+        "ORTHOPEDICS",
+        "PEDIATRICS",
+        "ENT",
+        "OPHTHALMOLOGY",
+        "GYNECOLOGY",
+        "PSYCHIATRY"
+    };
 }
 
 public class TriageSubmitRequestDto
@@ -39,6 +53,7 @@ public class TriageResponseDto
     public bool RequiresDoctorApproval { get; set; }
     public string Reason { get; set; } = string.Empty;
     public bool FollowUpRecommended { get; set; }
+    public string RecommendedSpecialty { get; set; } = string.Empty;
 }
 
 public class AiTriageLogDto

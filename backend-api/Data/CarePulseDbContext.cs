@@ -42,6 +42,7 @@ public class CarePulseDbContext : IdentityDbContext
             entity.Property(e => e.Symptoms).HasMaxLength(2000);
             entity.Property(e => e.Status).HasMaxLength(100);
             entity.Property(e => e.RiskLevel).HasMaxLength(50);
+            entity.Property(e => e.RecommendedSpecialty).HasMaxLength(50);
         });
 
         builder.Entity<AiTriageLog>(entity =>

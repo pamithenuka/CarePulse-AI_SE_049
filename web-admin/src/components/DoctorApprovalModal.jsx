@@ -100,6 +100,15 @@ const DoctorApprovalModal = ({ triageCase, onClose, onApprove, onReject }) => {
               </div>
             </div>
 
+            {triageCase.recommendedSpecialty && (
+              <div className="detail-group">
+                <label>Recommended Specialty</label>
+                <div className="detail-value">
+                  {triageCase.recommendedSpecialty.replace(/_/g, ' ')}
+                </div>
+              </div>
+            )}
+
             <div className="detail-group full-width">
               <label>Patient Symptoms</label>
               <div className="detail-value symptoms-box">
