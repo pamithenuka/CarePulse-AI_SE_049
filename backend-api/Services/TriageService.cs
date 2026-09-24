@@ -17,10 +17,12 @@ public interface ITriageService
 public class TriageService : ITriageService
 {
     private readonly CarePulseDbContext _context;
+    private readonly ITriageAiAgent _aiAgent;
 
-    public TriageService(CarePulseDbContext context)
+    public TriageService(CarePulseDbContext context, ITriageAiAgent aiAgent)
     {
         _context = context;
+        _aiAgent = aiAgent;
     }
 
     public async Task<TriageResponseDto> SubmitTriageAsync(TriageSubmitRequestDto request)
@@ -31,34 +33,21 @@ public class TriageService : ITriageService
             Symptoms = request.Symptoms
         };
 
-        // Mock AI Risk Assessment
-        string symptomsLower = request.Symptoms.ToLower();
-        if (symptomsLower.Contains("severe chest pain"))
+        // AI Risk Assessment
+        var aiResult = await _aiAgent.AnalyzeSymptomsAsync(request);
+
+        ticket.RiskScore = aiResult.RiskScore;
+        ticket.RiskLevel = aiResult.RiskLevel;
+        ticket.RecommendedAction = aiResult.RecommendedAction;
+        ticket.Reason = aiResult.Reason;
+        ticket.FollowUpRecommended = aiResult.FollowUpRecommended;
+
+        // Apply Backend Business Rules (Doctor Approval override for HIGH risk)
+        ticket.RequiresDoctorApproval = ticket.RiskLevel == TriageConstants.RiskHigh;
+        ticket.Status = ticket.RequiresDoctorApproval ? TriageConstants.StatusNeedsApproval : TriageConstants.StatusCompleted;
+        if (ticket.RiskLevel == TriageConstants.RiskMedium)
         {
-            ticket.RiskScore = 9;
-            ticket.RiskLevel = TriageConstants.RiskHigh;
-            ticket.RecommendedAction = TriageConstants.ActionDoctorApproval;
-            ticket.Status = TriageConstants.StatusNeedsApproval;
-            ticket.RequiresDoctorApproval = true;
-            ticket.FollowUpRecommended = true;
-        }
-        else if (symptomsLower.Contains("fever and headache"))
-        {
-            ticket.RiskScore = 5;
-            ticket.RiskLevel = TriageConstants.RiskMedium;
-            ticket.RecommendedAction = TriageConstants.ActionConsultation;
             ticket.Status = TriageConstants.StatusConsultationRecommended;
-            ticket.RequiresDoctorApproval = false;
-            ticket.FollowUpRecommended = true;
-        }
-        else
-        {
-            ticket.RiskScore = 2;
-            ticket.RiskLevel = TriageConstants.RiskLow;
-            ticket.RecommendedAction = TriageConstants.ActionSelfCare;
-            ticket.Status = TriageConstants.StatusCompleted;
-            ticket.RequiresDoctorApproval = false;
-            ticket.FollowUpRecommended = false;
         }
 
         await _context.TriageTickets.AddAsync(ticket);
@@ -70,16 +59,16 @@ public class TriageService : ITriageService
             Score = ticket.RiskScore,
             Level = ticket.RiskLevel,
             RecommendedAction = ticket.RecommendedAction,
-            Reason = "Mock assessment logic evaluated this case."
+            Reason = aiResult.Reason
         };
         await _context.RiskAssessments.AddAsync(riskAssessment);
 
         // Log generation based on risk
         string logMessage = ticket.RiskLevel switch
         {
-            TriageConstants.RiskHigh => $"Symptoms submitted\nRisk assessed: HIGH ({ticket.RiskScore}/10)\nDoctor approval required\nAdded to approval queue",
-            TriageConstants.RiskMedium => $"Symptoms submitted\nRisk assessed: MEDIUM ({ticket.RiskScore}/10)\nDoctor consultation recommended\nDoctor approval not required",
-            _ => $"Symptoms submitted\nRisk assessed: LOW ({ticket.RiskScore}/10)\nSelf-care monitoring recommended\nDoctor approval not required"
+            TriageConstants.RiskHigh => $"Symptoms analyzed by AI\nRisk assessed: HIGH ({ticket.RiskScore}/10)\nReason: {aiResult.Reason}\nDoctor approval required\nAdded to approval queue",
+            TriageConstants.RiskMedium => $"Symptoms analyzed by AI\nRisk assessed: MEDIUM ({ticket.RiskScore}/10)\nReason: {aiResult.Reason}\nDoctor consultation recommended\nDoctor approval not required",
+            _ => $"Symptoms analyzed by AI\nRisk assessed: LOW ({ticket.RiskScore}/10)\nReason: {aiResult.Reason}\nSelf-care monitoring recommended\nDoctor approval not required"
         };
 
         var initialLog = new AiTriageLog 

@@ -69,6 +69,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 // Register Triage service
+builder.Services.AddScoped<CarePulse.Api.Services.ITriageAiAgent, CarePulse.Api.Services.TriageAiAgent>();
 builder.Services.AddScoped<CarePulse.Api.Services.ITriageService, CarePulse.Api.Services.TriageService>();
 
 // 6. Swagger / OpenAPI Configuration
