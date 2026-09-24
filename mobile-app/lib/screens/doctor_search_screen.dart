@@ -3,6 +3,7 @@ import '../api/api_client.dart';
 import '../models/doctor.dart';
 import '../theme/app_theme.dart';
 import 'booking_screen.dart';
+import 'agent_search_screen.dart';
 
 class DoctorSearchScreen extends StatefulWidget {
   const DoctorSearchScreen({super.key});
@@ -61,7 +62,20 @@ class _DoctorSearchScreenState extends State<DoctorSearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Find a doctor')),
+            appBar: AppBar(
+        title: const Text('Find a doctor'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.forum_outlined),
+            tooltip: 'Ask CarePulse',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const AgentSearchScreen()),
+              );
+            },
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: _load,
         child: _buildBody(),

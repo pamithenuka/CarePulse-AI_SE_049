@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import '../models/doctor.dart';
 import '../models/slot.dart';
+import '../models/agent_response.dart';
 
 class ApiException implements Exception {
   final String message;
@@ -44,6 +45,16 @@ class ApiClient {
     _checkOk(res);
     final list = jsonDecode(res.body) as List;
     return list.map((e) => AppointmentSlot.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+    Future<AgentSearchResponse> searchAgent(String message) async {
+    final res = await http.post(
+      Uri.parse('$_baseUrl/agent/search'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'message': message}),
+    );
+    _checkOk(res);
+    return AgentSearchResponse.fromJson(jsonDecode(res.body) as Map<String, dynamic>);
   }
 
   Future<void> bookAppointment({required String slotId, required String patientId}) async {

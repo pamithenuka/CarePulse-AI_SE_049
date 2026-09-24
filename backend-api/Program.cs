@@ -21,6 +21,13 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<CarePulseDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+builder.Services.AddHttpClient();
+
+builder.Services.AddDbContext<ReadOnlyCarePulseDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<CarePulse.Api.Services.GeminiAgentService>();
+
 // 3. ASP.NET Core Identity Setup
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
