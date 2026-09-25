@@ -13,6 +13,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using CarePulse.Api.Services.Dispatch;
+using CarePulse.Api.DTOs.Dispatch;
+using CarePulse.Api.Services.Agents;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,7 +77,13 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation()
+                .AddFluentValidationClientsideAdapters()
+                .AddValidatorsFromAssemblyContaining<AssignDispatchDtoValidator>();
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddScoped<IGoogleMapsService, GoogleMapsService>();
+builder.Services.AddScoped<IValidationAgent, ValidationAgent>();
 
 // 6. Swagger / OpenAPI Configuration
 builder.Services.AddSwaggerGen(c =>
@@ -144,3 +155,5 @@ app.MapControllers();
 app.MapHealthChecks("/health");
 
 app.Run();
+
+public partial class Program { }

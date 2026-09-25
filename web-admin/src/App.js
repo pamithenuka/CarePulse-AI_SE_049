@@ -1,3 +1,4 @@
+import { EmergencyControlCenter } from './components/dispatch/EmergencyControlCenter';
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -28,6 +29,7 @@ function App() {
             <Route path="/patients/:id" element={<PatientDetailPage />} />
             <Route path="/audit-log" element={<AuditLogPage />} />
             <Route path="/emergency-alerts" element={<EmergencyAlertLogPage />} />
+            <Route path="/dispatch" element={<EmergencyControlCenter />} />
           </Route>
         </Route>
 

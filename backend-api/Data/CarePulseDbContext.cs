@@ -7,6 +7,7 @@ using CarePulse.Api.Services.Common;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using CarePulse.Api.Entities.Dispatch;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace CarePulse.Api.Data;
@@ -14,6 +15,12 @@ namespace CarePulse.Api.Data;
 public class CarePulseDbContext : IdentityDbContext<ApplicationUser>
 {
     private readonly ICurrentUserService _currentUserService;
+
+    // Student 4: Dispatch
+    public DbSet<NurseProfiles> NurseProfiles { get; set; }
+    public DbSet<DispatchTickets> DispatchTickets { get; set; }
+    public DbSet<RouteLogs> RouteLogs { get; set; }
+    public DbSet<OnSiteVitalsRecords> OnSiteVitalsRecords { get; set; }
 
     private static readonly HashSet<Type> AuditedEntityTypes = new()
     {
@@ -39,7 +46,7 @@ public class CarePulseDbContext : IdentityDbContext<ApplicationUser>
     // Agent 1 (Planner/Coordinator) workflow runs
     public DbSet<AiWorkflow> AiWorkflows => Set<AiWorkflow>();
 
-    // Placeholders for DbSets (Students 2-4 will attach entities here)
+    // Placeholders for DbSets (Students 2-3 will attach entities here)
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
