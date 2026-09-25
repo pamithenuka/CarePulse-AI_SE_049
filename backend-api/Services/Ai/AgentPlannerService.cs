@@ -157,6 +157,26 @@ public class AgentPlannerService : IAgentPlannerService
         return ServiceResult<List<AiWorkflowDto>>.Success(dtos);
     }
 
+    public async Task<ServiceResult<List<AiWorkflowDto>>> GetPendingReviewPlansAsync()
+    {
+        var workflows = await _db.AiWorkflows
+            .Where(w => w.Status == AiWorkflowStatus.PlanCreated && w.ReviewStatus == AiPlanReviewStatus.NotReviewed)
+            .OrderByDescending(w => w.CreatedAt)
+            .ToListAsync();
+
+        var patientIds = workflows.Select(w => w.PatientProfileId).Distinct().ToList();
+        var patientNames = await _db.PatientProfiles
+            .Where(p => patientIds.Contains(p.Id))
+            .ToDictionaryAsync(p => p.Id, p => p.FullName);
+
+        var userIds = workflows.SelectMany(w => new[] { w.CreatedByUserId, w.ReviewedByUserId })
+            .Where(id => !string.IsNullOrEmpty(id)).Distinct().ToList();
+        var userNames = await _db.Users.Where(u => userIds.Contains(u.Id)).ToDictionaryAsync(u => u.Id, u => u.FullName);
+
+        var dtos = workflows.Select(w => MapToDto(w, userNames, patientNames)).ToList();
+        return ServiceResult<List<AiWorkflowDto>>.Success(dtos);
+    }
+
     public async Task<ServiceResult<AiWorkflowDto>> ReviewPlanAsync(
         Guid patientProfileId, Guid workflowId, string requestingUserId, ReviewAiPlanDto dto)
     {
@@ -291,7 +311,8 @@ public class AgentPlannerService : IAgentPlannerService
         return MapToDto(workflow, userNames);
     }
 
-    private static AiWorkflowDto MapToDto(AiWorkflow workflow, Dictionary<string, string> userNames)
+    private static AiWorkflowDto MapToDto(
+        AiWorkflow workflow, Dictionary<string, string> userNames, Dictionary<Guid, string>? patientNames = null)
     {
         var steps = string.IsNullOrWhiteSpace(workflow.StepsJson)
             ? new List<AiPlanStepDto>()
@@ -301,6 +322,7 @@ public class AgentPlannerService : IAgentPlannerService
         {
             Id = workflow.Id,
             PatientProfileId = workflow.PatientProfileId,
+            PatientFullName = patientNames?.GetValueOrDefault(workflow.PatientProfileId),
             Objective = workflow.Objective,
             Summary = workflow.PlanSummary,
             Steps = steps,

@@ -19,6 +19,9 @@ public class AiWorkflowDto
 {
     public Guid Id { get; set; }
     public Guid PatientProfileId { get; set; }
+    // Only populated on the cross-patient pending-review listing (GetPendingReviewPlansAsync) -
+    // the per-patient endpoints already have the patient in context and leave this null.
+    public string? PatientFullName { get; set; }
     public string Objective { get; set; } = string.Empty;
     public string? Summary { get; set; }
     public List<AiPlanStepDto> Steps { get; set; } = new();

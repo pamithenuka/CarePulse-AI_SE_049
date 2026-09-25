@@ -47,16 +47,16 @@ public class AgentPlannerServiceTests
         "{\"agent\":\"Validation\",\"task\":\"Pause for doctor if risk >= 7\"}" +
         "]}";
 
-    private static async Task<Guid> CreatePatientProfileAsync(CarePulseDbContext db)
+    private static async Task<Guid> CreatePatientProfileAsync(CarePulseDbContext db, string suffix = "1")
     {
-        var created = await CreatePatientService(db).CreateProfileAsync("patient-1", new CreatePatientProfileDto
+        var created = await CreatePatientService(db).CreateProfileAsync($"patient-{suffix}", new CreatePatientProfileDto
         {
-            FullName = "Test Patient",
+            FullName = $"Test Patient {suffix}",
             DateOfBirth = new DateOnly(1968, 1, 1),
             Gender = "Male",
             BloodType = "O+",
             PhoneNumber = "0771234567",
-            NationalId = "196801011234",
+            NationalId = $"19680101{suffix.PadLeft(4, '0')}",
             Allergies = "Penicillin",
             EmergencyContacts = new List<CreateEmergencyContactDto>
             {
@@ -298,5 +298,54 @@ public class AgentPlannerServiceTests
 
         Assert.False(result.Succeeded);
         Assert.Equal(ServiceErrorType.Conflict, result.ErrorType);
+    }
+
+    [Fact]
+    public async Task GetPendingReviewPlansAsync_ReturnsPlansAcrossAllPatientsAwaitingReview()
+    {
+        var databaseName = Guid.NewGuid().ToString();
+        await using (var seedDb = CreateInMemoryContext(databaseName))
+        {
+            var patient1 = await CreatePatientProfileAsync(seedDb, "1");
+            var patient2 = await CreatePatientProfileAsync(seedDb, "2");
+            var svc = new AgentPlannerService(seedDb, CreatePatientService(seedDb), new FakeAiPlannerClient { NextRawJson = ValidPlanJson },
+                NullLogger<AgentPlannerService>.Instance);
+            await svc.CreatePlanAsync(patient1, "doctor-1", new[] { "Doctor" }, new CreateAiPlanDto { Objective = "Patient 1 reports chest pain" });
+            await svc.CreatePlanAsync(patient2, "doctor-1", new[] { "Doctor" }, new CreateAiPlanDto { Objective = "Patient 2 reports fever" });
+        }
+
+        await using var db = CreateInMemoryContext(databaseName);
+        var result = await CreatePlannerService(db, new FakeAiPlannerClient()).GetPendingReviewPlansAsync();
+
+        Assert.True(result.Succeeded);
+        Assert.Equal(2, result.Value!.Count);
+        Assert.All(result.Value, p => Assert.Equal("NotReviewed", p.ReviewStatus));
+        Assert.Contains(result.Value, p => p.PatientFullName == "Test Patient 1");
+        Assert.Contains(result.Value, p => p.PatientFullName == "Test Patient 2");
+    }
+
+    [Fact]
+    public async Task GetPendingReviewPlansAsync_ExcludesAlreadyReviewedAndFailedPlans()
+    {
+        var databaseName = Guid.NewGuid().ToString();
+        await using (var seedDb = CreateInMemoryContext(databaseName))
+        {
+            var patientId = await CreatePatientProfileAsync(seedDb, "1");
+            var svc = new AgentPlannerService(seedDb, CreatePatientService(seedDb), new FakeAiPlannerClient { NextRawJson = ValidPlanJson },
+                NullLogger<AgentPlannerService>.Instance);
+
+            var reviewed = await svc.CreatePlanAsync(patientId, "doctor-1", new[] { "Doctor" }, new CreateAiPlanDto { Objective = "Already reviewed plan" });
+            await svc.ReviewPlanAsync(patientId, reviewed.Value!.Id, "admin-1", new ReviewAiPlanDto { Approved = true });
+
+            var failingSvc = new AgentPlannerService(seedDb, CreatePatientService(seedDb), new FakeAiPlannerClient { NextError = "boom" },
+                NullLogger<AgentPlannerService>.Instance);
+            await failingSvc.CreatePlanAsync(patientId, "doctor-1", new[] { "Doctor" }, new CreateAiPlanDto { Objective = "This one failed to generate" });
+        }
+
+        await using var db = CreateInMemoryContext(databaseName);
+        var result = await CreatePlannerService(db, new FakeAiPlannerClient()).GetPendingReviewPlansAsync();
+
+        Assert.True(result.Succeeded);
+        Assert.Empty(result.Value!);
     }
 }
