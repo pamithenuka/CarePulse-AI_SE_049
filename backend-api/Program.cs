@@ -7,6 +7,7 @@ using CarePulse.Api.Services.Auth;
 using CarePulse.Api.Services.Common;
 using CarePulse.Api.Services.Notifications;
 using CarePulse.Api.Services.Patients;
+using CarePulse.Api.Services.Staff;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -118,6 +119,7 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<INotificationService, SimulatedSmsNotificationService>();
+builder.Services.AddScoped<IStaffRegistrationService, StaffRegistrationService>();
 
 // 9. Agent 1 (Planner/Coordinator) — calls a local Ollama server
 builder.Services.AddHttpClient<IAiPlannerClient, OllamaAiPlannerClient>(client =>

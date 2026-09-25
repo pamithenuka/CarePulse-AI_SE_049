@@ -1,4 +1,5 @@
 using System.Text.Json;
+using CarePulse.Api.Entities;
 using CarePulse.Api.Entities.Ai;
 using CarePulse.Api.Entities.Base;
 using CarePulse.Api.Entities.Identity;
@@ -33,6 +34,9 @@ public class CarePulseDbContext : IdentityDbContext<ApplicationUser>
     {
         _currentUserService = currentUserService;
     }
+
+    // Admin-driven staff registration (doctor/nurse login account + minimal profile)
+    public DbSet<DoctorProfile> DoctorProfiles => Set<DoctorProfile>();
 
     // Student 1: Patient Identity, Medical Records & Vault
     public DbSet<PatientProfile> PatientProfiles => Set<PatientProfile>();
