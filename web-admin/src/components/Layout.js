@@ -15,6 +15,7 @@ export default function Layout() {
           <Link to="/patients">Patients</Link>
           <Link to="/audit-log">Audit Log</Link>
           <Link to="/emergency-alerts">Emergency Alerts</Link>
+          <Link to="/dispatch">Dispatch Center</Link>
         </nav>
         <div className="app-user">
           <span>
