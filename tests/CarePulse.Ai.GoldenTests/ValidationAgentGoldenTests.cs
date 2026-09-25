@@ -11,13 +11,18 @@ namespace CarePulse.Ai.GoldenTests;
 
 public class ValidationAgentGoldenTests
 {
+    private class DummyCurrentUserService : CarePulse.Api.Services.Common.ICurrentUserService
+    {
+        public string? UserId => "test-user";
+    }
+
     private CarePulseDbContext GetInMemoryDbContext()
     {
         var options = new DbContextOptionsBuilder<CarePulseDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
-        return new CarePulseDbContext(options);
+        return new CarePulseDbContext(options, new DummyCurrentUserService());
     }
 
     private IConfiguration GetConfiguration(string? apiKey = null)
