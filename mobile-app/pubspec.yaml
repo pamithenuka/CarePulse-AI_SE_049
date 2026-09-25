@@ -35,7 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
-  # Student 4 - Dispatch Feature Dependencies
+  # Core dependencies combined from Student 1 and 4
   http: ^1.4.0
   geolocator: ^14.0.0
   flutter_map: ^7.0.2
@@ -43,6 +43,7 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   provider: ^6.1.5
   intl: ^0.20.2
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
