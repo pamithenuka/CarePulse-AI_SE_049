@@ -98,6 +98,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         : () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const RegisterScreen())),
                     child: const Text("Don't have an account? Register"),
                   ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false),
+                    child: const Text('Not a Patient? Switch role'),
+                  ),
                 ],
               ),
             ),
