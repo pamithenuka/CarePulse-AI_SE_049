@@ -1,0 +1,2 @@
+# Local development secrets — contains real DB passwords, never commit.
+**/appsettings.Development.json

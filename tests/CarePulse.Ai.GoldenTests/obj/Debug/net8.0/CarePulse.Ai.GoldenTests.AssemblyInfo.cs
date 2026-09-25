@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CarePulse.Ai.GoldenTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c6edbebe474350d81deeb8f306426d022998638f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dca37422b6f46b5fc8a7d80de2bbb4300c7d1971")]
 [assembly: System.Reflection.AssemblyProductAttribute("CarePulse.Ai.GoldenTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CarePulse.Ai.GoldenTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
