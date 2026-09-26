@@ -28,7 +28,7 @@ export const useDispatchStore = create((set) => ({
         return {
           id: d.id,
           nurseId: d.nurseId,
-          nurseName: assignedNurse ? `${assignedNurse.firstName} ${assignedNurse.lastName}` : 'Unknown Nurse',
+          nurseName: assignedNurse ? assignedNurse.fullName : 'Unknown Nurse',
           status: d.status,
           assignedAt: d.assignedAt,
           location: { lat: 40.7128, lng: -74.0060 }, // Defaulting to NYC for the map UI if no route logs exist
@@ -39,7 +39,7 @@ export const useDispatchStore = create((set) => ({
       // Map the real available nurses so the frontend understands them
       const mappedNurses = availableNurses.map(n => ({
         id: n.id,
-        name: `${n.firstName} ${n.lastName}`,
+        name: n.fullName,
         isAvailable: true,
         location: { lat: 40.7128, lng: -74.0060 }
       }));
