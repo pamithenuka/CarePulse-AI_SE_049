@@ -1,35 +1,5 @@
 import { create } from 'zustand';
-
-// Simulated API calls for demonstration
-const mockFetchActiveDispatches = async () => {
-  return [
-    {
-      id: '1',
-      nurseId: 'n1',
-      nurseName: 'Sarah Jenkins',
-      status: 'EnRoute',
-      assignedAt: new Date().toISOString(),
-      location: { lat: 40.7128, lng: -74.0060 },
-      destination: { lat: 40.7300, lng: -73.9900 }
-    },
-    {
-      id: '2',
-      nurseId: 'n2',
-      nurseName: 'Michael Chang',
-      status: 'ArrivedOnSite',
-      assignedAt: new Date(Date.now() - 3600000).toISOString(),
-      location: { lat: 40.7580, lng: -73.9855 },
-      destination: { lat: 40.7580, lng: -73.9855 }
-    }
-  ];
-};
-
-const mockFetchAvailableNurses = async () => {
-  return [
-    { id: 'n3', name: 'Emma Watson', isAvailable: true, location: { lat: 40.7306, lng: -73.9352 } },
-    { id: 'n4', name: 'David Lee', isAvailable: true, location: { lat: 40.7488, lng: -73.9680 } }
-  ];
-};
+import apiClient from '../api/apiClient';
 
 export const useDispatchStore = create((set) => ({
   activeDispatches: [],
@@ -38,23 +8,50 @@ export const useDispatchStore = create((set) => ({
   error: null,
   
   fetchDispatchData: async () => {
-    set({ isLoading: true });
+    set({ isLoading: true, error: null });
     try {
-      // In a real app, this would call our ASP.NET Core backend:
-      // const res = await fetch('/api/v1/dispatch/active');
-      // const data = await res.json();
+      // 1. Fetch real active dispatches from the backend
+      const dispatchRes = await apiClient.get('/dispatch/active');
+      const dispatches = dispatchRes.data.tickets || [];
+
+      // 2. Fetch real nurses from the backend
+      const nursesRes = await apiClient.get('/staff/nurses');
+      const allNurses = nursesRes.data || [];
       
-      const dispatches = await mockFetchActiveDispatches();
-      const nurses = await mockFetchAvailableNurses();
+      // Filter out nurses that are currently on a dispatch
+      const activeNurseIds = new Set(dispatches.map(d => d.nurseId));
+      const availableNurses = allNurses.filter(nurse => !activeNurseIds.has(nurse.id));
+      
+      // Map the real dispatch tickets so the frontend components understand them
+      const mappedDispatches = dispatches.map(d => {
+        const assignedNurse = allNurses.find(n => n.id === d.nurseId);
+        return {
+          id: d.id,
+          nurseId: d.nurseId,
+          nurseName: assignedNurse ? `${assignedNurse.firstName} ${assignedNurse.lastName}` : 'Unknown Nurse',
+          status: d.status,
+          assignedAt: d.assignedAt,
+          location: { lat: 40.7128, lng: -74.0060 }, // Defaulting to NYC for the map UI if no route logs exist
+          destination: { lat: 40.7128, lng: -74.0060 }
+        };
+      });
+
+      // Map the real available nurses so the frontend understands them
+      const mappedNurses = availableNurses.map(n => ({
+        id: n.id,
+        name: `${n.firstName} ${n.lastName}`,
+        isAvailable: true,
+        location: { lat: 40.7128, lng: -74.0060 }
+      }));
       
       set({ 
-        activeDispatches: dispatches,
-        availableNurses: nurses,
-        isLoading: false,
-        error: null
+        activeDispatches: mappedDispatches,
+        availableNurses: mappedNurses,
+        isLoading: false
       });
     } catch (err) {
-      set({ error: err.message, isLoading: false });
+      console.error("Failed to fetch dispatch data:", err);
+      set({ error: err.message || "Failed to load data", isLoading: false });
     }
   }
 }));
