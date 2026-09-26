@@ -11,14 +11,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid #e2e8f0;
   padding-bottom: 8px;
 }
 
 .section-header h2 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #f1f5f9;
+  color: #0b5f6b;
   margin: 0;
 }
 
@@ -42,17 +42,17 @@
 }
 
 .dispatch-card {
-  background: rgba(30, 41, 59, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 10px;
   padding: 14px;
   transition: transform 0.2s, box-shadow 0.2s;
-  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .dispatch-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .dispatch-card.enroute {
@@ -74,7 +74,7 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
-  color: #fff;
+  color: #334155;
 }
 
 .status-badge {
@@ -88,13 +88,13 @@
 }
 
 .status-badge.enroute {
-  background: rgba(59, 130, 246, 0.2);
-  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
 }
 
 .status-badge.arrivedonsite {
-  background: rgba(34, 197, 94, 0.2);
-  color: #4ade80;
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
 }
 
 .card-body p {
@@ -103,7 +103,7 @@
   gap: 8px;
   margin: 4px 0;
   font-size: 0.85rem;
-  color: #94a3b8;
+  color: #64748b;
 }
 
 .available-nurses {
@@ -116,16 +116,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(30, 41, 59, 0.5);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   padding: 10px 12px;
   border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
 .nurse-info {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #e2e8f0;
+  color: #334155;
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -138,11 +140,11 @@
 
 .availability-dot.available {
   background: #10b981;
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
 }
 
 .assign-btn {
-  background: #3b82f6;
+  background: #0b5f6b;
   color: white;
   border: none;
   padding: 6px 12px;
@@ -154,7 +156,7 @@
 }
 
 .assign-btn:hover {
-  background: #2563eb;
+  background: #08434a;
 }
 
 .mt-4 {
