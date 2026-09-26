@@ -123,32 +123,32 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 13, fontWeight: FontWeight.w500)),
+          Text(label, style: const TextStyle(color: Color(0xFF475569), fontSize: 13, fontWeight: FontWeight.w500)),
           const SizedBox(height: 6),
           TextFormField(
             controller: controller,
             keyboardType: keyboardType,
             maxLines: maxLines,
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(color: Color(0xFF0F172A)),
             validator: validator,
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: TextStyle(color: Colors.white.withOpacity(0.25)),
+              hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
               suffixText: suffix,
-              suffixStyle: TextStyle(color: Colors.white.withOpacity(0.4)),
+              suffixStyle: const TextStyle(color: Color(0xFF64748B)),
               filled: true,
-              fillColor: Colors.white.withOpacity(0.05),
+              fillColor: Colors.white,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+                borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+                borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Color(0xFF3B82F6)),
+                borderSide: const BorderSide(color: Color(0xFF0F766E), width: 2),
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -164,12 +164,12 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
+      backgroundColor: const Color(0xFFF4F6F8),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: const Color(0xFF0B5F6B),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white70),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -188,9 +188,12 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B),
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: Colors.white.withOpacity(0.05)),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  boxShadow: const [
+                    BoxShadow(color: Color(0x0C000000), blurRadius: 4, offset: Offset(0, 2)),
+                  ],
                 ),
                 child: const Row(
                   children: [
@@ -199,9 +202,9 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Patient Vitals Recording', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16)),
+                        Text('Patient Vitals Recording', style: TextStyle(color: Color(0xFF1E293B), fontWeight: FontWeight.w600, fontSize: 16)),
                         SizedBox(height: 2),
-                        Text('Enter all measurements carefully', style: TextStyle(color: Colors.white54, fontSize: 13)),
+                        Text('Enter all measurements carefully', style: TextStyle(color: Color(0xFF64748B), fontSize: 13)),
                       ],
                     ),
                   ],
@@ -304,7 +307,7 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF22C55E),
+                    backgroundColor: const Color(0xFF0F766E),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     elevation: 0,
@@ -328,6 +331,7 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
                     foregroundColor: const Color(0xFFEF4444),
                     side: const BorderSide(color: Color(0xFFEF4444)),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    backgroundColor: Colors.white,
                   ),
                 ),
               ),

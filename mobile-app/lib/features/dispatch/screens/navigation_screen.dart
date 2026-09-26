@@ -95,12 +95,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
+      backgroundColor: const Color(0xFFF4F6F8),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: const Color(0xFF0B5F6B),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white70),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -113,15 +113,15 @@ class _NavigationScreenState extends State<NavigationScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: _status == 'EnRoute'
-                  ? const Color(0xFF3B82F6).withOpacity(0.2)
-                  : const Color(0xFF22C55E).withOpacity(0.2),
+                  ? const Color(0xFF0F766E).withOpacity(0.15)
+                  : const Color(0xFF22C55E).withOpacity(0.15),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Center(
               child: Text(
                 _status,
                 style: TextStyle(
-                  color: _status == 'EnRoute' ? const Color(0xFF60A5FA) : const Color(0xFF4ADE80),
+                  color: _status == 'EnRoute' ? const Color(0xFF0F766E) : const Color(0xFF16A34A),
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
                 ),
