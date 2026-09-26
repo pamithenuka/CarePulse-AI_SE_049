@@ -200,6 +200,20 @@ class _NurseLoginScreenState extends State<NurseLoginScreen> {
                               ),
                       ),
                     ),
+                    const SizedBox(height: 20),
+                    Text(
+                      "Don't have an account? Contact your administrator to get set up.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 13, color: Colors.white.withOpacity(0.5)),
+                    ),
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false),
+                      child: Text(
+                        'Not a Nurse? Switch role',
+                        style: TextStyle(fontSize: 13, color: Colors.white.withOpacity(0.75)),
+                      ),
+                    ),
                   ],
                 ),
               ),

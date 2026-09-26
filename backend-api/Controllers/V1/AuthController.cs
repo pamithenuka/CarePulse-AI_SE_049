@@ -4,6 +4,7 @@ using CarePulse.Api.Entities.Identity;
 using CarePulse.Api.Services.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarePulse.Api.Controllers.V1;
 
@@ -13,11 +14,13 @@ public class AuthController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ITokenService _tokenService;
+    private readonly CarePulseDbContext _db;
 
-    public AuthController(UserManager<ApplicationUser> userManager, ITokenService tokenService)
+    public AuthController(UserManager<ApplicationUser> userManager, ITokenService tokenService, CarePulseDbContext db)
     {
         _userManager = userManager;
         _tokenService = tokenService;
+        _db = db;
     }
 
     [HttpPost("register")]
@@ -58,6 +61,29 @@ public class AuthController : ControllerBase
         if (user is null || !await _userManager.CheckPasswordAsync(user, dto.Password))
         {
             return Unauthorized(new { message = "Invalid email or password." });
+        }
+
+        var roles = await _userManager.GetRolesAsync(user);
+
+        // Doctor/Nurse accounts can be soft-deleted by an Admin (StaffRegistrationService)
+        // without erasing them - block login here rather than at the profile lookup, so a
+        // deleted account can't even obtain a token. IgnoreQueryFilters: the global
+        // soft-delete filter would otherwise hide the very row we need to check.
+        if (roles.Contains("Doctor"))
+        {
+            var doctor = await _db.DoctorProfiles.IgnoreQueryFilters().FirstOrDefaultAsync(d => d.UserId == user.Id);
+            if (doctor is not null && doctor.IsDeleted)
+            {
+                return Unauthorized(new { message = "This account has been deleted. Contact your administrator." });
+            }
+        }
+        else if (roles.Contains("Nurse"))
+        {
+            var nurse = await _db.NurseProfiles.IgnoreQueryFilters().FirstOrDefaultAsync(n => n.UserId == user.Id);
+            if (nurse is not null && nurse.IsDeleted)
+            {
+                return Unauthorized(new { message = "This account has been deleted. Contact your administrator." });
+            }
         }
 
         return Ok(await BuildAuthResponseAsync(user));

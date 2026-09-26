@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/patient_provider.dart';
+import 'screens/app_entry_screen.dart';
 import 'screens/root_screen.dart';
 
 import 'features/dispatch/screens/nurse_login_screen.dart';
@@ -35,10 +36,12 @@ class CarePulseApp extends StatelessWidget {
           appBarTheme: const AppBarTheme(centerTitle: false),
           inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder()),
         ),
-        initialRoute: '/login',
+        initialRoute: '/',
         onGenerateRoute: (settings) {
           switch (settings.name) {
             case '/':
+              return MaterialPageRoute(builder: (_) => const AppEntryScreen());
+            case '/patient':
               return MaterialPageRoute(builder: (_) => const RootScreen());
             case '/login':
               return MaterialPageRoute(builder: (_) => const NurseLoginScreen());
@@ -51,7 +54,7 @@ class CarePulseApp extends StatelessWidget {
               final dispatch = settings.arguments as Map<String, dynamic>;
               return MaterialPageRoute(builder: (_) => VitalsEntryScreen(dispatch: dispatch));
             default:
-              return MaterialPageRoute(builder: (_) => const RootScreen());
+              return MaterialPageRoute(builder: (_) => const AppEntryScreen());
           }
         },
       ),

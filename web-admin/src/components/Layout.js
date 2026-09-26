@@ -3,7 +3,8 @@ import { useAuth } from "../context/AuthContext";
 import "./Layout.css";
 
 export default function Layout() {
-  const { user, logout } = useAuth();
+  const { user, logout, hasRole } = useAuth();
+  const isAdmin = hasRole("Admin");
 
   return (
     <div className="app-shell">
@@ -13,9 +14,11 @@ export default function Layout() {
         </Link>
         <nav className="app-nav">
           <Link to="/patients">Patients</Link>
-          <Link to="/audit-log">Audit Log</Link>
           <Link to="/emergency-alerts">Emergency Alerts</Link>
           <Link to="/dispatch">Dispatch Center</Link>
+          {isAdmin && <Link to="/audit-log">Audit Log</Link>}
+          {isAdmin && <Link to="/doctors">Doctors</Link>}
+          {isAdmin && <Link to="/nurses">Nurses</Link>}
         </nav>
         <div className="app-user">
           <span>

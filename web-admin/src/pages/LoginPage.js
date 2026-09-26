@@ -7,7 +7,7 @@ export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [email, setEmail] = useState("doctor@carepulse.dev");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -62,9 +62,7 @@ export default function LoginPage() {
         </button>
 
         <p className="hint">
-          Seeded accounts: <code>doctor@carepulse.dev</code> / <code>Doctor@12345</code>
-          <br />
-          or <code>admin@carepulse.dev</code> / <code>Admin@12345</code>
+          Seeded account: <code>admin@carepulse.dev</code> / <code>Admin@12345</code>
         </p>
       </form>
     </div>

@@ -4,7 +4,10 @@ namespace CarePulse.Api.Entities.Dispatch;
 
 public class NurseProfiles : BaseEntity
 {
-    public Guid UserId { get; set; }
+    // string, not Guid: ASP.NET Core Identity's ApplicationUser.Id is a string
+    // (GUID-formatted, but typed as string) - this must match to actually link
+    // a nurse profile to a real login account.
+    public string UserId { get; set; } = string.Empty;
     public string FullName { get; set; } = string.Empty;
     public string LicenseNumber { get; set; } = string.Empty;
     public double CurrentLat { get; set; }

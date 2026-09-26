@@ -22,7 +22,6 @@ public static class DbSeeder
 
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         await EnsureUserAsync(userManager, "admin@carepulse.dev", "Admin@12345", "System Administrator", "Admin");
-        await EnsureUserAsync(userManager, "doctor@carepulse.dev", "Doctor@12345", "Dr. Amara Silva", "Doctor");
 
         await SeedDummyPatientsAsync(services, userManager);
     }
