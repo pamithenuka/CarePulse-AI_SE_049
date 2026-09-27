@@ -32,11 +32,6 @@ async function request(path, options = {}) {
 export const api = {
   getDoctors: () => request('/doctors'),
 
-  createDoctor: (payload) => request('/doctors', { method: 'POST', body: JSON.stringify(payload) }),
-
-  updateDoctor: (doctorId, payload) =>
-    request(`/doctors/${doctorId}`, { method: 'PUT', body: JSON.stringify(payload) }),
-
   getRoster: (doctorId) => request(`/doctors/${doctorId}/roster`),
 
   updateRoster: (payload) =>

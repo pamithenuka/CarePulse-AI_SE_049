@@ -35,17 +35,3 @@ public record ConsultationCompleteRequestDto(
     string? Prescription
 );
 
-public record CreateDoctorRequestDto(
-    string FullName,
-    string Specialty,
-    string PhoneNumber,
-    string? Email
-);
-
-public record UpdateDoctorRequestDto(
-    string FullName,
-    string Specialty,
-    string PhoneNumber,
-    string? Email,
-    bool IsActive
-);

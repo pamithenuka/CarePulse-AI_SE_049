@@ -21,8 +21,7 @@ public class DoctorsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetDoctors()
     {
-        var doctors = await _db.DoctorProfiles
-            .Where(d => d.IsActive)
+        var doctors = await _db.DoctorProfiles            
             .OrderBy(d => d.FullName)
             .Select(d => new { d.Id, d.FullName, d.Specialty, d.PhoneNumber, d.Email })
             .ToListAsync();
@@ -30,54 +29,6 @@ public class DoctorsController : ControllerBase
         return Ok(doctors);
     }
 
-    // POST /api/v1/doctors
-    [HttpPost]
-    public async Task<IActionResult> CreateDoctor([FromBody] CreateDoctorRequestDto request)
-    {
-        if (string.IsNullOrWhiteSpace(request.FullName) || string.IsNullOrWhiteSpace(request.Specialty))
-        {
-            return BadRequest("FullName and Specialty are required.");
-        }
-
-        var doctor = new DoctorProfile
-        {
-            FullName = request.FullName.Trim(),
-            Specialty = request.Specialty.Trim(),
-            PhoneNumber = request.PhoneNumber?.Trim() ?? string.Empty,
-            Email = string.IsNullOrWhiteSpace(request.Email) ? null : request.Email.Trim()
-        };
-
-        _db.DoctorProfiles.Add(doctor);
-        await _db.SaveChangesAsync();
-
-        return Ok(new { doctor.Id, doctor.FullName, doctor.Specialty, doctor.PhoneNumber, doctor.Email });
-    }
-
-    // PUT /api/v1/doctors/{doctorId}
-    [HttpPut("{doctorId}")]
-    public async Task<IActionResult> UpdateDoctor(Guid doctorId, [FromBody] UpdateDoctorRequestDto request)
-    {
-        var doctor = await _db.DoctorProfiles.FindAsync(doctorId);
-        if (doctor is null)
-        {
-            return NotFound($"Doctor {doctorId} not found.");
-        }
-
-        if (string.IsNullOrWhiteSpace(request.FullName) || string.IsNullOrWhiteSpace(request.Specialty))
-        {
-            return BadRequest("FullName and Specialty are required.");
-        }
-
-        doctor.FullName = request.FullName.Trim();
-        doctor.Specialty = request.Specialty.Trim();
-        doctor.PhoneNumber = request.PhoneNumber?.Trim() ?? string.Empty;
-        doctor.Email = string.IsNullOrWhiteSpace(request.Email) ? null : request.Email.Trim();
-        doctor.IsActive = request.IsActive;
-
-        await _db.SaveChangesAsync();
-
-        return Ok(new { doctor.Id, doctor.FullName, doctor.Specialty, doctor.PhoneNumber, doctor.Email, doctor.IsActive });
-    }
 
     // GET /api/v1/doctors/slots?date=2026-09-20&specialty=Cardiology&doctorId=...
     [HttpGet("slots")]

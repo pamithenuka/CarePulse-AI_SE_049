@@ -17,8 +17,6 @@ public class DoctorProfile : BaseEntity
     [MaxLength(150)]
     public string? Email { get; set; }
 
-    public bool IsActive { get; set; } = true;
-
     public ICollection<ClinicRoster> ClinicRosters { get; set; } = new List<ClinicRoster>();
     public ICollection<AppointmentSlot> AppointmentSlots { get; set; } = new List<AppointmentSlot>();
 }

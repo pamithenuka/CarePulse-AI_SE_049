@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom';
 
 const links = [
-  { to: '/doctors', label: 'Doctors' },
   { to: '/roster', label: 'Weekly roster' },
   { to: '/slots', label: 'Appointment slots' },
   { to: '/consultations', label: 'Consultations' }
