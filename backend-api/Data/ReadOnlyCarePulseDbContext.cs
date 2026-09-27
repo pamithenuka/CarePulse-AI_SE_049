@@ -15,8 +15,8 @@ namespace CarePulse.Api.Data;
 // and immediately instead of silently succeeding.
 public class ReadOnlyCarePulseDbContext : CarePulseDbContext
 {
-    public ReadOnlyCarePulseDbContext(DbContextOptions<CarePulseDbContext> options)
-        : base(options)
+    public ReadOnlyCarePulseDbContext(DbContextOptions<CarePulseDbContext> options, CarePulse.Api.Services.Common.ICurrentUserService currentUserService)
+        : base(options, currentUserService)
     {
     }
 
