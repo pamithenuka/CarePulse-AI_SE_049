@@ -87,7 +87,7 @@ const DoctorApprovalModal = ({ triageCase, onClose, onApprove, onReject }) => {
           <div className="case-details">
             <div className="detail-group">
               <label>Patient ID</label>
-              <div className="detail-value font-mono">{triageCase.patientId}</div>
+              <div className="detail-value font-mono">{triageCase.patientProfileId}</div>
             </div>
             
             <div className="detail-group">

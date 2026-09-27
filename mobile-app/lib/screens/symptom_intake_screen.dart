@@ -30,7 +30,7 @@ class _SymptomIntakeScreenState extends State<SymptomIntakeScreen> {
   };
 
   // Mock patient ID for testing
-  final String _patientId = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
+  final String _patientProfileId = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
 
   Future<void> _submitTriage() async {
     if (_symptomsController.text.isEmpty) {
@@ -49,7 +49,7 @@ class _SymptomIntakeScreenState extends State<SymptomIntakeScreen> {
           .toList();
 
       final result = await _apiService.submitTriage(
-        patientId: _patientId, 
+        patientProfileId: _patientProfileId,
         symptoms: _symptomsController.text,
         duration: _selectedDuration,
         severity: _selectedSeverity,

@@ -7,7 +7,7 @@ class TriageApiService {
   static const String baseUrl = 'http://10.0.2.2:5014/api/v1/triage';
 
   Future<Map<String, dynamic>> submitTriage({
-    required String patientId,
+    required String patientProfileId,
     required String symptoms,
     required String duration,
     required String severity,
@@ -18,7 +18,7 @@ class TriageApiService {
       Uri.parse('$baseUrl/submit'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        'patientId': patientId,
+        'patientProfileId': patientProfileId,
         'symptoms': symptoms,
         'duration': duration,
         'severity': severity,

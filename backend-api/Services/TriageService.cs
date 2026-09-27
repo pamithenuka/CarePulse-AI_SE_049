@@ -30,7 +30,7 @@ public class TriageService : ITriageService
     {
         var ticket = new TriageTicket
         {
-            PatientId = request.PatientId,
+            PatientProfileId = request.PatientProfileId,
             Symptoms = request.Symptoms
         };
 
@@ -206,7 +206,7 @@ public class TriageService : ITriageService
         return new TriageResponseDto
         {
             Id = ticket.Id,
-            PatientId = ticket.PatientId,
+            PatientProfileId = ticket.PatientProfileId,
             Symptoms = ticket.Symptoms,
             Status = ticket.Status,
             RiskScore = ticket.RiskScore,

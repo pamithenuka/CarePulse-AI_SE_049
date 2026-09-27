@@ -38,7 +38,10 @@ public class CarePulseDbContext : IdentityDbContext
                   .WithOne(a => a.TriageTicket)
                   .HasForeignKey<ApprovalQueue>(a => a.TriageTicketId)
                   .OnDelete(DeleteBehavior.Cascade);
-                  
+
+            // PatientProfileId will be configured as foreign key when PatientProfile entity is added by Student 1
+            entity.Property(e => e.PatientProfileId).IsRequired();
+
             entity.Property(e => e.Symptoms).HasMaxLength(2000);
             entity.Property(e => e.Status).HasMaxLength(100);
             entity.Property(e => e.RiskLevel).HasMaxLength(50);
@@ -60,6 +63,8 @@ public class CarePulseDbContext : IdentityDbContext
         builder.Entity<ApprovalQueue>(entity =>
         {
             entity.Property(e => e.ReviewStatus).HasMaxLength(100);
+            // ReviewedByDoctorId is a scalar reference to ApplicationUser.Id (string)
+            // Not configured as EF relationship to avoid conflicts with IdentityDbContext
             entity.Property(e => e.ReviewedByDoctorId).HasMaxLength(256);
         });
 

@@ -33,7 +33,7 @@ public static class TriageConstants
 
 public class TriageSubmitRequestDto
 {
-    public Guid PatientId { get; set; }
+    public Guid PatientProfileId { get; set; }
     public string Symptoms { get; set; } = string.Empty;
     public string Duration { get; set; } = string.Empty;
     public string Severity { get; set; } = string.Empty;
@@ -44,7 +44,7 @@ public class TriageSubmitRequestDto
 public class TriageResponseDto
 {
     public Guid Id { get; set; }
-    public Guid PatientId { get; set; }
+    public Guid PatientProfileId { get; set; }
     public string Symptoms { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
     public int RiskScore { get; set; }

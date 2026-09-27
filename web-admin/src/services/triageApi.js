@@ -1,11 +1,11 @@
 const API_BASE_URL = 'http://localhost:5014/api/v1/triage';
 
 export const triageApi = {
-  submitTriage: async (patientId, symptoms) => {
+  submitTriage: async (patientProfileId, symptoms) => {
     const response = await fetch(`${API_BASE_URL}/submit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ patientId, symptoms }),
+      body: JSON.stringify({ patientProfileId, symptoms }),
     });
     if (!response.ok) throw new Error('Failed to submit triage');
     return response.json();
