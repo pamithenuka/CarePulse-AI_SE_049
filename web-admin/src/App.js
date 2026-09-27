@@ -14,9 +14,11 @@ export default function App() {
           <Sidebar />
           <main className="main">
             <Routes>
+              <Route path="/" element={<Navigate to="/roster" replace />} />
               <Route path="/roster" element={<RosterPage />} />
               <Route path="/slots" element={<SlotsPage />} />
               <Route path="/consultations" element={<ConsultationsPage />} />
+              <Route path="*" element={<Navigate to="/roster" replace />} />
             </Routes>
           </main>
         </div>
