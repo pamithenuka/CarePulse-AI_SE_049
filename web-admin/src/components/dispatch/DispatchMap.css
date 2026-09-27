@@ -1,0 +1,24 @@
+.dispatch-map-container {
+  height: 100%;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.leaflet-map-wrapper {
+  height: 100%;
+  width: 100%;
+}
+
+.custom-popup {
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+}
+
+.custom-popup strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+}

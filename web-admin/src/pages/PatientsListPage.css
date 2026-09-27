@@ -1,0 +1,157 @@
+.page-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.page-header-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary-link {
+  background: #0b5f6b;
+  color: #fff !important;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  align-self: flex-start;
+}
+
+.btn-primary-link:hover {
+  opacity: 0.9;
+}
+
+.page-header-links a {
+  color: #0b5f6b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.page-header-links a:hover {
+  text-decoration: underline;
+}
+
+.page-subtitle {
+  color: #666;
+  margin-top: -0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.filters {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.filters input,
+.filters select {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #ccd3d6;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.filters input[type="search"] {
+  flex: 1;
+  min-width: 220px;
+}
+
+.filters .age-input {
+  width: 90px;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-active {
+  background: #e1f0ee;
+  color: #0b5f6b;
+}
+
+.status-inactive {
+  background: #f4e1e1;
+  color: #a13d3d;
+}
+
+.patients-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.patients-table th,
+.patients-table td {
+  padding: 0.65rem 0.85rem;
+  text-align: left;
+  border-bottom: 1px solid #eef1f2;
+  font-size: 0.9rem;
+}
+
+.patients-table th {
+  background: #f0f4f5;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.patients-table tbody tr:hover {
+  background: #f7fbfb;
+}
+
+.patients-table a {
+  color: #0b5f6b;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.patients-table a:hover {
+  text-decoration: underline;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  font-size: 0.9rem;
+}
+
+.pagination button {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid #ccd3d6;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .patients-table {
+    display: block;
+    overflow-x: auto;
+  }
+}
