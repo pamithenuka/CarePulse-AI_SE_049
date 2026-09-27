@@ -126,13 +126,9 @@ builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<INotificationService, SimulatedSmsNotificationService>();
 builder.Services.AddScoped<IStaffRegistrationService, StaffRegistrationService>();
 
-// 9. Agent 1 (Planner/Coordinator) — calls a local Ollama server
-builder.Services.AddHttpClient<IAiPlannerClient, OllamaAiPlannerClient>(client =>
+// 9. Agent 1 (Planner/Coordinator) — calls Gemini API
+builder.Services.AddHttpClient<IAiPlannerClient, GeminiAiPlannerClient>(client =>
 {
-    var ollamaBaseUrl = builder.Configuration["Ollama:BaseUrl"] ?? "http://localhost:11434";
-    client.BaseAddress = new Uri(ollamaBaseUrl);
-    // CPU-only local inference is slow and variable (observed 11-30s+ for a small model on
-    // modest hardware); 15s was cutting it too close and caused spurious safe-failures.
     client.Timeout = TimeSpan.FromSeconds(60);
 });
 builder.Services.AddScoped<IAgentPlannerService, AgentPlannerService>();

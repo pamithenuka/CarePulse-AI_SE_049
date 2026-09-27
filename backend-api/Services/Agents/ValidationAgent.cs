@@ -8,8 +8,8 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using System.Text.Json;
 using System.ComponentModel;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.Extensions.Configuration;
+using Microsoft.SemanticKernel.Connectors.Google;
 
 namespace CarePulse.Api.Services.Agents;
 
@@ -76,10 +76,13 @@ public class ValidationAgent : IValidationAgent
         var builder = Kernel.CreateBuilder();
         builder.Plugins.AddFromObject(new SafetyThresholdsPlugin(context), "SafetyThresholds");
 
-        var apiKey = config["OpenAI:ApiKey"];
+        var apiKey = config["AI:GeminiApiKey"];
+        var model = config["AI:GeminiModel"] ?? "gemini-1.5-flash";
+        
         if (!string.IsNullOrEmpty(apiKey))
         {
-            builder.AddOpenAIChatCompletion("gpt-4o-mini", apiKey);
+            // Use Google Gemini instead of OpenAI
+            builder.AddGoogleAIGeminiChatCompletion(model, apiKey);
             _hasAiConfigured = true;
         }
 
@@ -115,7 +118,7 @@ public class ValidationAgent : IValidationAgent
 
     private async Task<ValidationAgentResponse> EvaluateWithAiAsync(ValidationAgentRequest request)
     {
-        var settings = new OpenAIPromptExecutionSettings { ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions };
+        var settings = new GeminiPromptExecutionSettings { ToolCallBehavior = GeminiToolCallBehavior.AutoInvokeKernelFunctions };
         var chatHistory = new ChatHistory();
         
         chatHistory.AddSystemMessage(@"
