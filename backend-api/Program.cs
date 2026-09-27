@@ -83,6 +83,11 @@ builder.Services.AddFluentValidationAutoValidation()
                 .AddValidatorsFromAssemblyContaining<AssignDispatchDtoValidator>();
 builder.Services.AddEndpointsApiExplorer();
 
+// Register Triage service
+builder.Services.AddScoped<CarePulse.Api.Services.ITriageAiAgent, CarePulse.Api.Services.TriageAiAgent>();
+builder.Services.AddScoped<CarePulse.Api.Services.ITriageService, CarePulse.Api.Services.TriageService>();
+
+// Student 4
 builder.Services.AddScoped<IGoogleMapsService, GoogleMapsService>();
 builder.Services.AddScoped<IValidationAgent, ValidationAgent>();
 
@@ -155,6 +160,29 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHealthChecks("/health");
+
+// --- DB Connectivity Verification Block ---
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<CarePulseDbContext>();
+    try
+    {
+        bool canConnect = await dbContext.Database.CanConnectAsync();
+        if (canConnect)
+        {
+            Log.Information("✅ Successfully connected to the PostgreSQL database.");
+        }
+        else
+        {
+            Log.Error("❌ Failed to connect to the PostgreSQL database.");
+        }
+    }
+    catch (Exception ex)
+    {
+        Log.Error(ex, "❌ Exception occurred while trying to connect to the PostgreSQL database.");
+    }
+}
+// -------------------------------------------
 
 app.Run();
 

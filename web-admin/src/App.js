@@ -17,6 +17,7 @@ import AuditLogPage from "./pages/AuditLogPage";
 import EmergencyAlertLogPage from "./pages/EmergencyAlertLogPage";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import TriageDashboard from "./components/TriageDashboard";
 import "./App.css";
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
             <Route path="/patients/:id" element={<PatientDetailPage />} />
             <Route path="/emergency-alerts" element={<EmergencyAlertLogPage />} />
             <Route path="/dispatch" element={<EmergencyControlCenter />} />
+            <Route path="/triage" element={<TriageDashboard />} />
             <Route element={<ProtectedRoute allowedRoles={["Admin"]} />}>
               <Route path="/patients/new" element={<RegisterPatientPage />} />
               <Route path="/doctors/new" element={<RegisterDoctorPage />} />

@@ -17,6 +17,12 @@ public class CarePulseDbContext : IdentityDbContext<ApplicationUser>
 {
     private readonly ICurrentUserService _currentUserService;
 
+    // Student 2: Patient Triage
+    public DbSet<TriageTicket> TriageTickets { get; set; } = null!;
+    public DbSet<AiTriageLog> AiTriageLogs { get; set; } = null!;
+    public DbSet<RiskAssessment> RiskAssessments { get; set; } = null!;
+    public DbSet<ApprovalQueue> ApprovalQueues { get; set; } = null!;
+
     // Student 4: Dispatch
     public DbSet<NurseProfiles> NurseProfiles { get; set; }
     public DbSet<DispatchTickets> DispatchTickets { get; set; }
@@ -50,12 +56,58 @@ public class CarePulseDbContext : IdentityDbContext<ApplicationUser>
     // Agent 1 (Planner/Coordinator) workflow runs
     public DbSet<AiWorkflow> AiWorkflows => Set<AiWorkflow>();
 
-    // Placeholders for DbSets (Students 2-3 will attach entities here)
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
         builder.HasPostgresExtension("uuid-ossp");
+
+        // Student 2 Models Configuration
+        builder.Entity<TriageTicket>(entity =>
+        {
+            entity.HasMany(t => t.AiTriageLogs)
+                  .WithOne(l => l.TriageTicket)
+                  .HasForeignKey(l => l.TriageTicketId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(t => t.RiskAssessment)
+                  .WithOne(r => r.TriageTicket)
+                  .HasForeignKey<RiskAssessment>(r => r.TriageTicketId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(t => t.ApprovalQueue)
+                  .WithOne(a => a.TriageTicket)
+                  .HasForeignKey<ApprovalQueue>(a => a.TriageTicketId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            // PatientProfileId will be configured as foreign key when PatientProfile entity is added by Student 1
+            entity.Property(e => e.PatientProfileId).IsRequired();
+
+            entity.Property(e => e.Symptoms).HasMaxLength(2000);
+            entity.Property(e => e.Status).HasMaxLength(100);
+            entity.Property(e => e.RiskLevel).HasMaxLength(50);
+            entity.Property(e => e.RecommendedSpecialty).HasMaxLength(50);
+        });
+
+        builder.Entity<AiTriageLog>(entity =>
+        {
+            entity.Property(e => e.LogMessage).HasMaxLength(1000);
+        });
+
+        builder.Entity<RiskAssessment>(entity =>
+        {
+            entity.Property(e => e.Level).HasMaxLength(50);
+            entity.Property(e => e.Reason).HasMaxLength(1000);
+            entity.Property(e => e.RecommendedAction).HasMaxLength(200);
+        });
+
+        builder.Entity<ApprovalQueue>(entity =>
+        {
+            entity.Property(e => e.ReviewStatus).HasMaxLength(100);
+            // ReviewedByDoctorId is a scalar reference to ApplicationUser.Id (string)
+            // Not configured as EF relationship to avoid conflicts with IdentityDbContext
+            entity.Property(e => e.ReviewedByDoctorId).HasMaxLength(256);
+        });
 
         builder.Entity<PatientProfile>(entity =>
         {
