@@ -44,6 +44,11 @@ public class CarePulseDbContext : IdentityDbContext<ApplicationUser>
     // Admin-driven staff registration (doctor/nurse login account + minimal profile)
     public DbSet<DoctorProfile> DoctorProfiles => Set<DoctorProfile>();
 
+    // Student 3: Doctor Scheduling
+    public DbSet<ClinicRoster> ClinicRosters => Set<ClinicRoster>();
+    public DbSet<AppointmentSlot> AppointmentSlots => Set<AppointmentSlot>();
+    public DbSet<ConsultationRecord> ConsultationRecords => Set<ConsultationRecord>();
+
     // Student 1: Patient Identity, Medical Records & Vault
     public DbSet<PatientProfile> PatientProfiles => Set<PatientProfile>();
     public DbSet<EmergencyContact> EmergencyContacts => Set<EmergencyContact>();
@@ -61,6 +66,29 @@ public class CarePulseDbContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(builder);
         builder.HasPostgresExtension("uuid-ossp");
+
+        // Student 3 Models Configuration
+        builder.Entity<AppointmentSlot>()
+            .HasIndex(s => new { s.DoctorId, s.SlotStart })
+            .IsUnique();
+
+        builder.Entity<AppointmentSlot>()
+            .HasOne(s => s.Doctor)
+            .WithMany(d => d.AppointmentSlots)
+            .HasForeignKey(s => s.DoctorId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<ClinicRoster>()
+            .HasOne(r => r.Doctor)
+            .WithMany(d => d.ClinicRosters)
+            .HasForeignKey(r => r.DoctorId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<ConsultationRecord>()
+            .HasOne(c => c.Slot)
+            .WithOne()
+            .HasForeignKey<ConsultationRecord>(c => c.SlotId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         // Student 2 Models Configuration
         builder.Entity<TriageTicket>(entity =>

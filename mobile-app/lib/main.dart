@@ -9,6 +9,7 @@ import 'features/dispatch/screens/nurse_login_screen.dart';
 import 'features/dispatch/screens/dispatch_dashboard_screen.dart';
 import 'features/dispatch/screens/navigation_screen.dart';
 import 'features/dispatch/screens/vitals_entry_screen.dart';
+import 'screens/doctor_search_screen.dart';
 
 void main() {
   runApp(const CarePulseApp());
@@ -43,6 +44,8 @@ class CarePulseApp extends StatelessWidget {
               return MaterialPageRoute(builder: (_) => const AppEntryScreen());
             case '/patient':
               return MaterialPageRoute(builder: (_) => const RootScreen());
+            case '/doctors':
+              return MaterialPageRoute(builder: (_) => const DoctorSearchScreen());
             case '/login':
               return MaterialPageRoute(builder: (_) => const NurseLoginScreen());
             case '/dispatch-dashboard':
