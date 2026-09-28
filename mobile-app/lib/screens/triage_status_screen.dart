@@ -433,7 +433,7 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
             SizedBox(
               width: double.infinity,
               child: TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pushReplacementNamed(context, '/patient'),
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.all(15),
                 ),

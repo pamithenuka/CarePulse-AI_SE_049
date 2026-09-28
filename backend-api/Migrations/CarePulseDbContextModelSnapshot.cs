@@ -84,7 +84,7 @@ namespace backend_api.Migrations
 
                     b.HasIndex("PatientProfileId");
 
-                    b.ToTable("AiWorkflows");
+                    b.ToTable("AiWorkflows", (string)null);
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.AiTriageLog", b =>
@@ -120,57 +120,7 @@ namespace backend_api.Migrations
 
                     b.HasIndex("TriageTicketId");
 
-                    b.ToTable("AiTriageLogs");
-                });
-
-            modelBuilder.Entity("CarePulse.Api.Entities.AppointmentSlot", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("DoctorId")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid?>("PatientId")
-                        .HasColumnType("uuid");
-
-                    b.Property<uint>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
-                        .HasColumnName("xmin");
-
-                    b.Property<DateTime>("SlotEnd")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("SlotStart")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DoctorId", "SlotStart")
-                        .IsUnique();
-
-                    b.ToTable("AppointmentSlots");
+                    b.ToTable("AiTriageLogs", (string)null);
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.ApprovalQueue", b =>
@@ -214,98 +164,7 @@ namespace backend_api.Migrations
                     b.HasIndex("TriageTicketId")
                         .IsUnique();
 
-                    b.ToTable("ApprovalQueues");
-                });
-
-            modelBuilder.Entity("CarePulse.Api.Entities.ClinicRoster", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("DayOfWeek")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("DoctorId")
-                        .HasColumnType("uuid");
-
-                    b.Property<TimeSpan>("EndTime")
-                        .HasColumnType("interval");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("SlotDurationMinutes")
-                        .HasColumnType("integer");
-
-                    b.Property<TimeSpan>("StartTime")
-                        .HasColumnType("interval");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DoctorId");
-
-                    b.ToTable("ClinicRosters");
-                });
-
-            modelBuilder.Entity("CarePulse.Api.Entities.ConsultationRecord", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("DoctorId")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Notes")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("PatientId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Prescription")
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("SlotId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SlotId")
-                        .IsUnique();
-
-                    b.ToTable("ConsultationRecords");
+                    b.ToTable("ApprovalQueues", (string)null);
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.Dispatch.DispatchTickets", b =>
@@ -350,7 +209,7 @@ namespace backend_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DispatchTickets");
+                    b.ToTable("DispatchTickets", (string)null);
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.Dispatch.NurseProfiles", b =>
@@ -401,7 +260,7 @@ namespace backend_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NurseProfiles");
+                    b.ToTable("NurseProfiles", (string)null);
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.Dispatch.OnSiteVitalsRecords", b =>
@@ -450,7 +309,7 @@ namespace backend_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OnSiteVitalsRecords");
+                    b.ToTable("OnSiteVitalsRecords", (string)null);
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.Dispatch.RouteLogs", b =>
@@ -494,7 +353,7 @@ namespace backend_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RouteLogs");
+                    b.ToTable("RouteLogs", (string)null);
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.DoctorProfile", b =>
@@ -543,7 +402,7 @@ namespace backend_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DoctorProfiles");
+                    b.ToTable("DoctorProfiles", (string)null);
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.Identity.ApplicationUser", b =>
@@ -646,7 +505,7 @@ namespace backend_api.Migrations
 
                     b.HasIndex("PatientProfileId");
 
-                    b.ToTable("EmergencyAlertLogs");
+                    b.ToTable("EmergencyAlertLogs", (string)null);
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.Patients.EmergencyAlertNotification", b =>
@@ -676,7 +535,7 @@ namespace backend_api.Migrations
 
                     b.HasIndex("EmergencyAlertLogId");
 
-                    b.ToTable("EmergencyAlertNotifications");
+                    b.ToTable("EmergencyAlertNotifications", (string)null);
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.Patients.EmergencyContact", b =>
@@ -722,7 +581,7 @@ namespace backend_api.Migrations
 
                     b.HasIndex("PatientProfileId");
 
-                    b.ToTable("EmergencyContacts");
+                    b.ToTable("EmergencyContacts", (string)null);
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.Patients.MedicalDocument", b =>
@@ -768,7 +627,7 @@ namespace backend_api.Migrations
 
                     b.HasIndex("PatientProfileId");
 
-                    b.ToTable("MedicalDocuments");
+                    b.ToTable("MedicalDocuments", (string)null);
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.Patients.MedicalHistory", b =>
@@ -824,7 +683,7 @@ namespace backend_api.Migrations
 
                     b.HasIndex("PatientProfileId");
 
-                    b.ToTable("MedicalHistories");
+                    b.ToTable("MedicalHistories", (string)null);
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.Patients.PatientAuditLog", b =>
@@ -861,7 +720,7 @@ namespace backend_api.Migrations
 
                     b.HasIndex("PatientProfileId");
 
-                    b.ToTable("PatientAuditLogs");
+                    b.ToTable("PatientAuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.Patients.PatientProfile", b =>
@@ -931,7 +790,7 @@ namespace backend_api.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("PatientProfiles");
+                    b.ToTable("PatientProfiles", (string)null);
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.RiskAssessment", b =>
@@ -981,7 +840,7 @@ namespace backend_api.Migrations
                     b.HasIndex("TriageTicketId")
                         .IsUnique();
 
-                    b.ToTable("RiskAssessments");
+                    b.ToTable("RiskAssessments", (string)null);
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.TriageTicket", b =>
@@ -1047,7 +906,7 @@ namespace backend_api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TriageTickets");
+                    b.ToTable("TriageTickets", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -1193,17 +1052,6 @@ namespace backend_api.Migrations
                     b.Navigation("TriageTicket");
                 });
 
-            modelBuilder.Entity("CarePulse.Api.Entities.AppointmentSlot", b =>
-                {
-                    b.HasOne("CarePulse.Api.Entities.DoctorProfile", "Doctor")
-                        .WithMany("AppointmentSlots")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
-                });
-
             modelBuilder.Entity("CarePulse.Api.Entities.ApprovalQueue", b =>
                 {
                     b.HasOne("CarePulse.Api.Entities.TriageTicket", "TriageTicket")
@@ -1213,28 +1061,6 @@ namespace backend_api.Migrations
                         .IsRequired();
 
                     b.Navigation("TriageTicket");
-                });
-
-            modelBuilder.Entity("CarePulse.Api.Entities.ClinicRoster", b =>
-                {
-                    b.HasOne("CarePulse.Api.Entities.DoctorProfile", "Doctor")
-                        .WithMany("ClinicRosters")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
-                });
-
-            modelBuilder.Entity("CarePulse.Api.Entities.ConsultationRecord", b =>
-                {
-                    b.HasOne("CarePulse.Api.Entities.AppointmentSlot", "Slot")
-                        .WithOne()
-                        .HasForeignKey("CarePulse.Api.Entities.ConsultationRecord", "SlotId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Slot");
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.Patients.EmergencyAlertLog", b =>
@@ -1352,13 +1178,6 @@ namespace backend_api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("CarePulse.Api.Entities.DoctorProfile", b =>
-                {
-                    b.Navigation("AppointmentSlots");
-
-                    b.Navigation("ClinicRosters");
                 });
 
             modelBuilder.Entity("CarePulse.Api.Entities.Patients.EmergencyAlertLog", b =>

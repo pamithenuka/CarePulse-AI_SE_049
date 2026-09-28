@@ -9,6 +9,7 @@ import '../emergency/sos_screen.dart';
 import '../history/medical_history_screen.dart';
 import '../profile/profile_screen.dart';
 import '../../screens/symptom_intake_screen.dart';
+import '../../screens/doctor_search_screen.dart';
 
 /// Bottom-nav shell for the five patient-facing sections. The SOS button is a
 /// persistent floating action button (not a tab) so it's reachable in one tap
@@ -31,6 +32,7 @@ class _HomeShellState extends State<HomeShell> {
     DocumentsScreen(),
     AiCarePlanScreen(),
     SymptomIntakeScreen(),
+    DoctorSearchScreen(),
   ];
 
   static const _destinations = [
@@ -40,6 +42,7 @@ class _HomeShellState extends State<HomeShell> {
     NavigationDestination(icon: Icon(Icons.folder_outlined), selectedIcon: Icon(Icons.folder), label: 'Documents'),
     NavigationDestination(icon: Icon(Icons.smart_toy_outlined), selectedIcon: Icon(Icons.smart_toy), label: 'AI Plan'),
     NavigationDestination(icon: Icon(Icons.medical_services_outlined), selectedIcon: Icon(Icons.medical_services), label: 'Triage'),
+    NavigationDestination(icon: Icon(Icons.local_hospital_outlined), selectedIcon: Icon(Icons.local_hospital), label: 'Doctors'),
   ];
 
   @override
