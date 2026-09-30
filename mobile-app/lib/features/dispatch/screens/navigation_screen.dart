@@ -1,296 +1,78 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:geolocator/geolocator.dart';
 import '../services/location_service.dart';
+import '../services/api_service.dart';
 
 class NavigationScreen extends StatefulWidget {
   final Map<String, dynamic> dispatch;
-
   const NavigationScreen({super.key, required this.dispatch});
-
   @override
   State<NavigationScreen> createState() => _NavigationScreenState();
 }
-
 class _NavigationScreenState extends State<NavigationScreen> {
-  final LocationService _locationService = LocationService();
-  final MapController _mapController = MapController();
-  LatLng? _currentPosition;
-  bool _isTracking = false;
-  String _status = 'Loading...';
-
-  // Simulated destination for demo
-  final LatLng _destination = const LatLng(6.9271, 79.8612); // Colombo
-
+  final _location = LocationService();
+  final _api = ApiService();
+  LatLng? _position;
+  String? _error;
+  bool _tracking = false, _busy = false;
+  late String _status;
+  LatLng? get _destination => widget.dispatch['destinationLat'] is num && widget.dispatch['destinationLng'] is num
+      ? LatLng((widget.dispatch['destinationLat'] as num).toDouble(), (widget.dispatch['destinationLng'] as num).toDouble()) : null;
   @override
-  void initState() {
-    super.initState();
-    _status = widget.dispatch['status'] ?? 'Assigned';
-    _initLocation();
-  }
-
-  Future<void> _initLocation() async {
-    final hasPermission = await _locationService.requestPermission();
-    if (!hasPermission) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location permission denied'), backgroundColor: Colors.redAccent),
-        );
-      }
-      // Use a default position for demo
-      setState(() {
-        _currentPosition = const LatLng(6.9100, 79.8500);
-      });
-      return;
-    }
-
+  void initState() { super.initState(); _status = widget.dispatch['status'] as String? ?? 'Assigned'; }
+  void _failed(Object e) { if (mounted) setState(() { _error = e.toString(); _tracking = false; }); }
+  Future<void> _start() async {
+    setState(() { _busy = true; _error = null; });
     try {
-      final position = await _locationService.getCurrentPosition();
-      setState(() {
-        _currentPosition = LatLng(position.latitude, position.longitude);
-      });
-    } catch (e) {
-      // Fallback position for demo
-      setState(() {
-        _currentPosition = const LatLng(6.9100, 79.8500);
-      });
-    }
+      if (!await _location.requestPermission()) throw Exception('Enable GPS and location permission to start tracking.');
+      final p = await _location.getCurrentPosition();
+      await _api.updateLocation(widget.dispatch['id'], p.latitude, p.longitude, p.speed * 3.6, p.heading);
+      if (!mounted) return;
+      setState(() { _position = LatLng(p.latitude, p.longitude); _tracking = true; _status = 'EnRoute'; });
+      _location.startTracking(widget.dispatch['id'], onUpdate: (p) {
+        if (mounted) setState(() => _position = LatLng(p.latitude, p.longitude));
+      }, onError: _failed);
+    } catch (e) { _failed(e); }
+    finally { if (mounted) setState(() => _busy = false); }
   }
-
-  void _toggleTracking() {
-    setState(() => _isTracking = !_isTracking);
-
-    if (_isTracking) {
-      _locationService.startTracking(
-        widget.dispatch['id'],
-        onUpdate: (Position pos) {
-          if (mounted) {
-            setState(() {
-              _currentPosition = LatLng(pos.latitude, pos.longitude);
-            });
-          }
-        },
-      );
-      setState(() => _status = 'EnRoute');
-    } else {
-      _locationService.stopTracking();
-    }
+  Future<void> _arrive() async {
+    setState(() => _busy = true);
+    _location.stopTracking();
+    try {
+      await _api.arrive(widget.dispatch['id']);
+      if (mounted) setState(() { _tracking = false; _status = 'ArrivedOnSite'; });
+    } catch (e) { _failed(e); }
+    finally { if (mounted) setState(() => _busy = false); }
   }
-
-  void _markArrived() {
-    _locationService.stopTracking();
-    setState(() {
-      _isTracking = false;
-      _status = 'ArrivedOnSite';
-    });
-  }
-
   @override
-  void dispose() {
-    _locationService.stopTracking();
-    super.dispose();
-  }
-
+  void dispose() { _location.stopTracking(); super.dispose(); }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F8),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF0B5F6B),
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Dispatch #${widget.dispatch['id'].toString().length > 8 ? widget.dispatch['id'].toString().substring(0, 8) : widget.dispatch['id'].toString()}',
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        ),
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: _status == 'EnRoute'
-                  ? const Color(0xFF0F766E).withOpacity(0.15)
-                  : const Color(0xFF22C55E).withOpacity(0.15),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Center(
-              child: Text(
-                _status,
-                style: TextStyle(
-                  color: _status == 'EnRoute' ? const Color(0xFF0F766E) : const Color(0xFF16A34A),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 13,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: Column(
+    final destination = _destination;
+    return Scaffold(appBar: AppBar(title: Text('Dispatch — $_status')), body: Column(children: [
+      if (_error != null) Padding(padding: const EdgeInsets.all(12), child: Text(_error!, style: const TextStyle(color: Colors.red))),
+      if (_error != null) TextButton(onPressed: () => Navigator.pushNamed(context, '/login'), child: const Text('Sign in again')),
+      Expanded(child: destination == null ? const Center(child: Text('Destination unavailable. Contact the dispatcher.')) : FlutterMap(
+        options: MapOptions(initialCenter: destination, initialZoom: 13),
         children: [
-          // Map Area
-          Expanded(
-            flex: 3,
-            child: _currentPosition == null
-                ? const Center(child: CircularProgressIndicator(color: Color(0xFF3B82F6)))
-                : ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(24),
-                      bottomRight: Radius.circular(24),
-                    ),
-                    child: FlutterMap(
-                      mapController: _mapController,
-                      options: MapOptions(
-                        initialCenter: _currentPosition!,
-                        initialZoom: 14.0,
-                      ),
-                      children: [
-                        TileLayer(
-                          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                          userAgentPackageName: 'com.carepulse.mobile',
-                        ),
-                        MarkerLayer(
-                          markers: [
-                            // Nurse's current position
-                            Marker(
-                              point: _currentPosition!,
-                              width: 40,
-                              height: 40,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF3B82F6),
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.white, width: 3),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(0xFF3B82F6).withOpacity(0.5),
-                                      blurRadius: 10,
-                                      spreadRadius: 2,
-                                    ),
-                                  ],
-                                ),
-                                child: const Icon(Icons.person, color: Colors.white, size: 20),
-                              ),
-                            ),
-                            // Destination
-                            Marker(
-                              point: _destination,
-                              width: 40,
-                              height: 40,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFEF4444),
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.white, width: 3),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(0xFFEF4444).withOpacity(0.5),
-                                      blurRadius: 10,
-                                      spreadRadius: 2,
-                                    ),
-                                  ],
-                                ),
-                                child: const Icon(Icons.emergency, color: Colors.white, size: 20),
-                              ),
-                            ),
-                          ],
-                        ),
-                        // Route line
-                        PolylineLayer(
-                          polylines: [
-                            Polyline(
-                              points: [_currentPosition!, _destination],
-                              color: const Color(0xFF3B82F6),
-                              strokeWidth: 4,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-          ),
-
-          // Controls Area
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (_status != 'ArrivedOnSite') ...[
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: ElevatedButton.icon(
-                        onPressed: _toggleTracking,
-                        icon: Icon(_isTracking ? Icons.stop : Icons.navigation),
-                        label: Text(
-                          _isTracking ? 'Stop Tracking' : 'Start Navigation',
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: _isTracking ? const Color(0xFFEF4444) : const Color(0xFF3B82F6),
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                          elevation: 0,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: OutlinedButton.icon(
-                        onPressed: _isTracking ? _markArrived : null,
-                        icon: const Icon(Icons.location_on),
-                        label: const Text(
-                          'Mark Arrived On Site',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF22C55E),
-                          side: const BorderSide(color: Color(0xFF22C55E)),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                        ),
-                      ),
-                    ),
-                  ] else ...[
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.pushNamed(
-                            context,
-                            '/vitals-entry',
-                            arguments: widget.dispatch,
-                          );
-                        },
-                        icon: const Icon(Icons.medical_services),
-                        label: const Text(
-                          'Record Vitals & Complete',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF22C55E),
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                          elevation: 0,
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
+          TileLayer(urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', userAgentPackageName: 'com.carepulse.mobile'),
+          MarkerLayer(markers: [
+            Marker(point: destination, child: const Icon(Icons.location_on, color: Colors.red, size: 36)),
+            if (_position != null) Marker(point: _position!, child: const Icon(Icons.person_pin_circle, color: Colors.blue, size: 36)),
+          ]),
         ],
-      ),
-    );
+      )),
+      Padding(padding: const EdgeInsets.all(16), child: Column(children: [
+        const Text('Map shows the confirmed destination and last successfully sent position. Use a road navigation service for directions.'),
+        const SizedBox(height: 8),
+        if (_status != 'ArrivedOnSite') ...[
+          ElevatedButton(onPressed: _busy || destination == null ? null : _tracking ? () {
+            _location.stopTracking(); setState(() => _tracking = false);
+          } : _start, child: Text(_tracking ? 'Pause tracking' : 'Start / resume tracking')),
+          OutlinedButton(onPressed: _busy || _status != 'EnRoute' ? null : _arrive, child: const Text('Confirm arrival on site')),
+        ] else ElevatedButton(onPressed: () => Navigator.pushNamed(context, '/vitals-entry', arguments: widget.dispatch), child: const Text('Record vitals')),
+      ])),
+    ]));
   }
 }

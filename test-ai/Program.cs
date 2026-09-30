@@ -28,12 +28,13 @@ class Program
         
         var config = new ConfigurationBuilder()
             .AddUserSecrets("00a4b333-2ef1-480c-9acf-3f532ccf0bc1")
+            .AddEnvironmentVariables()
             .Build();
 
         // Verify config is loaded
         var apiKey = config["AI:GeminiApiKey"];
-        Console.WriteLine($"API Key loaded: {!string.IsNullOrWhiteSpace(apiKey)} (length: {apiKey?.Length ?? 0})");
-        var model = config["AI:GeminiModel"] ?? "gemini-2.5-flash";
+        Console.WriteLine($"API Key loaded: {!string.IsNullOrWhiteSpace(apiKey)}");
+        var model = config["AI:GeminiModel"] ?? "gemini-2.5-pro";
         Console.WriteLine($"Model: {model}");
 
         var logger = new ConsoleLogger<TriageAiAgent>();

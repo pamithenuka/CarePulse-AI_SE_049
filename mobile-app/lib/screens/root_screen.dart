@@ -23,6 +23,9 @@ class RootScreen extends StatelessWidget {
       case AuthStatus.unauthenticated:
         return const LoginScreen();
       case AuthStatus.authenticated:
+        if (!(auth.currentUser?.isPatient ?? false)) {
+          return Scaffold(body: Center(child: TextButton(onPressed: auth.logout, child: const Text('Sign out to use a patient account'))));
+        }
         return const _AuthenticatedGate();
     }
   }

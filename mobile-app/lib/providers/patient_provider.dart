@@ -17,6 +17,7 @@ class PatientProvider extends ChangeNotifier {
   final PatientService _patientService;
   final AiService _aiService;
   AuthProvider _auth;
+  String? _profileUserId;
 
   PatientProfile? profile;
   List<AiWorkflow> aiPlans = [];
@@ -31,11 +32,12 @@ class PatientProvider extends ChangeNotifier {
 
   void updateAuth(AuthProvider auth) {
     _auth = auth;
-    if (!auth.isAuthenticated) {
+    if (!auth.isAuthenticated || _profileUserId != auth.currentUser?.userId) {
       profile = null;
       aiPlans = [];
       hasNoProfileYet = false;
     }
+    _profileUserId = auth.currentUser?.userId;
   }
 
   String get _token => _auth.token!;

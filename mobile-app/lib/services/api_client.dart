@@ -31,22 +31,22 @@ class ApiClient {
       };
 
   Future<dynamic> get(String path, {String? token, Map<String, dynamic>? query}) async {
-    final response = await _client.get(_uri(path, query), headers: _headers(token, json: false));
+    final response = await _client.get(_uri(path, query), headers: _headers(token, json: false)).timeout(const Duration(seconds: 30));
     return _handle(response);
   }
 
   Future<dynamic> post(String path, {String? token, Object? body}) async {
-    final response = await _client.post(_uri(path), headers: _headers(token), body: body == null ? null : jsonEncode(body));
+    final response = await _client.post(_uri(path), headers: _headers(token), body: body == null ? null : jsonEncode(body)).timeout(const Duration(seconds: 150));
     return _handle(response);
   }
 
   Future<dynamic> put(String path, {String? token, Object? body}) async {
-    final response = await _client.put(_uri(path), headers: _headers(token), body: body == null ? null : jsonEncode(body));
+    final response = await _client.put(_uri(path), headers: _headers(token), body: body == null ? null : jsonEncode(body)).timeout(const Duration(seconds: 150));
     return _handle(response);
   }
 
   Future<dynamic> delete(String path, {String? token}) async {
-    final response = await _client.delete(_uri(path), headers: _headers(token, json: false));
+    final response = await _client.delete(_uri(path), headers: _headers(token, json: false)).timeout(const Duration(seconds: 30));
     return _handle(response);
   }
 
@@ -54,7 +54,7 @@ class ApiClient {
   /// than decoding JSON. Reuses [_handle]'s error mapping, but returns the raw
   /// body bytes on success instead of a decoded object.
   Future<Uint8List> getBytes(String path, {String? token}) async {
-    final response = await _client.get(_uri(path), headers: _headers(token, json: false));
+    final response = await _client.get(_uri(path), headers: _headers(token, json: false)).timeout(const Duration(seconds: 30));
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return response.bodyBytes;
     }
@@ -79,8 +79,8 @@ class ApiClient {
     request.fields.addAll(fields);
     request.files.add(http.MultipartFile.fromBytes(fileField, bytes, filename: fileName));
 
-    final streamed = await _client.send(request);
-    final response = await http.Response.fromStream(streamed);
+    final streamed = await _client.send(request).timeout(const Duration(seconds: 60));
+    final response = await http.Response.fromStream(streamed).timeout(const Duration(seconds: 60));
     return _handle(response);
   }
 
@@ -95,7 +95,7 @@ class ApiClient {
     if (response.body.isNotEmpty) {
       try {
         final decoded = jsonDecode(response.body);
-        if (decoded is Map && decoded['message'] is String) {
+        if (decoded is String) { message = decoded; } else if (decoded is Map && decoded['message'] is String) {
           message = decoded['message'] as String;
         } else if (decoded is Map && decoded['errors'] != null) {
           message = _flattenValidationErrors(decoded['errors']);

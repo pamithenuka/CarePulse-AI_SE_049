@@ -16,14 +16,19 @@ public static class DbSeeder
         {
             if (!await roleManager.RoleExistsAsync(role))
             {
-                await roleManager.CreateAsync(new IdentityRole(role));
+                var result = await roleManager.CreateAsync(new IdentityRole(role));
+                if (!result.Succeeded) throw new InvalidOperationException("Failed to initialize application roles.");
             }
         }
 
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-        await EnsureUserAsync(userManager, "admin@carepulse.dev", "Admin@12345", "System Administrator", "Admin");
+        var config = services.GetRequiredService<IConfiguration>();
+        var password = config["Seed:AdminPassword"];
+        if (!string.IsNullOrWhiteSpace(password))
+            await EnsureUserAsync(userManager, config["Seed:AdminEmail"] ?? "admin@carepulse.dev", password, "System Administrator", "Admin");
 
-        await SeedDummyPatientsAsync(services, userManager);
+        if (services.GetRequiredService<IHostEnvironment>().IsDevelopment() && config.GetValue<bool>("Seed:DemoPatients"))
+            await SeedDummyPatientsAsync(services, userManager);
     }
 
     private static async Task<ApplicationUser?> EnsureUserAsync(
@@ -46,7 +51,7 @@ public static class DbSeeder
         var result = await userManager.CreateAsync(user, password);
         if (!result.Succeeded)
         {
-            return null;
+            throw new InvalidOperationException("Seed admin creation failed. Check Seed:AdminPassword against the password policy.");
         }
 
         await userManager.AddToRoleAsync(user, role);

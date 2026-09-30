@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -20,6 +22,10 @@ public class DispatchControllerTests : IClassFixture<WebApplicationFactory<Progr
     {
         _factory = factory.WithWebHostBuilder(builder =>
         {
+            builder.UseEnvironment("Testing");
+            builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(new Dictionary<string,string?> {
+                ["Jwt:Secret"] = "test-only-signing-key-at-least-32-characters", ["Database:SeedOnStartup"] = "false"
+            }));
             builder.ConfigureServices(services =>
             {
                 // Remove the app's DbContext registration.
@@ -50,7 +56,7 @@ public class DispatchControllerTests : IClassFixture<WebApplicationFactory<Progr
         var response = await client.GetAsync("/api/v1/dispatch/active");
 
         // Assert
-        Assert.True(response.IsSuccessStatusCode || response.StatusCode == System.Net.HttpStatusCode.Unauthorized);
+        Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]

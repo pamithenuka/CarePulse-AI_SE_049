@@ -1,85 +1,115 @@
-using System.Security.Claims;
+using CarePulse.Api.Data;
 using CarePulse.Api.DTOs;
 using CarePulse.Api.Services;
+using CarePulse.Api.Services.Ai;
+using CarePulse.Api.Services.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarePulse.Api.Controllers;
 
 [ApiController]
-[Route("api/v1/[controller]")]
-public class TriageController : ControllerBase
+[Authorize]
+[Route("api/v1/triage")]
+public class TriageController(ITriageService service, CarePulseDbContext db, TriageWorkflowRunner runner) : ControllerBase
 {
-    private readonly ITriageService _triageService;
-
-    public TriageController(ITriageService triageService)
+    [HttpPost("submit")]
+    [Authorize(Roles = "Patient,Doctor,Admin")]
+    public async Task<ActionResult<TriageResponseDto>> SubmitTriage(TriageSubmitRequestDto request)
     {
-        _triageService = triageService;
+        await db.RequirePatientAsync(User, request.PatientProfileId);
+        return Ok(await runner.RunAsync(request, User));
     }
 
-    [HttpPost("submit")]
-    public async Task<ActionResult<TriageResponseDto>> SubmitTriage([FromBody] TriageSubmitRequestDto request)
+    [HttpGet("mine")]
+    [Authorize(Roles = "Patient")]
+    public async Task<IActionResult> Mine()
     {
-        if (request == null || string.IsNullOrWhiteSpace(request.Symptoms))
-        {
-            return BadRequest("Invalid triage data.");
-        }
+        var id = User.UserId();
+        return Ok(await db.TriageTickets.AsNoTracking().Where(t => db.PatientProfiles.Any(p => p.Id == t.PatientProfileId && p.UserId == id))
+            .OrderByDescending(t => t.CreatedAt).Take(100).Select(t => new { t.Id, t.Status, t.RiskLevel, t.RiskScore, t.RequiresDoctorApproval,
+                t.Reason, t.RecommendedAction, t.CreatedAt, t.PatientProfileId, t.RecommendedSpecialty }).ToListAsync());
+    }
 
-        var result = await _triageService.SubmitTriageAsync(request);
-        return Ok(result);
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> Get(Guid id)
+    {
+        var ticket = await GetAccessible(id);
+        var workflow = await db.AiWorkflows.AsNoTracking().SingleOrDefaultAsync(w => w.TriageTicketId == id);
+        var dispatch = await db.DispatchTickets.AsNoTracking().SingleOrDefaultAsync(d => d.TriageTicketId == id);
+        return Ok(new { ticket.Id, ticket.PatientProfileId, ticket.Status, ticket.Symptoms, ticket.RiskScore, ticket.RiskLevel,
+            ticket.RequiresDoctorApproval, ticket.Reason, ticket.RecommendedAction, ticket.FollowUpRecommended, ticket.RecommendedSpecialty,
+            ticket.Latitude, ticket.Longitude, ticket.AssessmentFailed, WorkflowId = workflow?.Id,
+            WorkflowStatus = workflow?.ExecutionStatus, DispatchStatus = dispatch?.Status,
+            Execution = workflow == null ? null : System.Text.Json.JsonSerializer.Deserialize<object>(workflow.ExecutionJson) });
     }
 
     [HttpGet("pending-approvals")]
-    // [Authorize(Roles = "Doctor,Admin")]
-    public async Task<ActionResult<IEnumerable<TriageResponseDto>>> GetPendingApprovals()
+    [Authorize(Roles = "Doctor,Admin")]
+    public async Task<IActionResult> GetPendingApprovals() => Ok(await service.GetPendingApprovalsAsync());
+
+    [HttpGet("{id:guid}/audit-log")]
+    public async Task<IActionResult> GetAuditLog(Guid id)
     {
-        var result = await _triageService.GetPendingApprovalsAsync();
-        return Ok(result);
+        await GetAccessible(id);
+        return Ok(await service.GetAuditLogAsync(id));
     }
 
-    [HttpGet("{id}/audit-log")]
-    public async Task<ActionResult<IEnumerable<AiTriageLogDto>>> GetAuditLog(Guid id)
-    {
-        var result = await _triageService.GetAuditLogAsync(id);
-        return Ok(result);
-    }
-
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteTriage(Guid id)
     {
-        var success = await _triageService.DeleteTriageAsync(id);
-        if (!success)
-        {
-            return NotFound("Triage ticket not found or already deleted.");
-        }
-
-        return NoContent();
+        await GetAccessible(id);
+        if (await db.DispatchTickets.AnyAsync(d => d.TriageTicketId == id)) return Conflict(new { message = "Dispatched cases must retain their clinical history." });
+        return await service.DeleteTriageAsync(id) ? NoContent() : NotFound();
     }
 
-    [HttpPost("{id}/approve")]
-    // [Authorize(Roles = "Doctor")]
-    public async Task<IActionResult> ApproveTriage(Guid id, [FromBody] ApproveTriageRequestDto request)
+    [HttpPut("{id:guid}/destination")]
+    [Authorize(Roles = "Doctor,Admin")]
+    public async Task<IActionResult> Destination(Guid id, DestinationDto request)
     {
-        var success = await _triageService.ApproveTriageAsync(id, request);
-        if (!success)
-        {
-            return BadRequest("Triage ticket not found or does not require approval.");
-        }
-
-        return Ok(new { message = "Triage request approved successfully." });
+        var ticket = await GetAccessible(id);
+        if (await db.DispatchTickets.AnyAsync(d => d.TriageTicketId == id)) return Conflict(new { message = "An assigned destination cannot be changed." });
+        if (ticket.Status != TriageConstants.StatusApproved) return Conflict(new { message = "Approve this case before confirming its dispatch destination." });
+        ticket.Latitude = request.Latitude;
+        ticket.Longitude = request.Longitude;
+        await WorkflowProgress.RecordAsync(db, id, "AwaitingDispatch", "DestinationConfirmed", new { Actor = User.UserId() });
+        await db.SaveChangesAsync();
+        return Ok(new { ticket.Latitude, ticket.Longitude });
     }
 
-    [HttpPost("{id}/reject")]
-    // [Authorize(Roles = "Doctor")]
-    public async Task<IActionResult> RejectTriage(Guid id, [FromBody] ApproveTriageRequestDto request)
+    [HttpPost("{id:guid}/approve")]
+    [Authorize(Roles = "Doctor")]
+    public async Task<IActionResult> ApproveTriage(Guid id, ApproveTriageRequestDto request)
     {
-        var doctorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var success = await _triageService.RejectTriageAsync(id, request, doctorId);
-        if (!success)
-        {
-            return BadRequest("Triage ticket not found or does not require approval.");
-        }
-
-        return Ok(new { message = "Triage case rejected successfully." });
+        var userId = User.UserId();
+        if (!await db.DoctorProfiles.AnyAsync(d => d.UserId == userId)) return Forbid();
+        return await service.ApproveTriageAsync(id, request, userId)
+            ? Ok(new { message = "Approved. The case is waiting for nurse assignment." })
+            : Conflict(new { message = "Case is no longer awaiting approval." });
     }
+
+    [HttpPost("{id:guid}/reject")]
+    [Authorize(Roles = "Doctor")]
+    public async Task<IActionResult> RejectTriage(Guid id, ApproveTriageRequestDto request)
+    {
+        var userId = User.UserId();
+        if (!await db.DoctorProfiles.AnyAsync(d => d.UserId == userId)) return Forbid();
+        return await service.RejectTriageAsync(id, request, userId)
+            ? Ok(new { message = "Case rejected." }) : Conflict(new { message = "Case is no longer awaiting approval." });
+    }
+
+    private async Task<Entities.TriageTicket> GetAccessible(Guid id)
+    {
+        var ticket = await db.TriageTickets.SingleOrDefaultAsync(t => t.Id == id) ?? throw new ApiProblem(404, "Triage not found.");
+        await db.RequirePatientAsync(User, ticket.PatientProfileId);
+        return ticket;
+    }
+}
+
+public class DestinationDto
+{
+    [System.ComponentModel.DataAnnotations.Required, System.ComponentModel.DataAnnotations.Range(-90,90)] public double? Latitude { get; set; }
+    [System.ComponentModel.DataAnnotations.Required, System.ComponentModel.DataAnnotations.Range(-180,180)] public double? Longitude { get; set; }
 }

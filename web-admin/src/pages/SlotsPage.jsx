@@ -14,6 +14,7 @@ function formatDate(iso) {
 export default function SlotsPage() {
   const { selectedDoctor, selectedDoctorId } = useDoctor();
   const [date, setDate] = useState('');
+  const [patientId, setPatientId] = useState('');
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -45,9 +46,8 @@ export default function SlotsPage() {
     setBookingId(slotId);
     setBookMessage(null);
     try {
-      const placeholderPatientId = '11111111-1111-1111-1111-111111111111';
-      await api.bookAppointment({ slotId, patientId: placeholderPatientId });
-      setBookMessage({ type: 'success', text: 'Slot booked (demo patient).' });
+      await api.bookAppointment({ slotId, patientId });
+      setBookMessage({ type: 'success', text: 'Appointment booked.' });
       loadSlots();
     } catch (err) {
       setBookMessage({ type: 'error', text: err.message });
@@ -60,10 +60,11 @@ export default function SlotsPage() {
     <div>
       <div className="page-header">
         <h1>Appointment slots</h1>
-        <p>Slots generated from the weekly roster. Open slots can be booked directly here for testing.</p>
+        <p>Slots generated from the weekly roster. Select the patient from the registry and use their profile ID to book.</p>
       </div>
 
       <DoctorPicker />
+      <label>Patient profile ID <input value={patientId} onChange={e => setPatientId(e.target.value.trim())} placeholder="Patient profile ID from the registry" /></label>
 
       <div className="card">
         <h2>Filter</h2>
@@ -105,10 +106,10 @@ export default function SlotsPage() {
                   <span className="slot-badge open">Open</span>
                   <button
                     className="btn btn-secondary"
-                    disabled={bookingId === slot.slotId}
+                    disabled={bookingId === slot.slotId || !patientId}
                     onClick={() => handleBook(slot.slotId)}
                   >
-                    {bookingId === slot.slotId ? 'Booking…' : 'Book (demo)'}
+                    {bookingId === slot.slotId ? 'Booking…' : 'Book appointment'}
                   </button>
                 </div>
               </div>

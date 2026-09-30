@@ -30,7 +30,7 @@ export default function MedicalHistoryTab({ patientId, initialHistory, onChanged
       setAddForm(emptyForm);
       onChanged();
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to add medical history entry.");
+      setError(err.response?.data?.message || err.message || "Failed to add medical history entry.");
     } finally {
       setIsSaving(false);
     }
@@ -45,7 +45,7 @@ export default function MedicalHistoryTab({ patientId, initialHistory, onChanged
       isChronic: entry.isChronic,
       currentMedications: entry.currentMedications || "",
       isResolved: entry.isResolved,
-      resolvedOn: entry.resolvedOn || "",
+      resolvedOn: entry.resolvedOn || null,
     });
   };
 
@@ -53,12 +53,15 @@ export default function MedicalHistoryTab({ patientId, initialHistory, onChanged
     event.preventDefault();
     setError("");
     try {
-      const updatedEntry = await updateMedicalHistory(patientId, editingId, editForm);
+      const updatedEntry = await updateMedicalHistory(patientId, editingId, {
+        ...editForm,
+        resolvedOn: editForm.isResolved ? editForm.resolvedOn || null : null,
+      });
       setHistory((prev) => prev.map((h) => (h.id === editingId ? updatedEntry : h)));
       setEditingId(null);
       onChanged();
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to update entry.");
+      setError(err.response?.data?.message || err.message || "Failed to update entry.");
     }
   };
 
@@ -77,7 +80,7 @@ export default function MedicalHistoryTab({ patientId, initialHistory, onChanged
       setHistory((prev) => prev.map((h) => (h.id === entry.id ? updatedEntry : h)));
       onChanged();
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to update entry.");
+      setError(err.response?.data?.message || err.message || "Failed to update entry.");
     }
   };
 
@@ -89,7 +92,7 @@ export default function MedicalHistoryTab({ patientId, initialHistory, onChanged
       setHistory((prev) => prev.filter((h) => h.id !== historyId));
       onChanged();
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to remove entry.");
+      setError(err.response?.data?.message || err.message || "Failed to remove entry.");
     }
   };
 

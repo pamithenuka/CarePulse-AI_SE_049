@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../services/triage_api_service.dart';
+import 'doctor_search_screen.dart';
 
 class TriageStatusScreen extends StatefulWidget {
   final Map<String, dynamic> triageData;
@@ -17,6 +18,11 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
   Timer? _timer;
   bool _isApproved = false;
   bool _isRejected = false;
+  bool _fetching = false;
+  String? _error;
+  String _currentStatus = '';
+  String? _dispatchStatus;
+  bool _manualReview = false;
 
   bool get _hasDoctorDecision => _isApproved || _isRejected;
 
@@ -25,10 +31,10 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
     super.initState();
     _fetchAuditLogs();
     
-    // Only poll if it's high risk and needs approval
-    if (widget.triageData['requiresDoctorApproval'] == true) {
+    // Keep tracking the saved case through doctor review and dispatch completion.
+    {
       _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-        if (!_hasDoctorDecision) {
+        if (_currentStatus != 'VISIT_COMPLETED' && _currentStatus != 'REJECTED') {
           _fetchAuditLogs();
         }
       });
@@ -42,33 +48,25 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
   }
 
   Future<void> _fetchAuditLogs() async {
+    if (_fetching) return;
+    _fetching = true;
     try {
-      debugPrint("Triage ID: ${widget.triageData['id']}");
+      final status = await _apiService.getStatus(widget.triageData['id']);
       final logs = await _apiService.getAuditLog(widget.triageData['id']);
-      debugPrint("Audit logs received: $logs");
-      if (mounted) {
-        setState(() {
-          _auditLogs = logs;
-          _isRejected = logs.any((log) => _isRejectionLog(log));
-          _isApproved = !_isRejected &&
-              logs.any((log) => _isApprovalLog(log));
-        });
-        if (_hasDoctorDecision) {
-          _timer?.cancel();
-          _timer = null;
-        }
+      if (mounted) { setState(() {
+        _auditLogs = logs; _error = null;
+        _currentStatus = status['status'] as String? ?? '';
+        _dispatchStatus = status['dispatchStatus'] as String?;
+        _manualReview = ['ManualReviewRequired', 'Failed'].contains(status['workflowStatus']) || status['assessmentFailed'] == true;
+        _isRejected = _currentStatus == 'REJECTED';
+        _isApproved = ['APPROVED_BY_DOCTOR', 'DISPATCH_ASSIGNED', 'VISIT_COMPLETED'].contains(_currentStatus);
+      });
       }
-    } catch (e) {
-      debugPrint("Error fetching logs: $e");
-    }
+    } catch (e) { if (mounted) { setState(() => _error = e.toString()); } }
+    finally { _fetching = false; }
   }
 
   String _logMessage(dynamic log) => log['logMessage']?.toString() ?? '';
-
-  bool _isApprovalLog(dynamic log) {
-    final lower = _logMessage(log).toLowerCase();
-    return lower.contains('approved by doctor') && !lower.contains('rejected');
-  }
 
   bool _isRejectionLog(dynamic log) {
     return _logMessage(log).toLowerCase().contains('rejected by doctor');
@@ -231,7 +229,7 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {}, // Stub
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DoctorSearchScreen())),
             style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(15)),
             child: const Text("Book a Doctor"),
           ),
@@ -284,7 +282,7 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
           children: [
             Expanded(
               child: ElevatedButton(
-                onPressed: () {}, // Stub
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DoctorSearchScreen())),
                 style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(15)),
                 child: const Text("Find a Doctor"),
               ),
@@ -292,7 +290,7 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
             const SizedBox(width: 10),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {}, // Stub
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DoctorSearchScreen())),
                 style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(15)),
                 child: const Text("Book Appointment"),
               ),
@@ -415,6 +413,9 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
     final riskScore = widget.triageData['riskScore'];
 
     return Scaffold(
+      bottomNavigationBar: SafeArea(child: Padding(padding: const EdgeInsets.all(12), child: Text(
+        _error ?? 'Case: $_currentStatus${_dispatchStatus == null ? "" : " • Dispatch: $_dispatchStatus"}',
+        style: TextStyle(color: _error == null ? null : Colors.red)))),
       appBar: AppBar(
         title: const Text('Triage Status'),
         backgroundColor: Colors.blue.shade800,
@@ -425,9 +426,10 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (riskLevel == 'LOW') _buildLowRiskUI(riskScore),
-            if (riskLevel == 'MEDIUM') _buildMediumRiskUI(riskScore),
-            if (riskLevel == 'HIGH') _buildHighRiskUI(riskScore),
+            if (_manualReview) const Padding(padding: EdgeInsets.only(bottom: 16), child: Text('Automated assessment is incomplete. A doctor must review this case.', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold))),
+            if (!_manualReview && riskLevel == 'LOW') _buildLowRiskUI(riskScore),
+            if (!_manualReview && riskLevel == 'MEDIUM') _buildMediumRiskUI(riskScore),
+            if (_manualReview || riskLevel == 'HIGH') _buildHighRiskUI(riskScore),
             
             const SizedBox(height: 30),
             SizedBox(

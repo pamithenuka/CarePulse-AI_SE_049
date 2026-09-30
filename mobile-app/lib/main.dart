@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/patient_provider.dart';
 import 'screens/app_entry_screen.dart';
+import 'widgets/session_gate.dart';
 import 'screens/root_screen.dart';
 
 import 'features/dispatch/screens/nurse_login_screen.dart';
@@ -45,17 +46,17 @@ class CarePulseApp extends StatelessWidget {
             case '/patient':
               return MaterialPageRoute(builder: (_) => const RootScreen());
             case '/doctors':
-              return MaterialPageRoute(builder: (_) => const DoctorSearchScreen());
+              return MaterialPageRoute(builder: (_) => const SessionGate(role: 'Patient', child: DoctorSearchScreen()));
             case '/login':
               return MaterialPageRoute(builder: (_) => const NurseLoginScreen());
             case '/dispatch-dashboard':
-              return MaterialPageRoute(builder: (_) => const DispatchDashboardScreen());
+              return MaterialPageRoute(builder: (_) => const SessionGate(role: 'Nurse', child: DispatchDashboardScreen()));
             case '/navigation':
               final dispatch = settings.arguments as Map<String, dynamic>;
-              return MaterialPageRoute(builder: (_) => NavigationScreen(dispatch: dispatch));
+              return MaterialPageRoute(builder: (_) => SessionGate(role: 'Nurse', child: NavigationScreen(dispatch: dispatch)));
             case '/vitals-entry':
               final dispatch = settings.arguments as Map<String, dynamic>;
-              return MaterialPageRoute(builder: (_) => VitalsEntryScreen(dispatch: dispatch));
+              return MaterialPageRoute(builder: (_) => SessionGate(role: 'Nurse', child: VitalsEntryScreen(dispatch: dispatch)));
             default:
               return MaterialPageRoute(builder: (_) => const AppEntryScreen());
           }

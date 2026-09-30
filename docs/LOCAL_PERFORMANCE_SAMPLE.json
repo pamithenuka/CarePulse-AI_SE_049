@@ -1,0 +1,15 @@
+{
+  "measuredAtUtc": "2026-09-28T11:40:06.219975+00:00",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "url": "http://127.0.0.1:5015/api/v1/doctors",
+  "requests": 100,
+  "concurrency": 5,
+  "p50Ms": 2.01,
+  "p95Ms": 3.48,
+  "maxMs": 12.89,
+  "statuses": {
+    "200": 100
+  },
+  "errorRate": 0.0,
+  "scope": "HTTP read sample only; excludes full AI workflow and device latency"
+}

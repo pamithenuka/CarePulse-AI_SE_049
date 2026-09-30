@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarePulse.Api.Controllers.V1;
 
+[Microsoft.AspNetCore.Authorization.AllowAnonymous]
 [ApiController]
 [Route("api/v1/auth")]
 public class AuthController : ControllerBase
@@ -26,9 +27,9 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto dto)
     {
-        if (!DbSeeder.Roles.Contains(dto.Role))
+        if (dto.Role != "Patient")
         {
-            return BadRequest(new { message = $"Role must be one of: {string.Join(", ", DbSeeder.Roles)}" });
+            return BadRequest(new { message = "Only Patient accounts can self-register. Staff accounts are created by an administrator." });
         }
 
         if (await _userManager.FindByEmailAsync(dto.Email) is not null)
@@ -36,6 +37,7 @@ public class AuthController : ControllerBase
             return Conflict(new { message = "An account with this email already exists." });
         }
 
+        await using var transaction = _db.Database.IsRelational() ? await _db.Database.BeginTransactionAsync() : null;
         var user = new ApplicationUser
         {
             UserName = dto.Email,
@@ -49,7 +51,9 @@ public class AuthController : ControllerBase
             return BadRequest(new { message = "Registration failed.", errors = result.Errors.Select(e => e.Description) });
         }
 
-        await _userManager.AddToRoleAsync(user, dto.Role);
+        var roleResult = await _userManager.AddToRoleAsync(user, "Patient");
+        if (!roleResult.Succeeded) throw new InvalidOperationException("Could not assign the Patient role.");
+        if (transaction != null) await transaction.CommitAsync();
 
         return Ok(await BuildAuthResponseAsync(user));
     }
@@ -58,10 +62,19 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<AuthResponseDto>> Login(LoginDto dto)
     {
         var user = await _userManager.FindByEmailAsync(dto.Email);
-        if (user is null || !await _userManager.CheckPasswordAsync(user, dto.Password))
+        if (user is null || await _userManager.IsLockedOutAsync(user))
         {
             return Unauthorized(new { message = "Invalid email or password." });
         }
+
+        if (!await _userManager.CheckPasswordAsync(user, dto.Password))
+        {
+            await _userManager.AccessFailedAsync(user);
+            return Unauthorized(new { message = "Invalid email or password." });
+        }
+        await _userManager.ResetAccessFailedCountAsync(user);
+        if (await _db.PatientProfiles.IgnoreQueryFilters().AnyAsync(p => p.UserId == user.Id && p.IsDeleted))
+            return Unauthorized(new { message = "This account has been deleted. Contact your administrator." });
 
         var roles = await _userManager.GetRolesAsync(user);
 

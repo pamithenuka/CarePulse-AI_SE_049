@@ -79,8 +79,8 @@ export default function AiPlanTab({ patientId }) {
     <div className="detail-card">
       <h2>Agent 1 — AI Care Plan</h2>
       <p className="hint-text">
-        Log what the patient reported — over the phone, during a visit, or relayed by nursing staff (this stands in
-        for the mobile app's symptom submission until that's connected). Agent 1 (Coordinator/Planner) reads this
+        View plans submitted from the mobile app, or log what the patient reported during a visit or call.
+        Agent 1 (Coordinator/Planner) reads this
         patient's record plus that report, then asks the AI model to produce a structured plan delegating to the
         DomainAnalysis, ActionTool and Validation agents for your review.
       </p>

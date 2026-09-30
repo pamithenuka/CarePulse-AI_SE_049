@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { deleteNurse, getNurse, restoreNurse } from "../api/staffApi";
+import { deleteNurse, getNurse, restoreNurse, setNurseAvailability } from "../api/staffApi";
 import { useAuth } from "../context/AuthContext";
 import { ErrorState, LoadingState } from "../components/StatusView";
 import "../components/StatusView.css";
@@ -17,6 +17,7 @@ export default function NurseDetailPage() {
   const [status, setStatus] = useState("loading");
   const [errorMessage, setErrorMessage] = useState("");
   const [actionError, setActionError] = useState("");
+  const [savingAvailability, setSavingAvailability] = useState(false);
 
   const loadNurse = useCallback(async () => {
     setStatus("loading");
@@ -33,6 +34,19 @@ export default function NurseDetailPage() {
   useEffect(() => {
     loadNurse();
   }, [loadNurse]);
+
+  const handleAvailability = async () => {
+    setSavingAvailability(true);
+    setActionError("");
+    try {
+      await setNurseAvailability(id, !nurse.isAvailable);
+      await loadNurse();
+    } catch (err) {
+      setActionError(err.response?.data?.message || "Failed to update availability.");
+    } finally {
+      setSavingAvailability(false);
+    }
+  };
 
   const handleDelete = async () => {
     if (!window.confirm(`Delete ${nurse.fullName}? They will not be able to log in, but an Admin can restore them later.`)) {
@@ -78,6 +92,11 @@ export default function NurseDetailPage() {
                 {nurse.isAvailable ? "Available" : "Unavailable"}
               </span>
               <span className={`status-pill status-${nurse.status.toLowerCase()}`}>{nurse.status}</span>
+              {isAdmin && nurse.status === "Active" && (
+                <button type="button" onClick={handleAvailability} disabled={savingAvailability} className="btn-secondary">
+                  {savingAvailability ? "Saving…" : nurse.isAvailable ? "Mark unavailable" : "Mark available"}
+                </button>
+              )}
               {isAdmin && nurse.status === "Active" && (
                 <button type="button" onClick={handleDelete} className="btn-danger">
                   Delete

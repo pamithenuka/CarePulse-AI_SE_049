@@ -1,3 +1,4 @@
+using CarePulse.Api.Services.Ai;
 using CarePulse.Api.Data;
 using CarePulse.Api.DTOs;
 using CarePulse.Api.Entities;
@@ -11,7 +12,7 @@ public interface ITriageService
     Task<IEnumerable<TriageResponseDto>> GetPendingApprovalsAsync();
     Task<IEnumerable<AiTriageLogDto>> GetAuditLogAsync(Guid triageId);
     Task<bool> DeleteTriageAsync(Guid triageId);
-    Task<bool> ApproveTriageAsync(Guid triageId, ApproveTriageRequestDto request);
+    Task<bool> ApproveTriageAsync(Guid triageId, ApproveTriageRequestDto request, string reviewedByDoctorId);
     Task<bool> RejectTriageAsync(Guid triageId, ApproveTriageRequestDto request, string? reviewedByDoctorId);
 }
 
@@ -31,12 +32,21 @@ public class TriageService : ITriageService
         var ticket = new TriageTicket
         {
             PatientProfileId = request.PatientProfileId,
-            Symptoms = request.Symptoms
+            Symptoms = request.Symptoms.Trim(),
+            Latitude = request.Latitude, Longitude = request.Longitude
         };
 
         // AI Risk Assessment
         var aiResult = await _aiAgent.AnalyzeSymptomsAsync(request);
 
+        // A self-reported severe case cannot be downgraded by a model response.
+        if (string.Equals(request.Severity, "Severe", StringComparison.OrdinalIgnoreCase))
+        {
+            aiResult.RiskScore = Math.Max(aiResult.RiskScore, 7);
+            aiResult.RiskLevel = TriageConstants.RiskHigh;
+            aiResult.RecommendedAction = TriageConstants.ActionDoctorApproval;
+        }
+        ticket.AssessmentFailed = aiResult.AssessmentFailed;
         ticket.RiskScore = aiResult.RiskScore;
         ticket.RiskLevel = aiResult.RiskLevel;
         ticket.RecommendedAction = aiResult.RecommendedAction;
@@ -73,10 +83,10 @@ public class TriageService : ITriageService
             _ => $"Symptoms analyzed by AI\nRisk assessed: LOW ({ticket.RiskScore}/10)\nReason: {aiResult.Reason}\nSelf-care monitoring recommended\nDoctor approval not required"
         };
 
-        var initialLog = new AiTriageLog 
-        { 
-            TriageTicket = ticket, 
-            LogMessage = logMessage 
+        var initialLog = new AiTriageLog
+        {
+            TriageTicket = ticket,
+            LogMessage = logMessage
         };
         await _context.AiTriageLogs.AddAsync(initialLog);
 
@@ -128,43 +138,45 @@ public class TriageService : ITriageService
         if (ticket == null) return false;
 
         ticket.IsDeleted = true;
-        
-        var deletionLog = new AiTriageLog 
-        { 
-            TriageTicketId = ticket.Id, 
-            LogMessage = "Triage ticket deleted." 
+
+        var deletionLog = new AiTriageLog
+        {
+            TriageTicketId = ticket.Id,
+            LogMessage = "Triage ticket deleted."
         };
         await _context.AiTriageLogs.AddAsync(deletionLog);
-        
+
         await _context.SaveChangesAsync();
         return true;
     }
 
-    public async Task<bool> ApproveTriageAsync(Guid triageId, ApproveTriageRequestDto request)
+    public async Task<bool> ApproveTriageAsync(Guid triageId, ApproveTriageRequestDto request, string reviewedByDoctorId)
     {
         var ticket = await _context.TriageTickets
             .Include(t => t.ApprovalQueue)
             .FirstOrDefaultAsync(t => t.Id == triageId);
 
-        if (ticket == null || ticket.Status != "NEEDS_DOCTOR_APPROVAL") 
+        if (ticket == null || ticket.Status != "NEEDS_DOCTOR_APPROVAL" ||
+            await _context.AiWorkflows.AnyAsync(w => w.TriageTicketId == triageId && w.ExecutionStatus == "Running"))
             return false;
 
         ticket.Status = "APPROVED_BY_DOCTOR";
-        
+
         if (ticket.ApprovalQueue != null)
         {
             ticket.ApprovalQueue.ReviewStatus = "APPROVED";
             ticket.ApprovalQueue.ReviewedAt = DateTime.UtcNow;
-            // Optionally set ReviewedByDoctorId if we have the current user's context
+            ticket.ApprovalQueue.ReviewedByDoctorId = reviewedByDoctorId;
         }
-        
-        var approvalLog = new AiTriageLog 
-        { 
-            TriageTicketId = ticket.Id, 
-            LogMessage = $"Triage ticket approved by doctor. Notes: {request.Notes}" 
+
+        var approvalLog = new AiTriageLog
+        {
+            TriageTicketId = ticket.Id,
+            LogMessage = $"Triage ticket approved by doctor. Notes: {request.Notes}"
         };
         await _context.AiTriageLogs.AddAsync(approvalLog);
 
+        await WorkflowProgress.RecordAsync(_context, triageId, "AwaitingDispatch", "DoctorApproved", new { Actor = reviewedByDoctorId, request.Notes });
         await _context.SaveChangesAsync();
         return true;
     }
@@ -175,7 +187,8 @@ public class TriageService : ITriageService
             .Include(t => t.ApprovalQueue)
             .FirstOrDefaultAsync(t => t.Id == triageId);
 
-        if (ticket == null || ticket.Status != TriageConstants.StatusNeedsApproval)
+        if (ticket == null || ticket.Status != TriageConstants.StatusNeedsApproval ||
+            await _context.AiWorkflows.AnyAsync(w => w.TriageTicketId == triageId && w.ExecutionStatus == "Running"))
             return false;
 
         ticket.Status = TriageConstants.StatusRejected;
@@ -197,6 +210,7 @@ public class TriageService : ITriageService
         };
         await _context.AiTriageLogs.AddAsync(rejectionLog);
 
+        await WorkflowProgress.RecordAsync(_context, triageId, "Rejected", "DoctorRejected", new { Actor = reviewedByDoctorId, request.Notes }, terminal: true);
         await _context.SaveChangesAsync();
         return true;
     }
@@ -206,6 +220,7 @@ public class TriageService : ITriageService
         return new TriageResponseDto
         {
             Id = ticket.Id,
+            AssessmentFailed = ticket.AssessmentFailed, Latitude = ticket.Latitude, Longitude = ticket.Longitude,
             PatientProfileId = ticket.PatientProfileId,
             Symptoms = ticket.Symptoms,
             Status = ticket.Status,

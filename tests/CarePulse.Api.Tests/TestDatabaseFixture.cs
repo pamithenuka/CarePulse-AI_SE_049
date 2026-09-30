@@ -1,40 +1,29 @@
 using CarePulse.Api.Data;
+using CarePulse.Api.Tests.Fakes;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace CarePulse.Api.Tests;
 
-// Shared across every test class. Points at a SEPARATE database
-// ("carepulse_test_db") so tests never touch the real dev data.
 public class TestDatabaseFixture : IDisposable
 {
-    // Same server/credentials as backend-api's appsettings.json - just a
-    // different database name. Update the password here to match yours.
-    public const string ConnectionString =
-        "Host=localhost;Port=5432;Database=carepulse_test_db;Username=postgres;Password=Ht123";
-
+    public string ConnectionString { get; }
     public TestDatabaseFixture()
     {
+        var configured = Environment.GetEnvironmentVariable("CAREPULSE_TEST_CONNECTION")
+            ?? throw new InvalidOperationException("Set CAREPULSE_TEST_CONNECTION to an isolated local PostgreSQL server. See README.md.");
+        var builder = new NpgsqlConnectionStringBuilder(configured) { Database = "carepulse_test_" + Guid.NewGuid().ToString("N") };
+        ConnectionString = builder.ConnectionString;
         using var context = CreateContext();
-        context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
     }
-
-    public CarePulseDbContext CreateContext()
-    {
-        var options = new DbContextOptionsBuilder<CarePulseDbContext>()
-            .UseNpgsql(ConnectionString)
-            .Options;
-        return new CarePulseDbContext(options);
-    }
-
+    public CarePulseDbContext CreateContext() => new(new DbContextOptionsBuilder<CarePulseDbContext>()
+        .UseNpgsql(ConnectionString).Options, new FakeCurrentUserService());
     public void Dispose()
     {
         using var context = CreateContext();
         context.Database.EnsureDeleted();
     }
 }
-
 [CollectionDefinition("Database collection")]
-public class DatabaseCollection : ICollectionFixture<TestDatabaseFixture>
-{
-}
+public class DatabaseCollection : ICollectionFixture<TestDatabaseFixture> { }

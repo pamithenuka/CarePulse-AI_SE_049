@@ -173,7 +173,7 @@ public class PatientServiceTests
 
         var created = await service.CreateProfileAsync("owner-user", BuildCreateDto());
 
-        var content = "admin-uploaded-file"u8.ToArray();
+        var content = "%PDF-1.4 admin-uploaded-file"u8.ToArray();
         var stream = new MemoryStream(content);
         var file = new FormFile(stream, 0, content.Length, "file", "scan.pdf")
         {
@@ -586,7 +586,7 @@ public class PatientServiceTests
 
         var created = await service.CreateProfileAsync("owner-user", BuildCreateDto());
 
-        var content = "test-file-content"u8.ToArray();
+        var content = "%PDF-1.4 test-file-content"u8.ToArray();
         var stream = new MemoryStream(content);
         var file = new FormFile(stream, 0, content.Length, "file", "report.pdf")
         {
@@ -598,6 +598,7 @@ public class PatientServiceTests
 
         Assert.True(result.Succeeded);
         Assert.Equal("report.pdf", result.Value!.FileName);
-        Assert.StartsWith("/uploads/", result.Value.FileUrl);
+        Assert.StartsWith("/api/v1/patients/", result.Value.FileUrl);
+        Assert.EndsWith("/download", result.Value.FileUrl);
     }
 }

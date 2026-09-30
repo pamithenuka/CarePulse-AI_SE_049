@@ -1,3 +1,5 @@
+using CarePulse.Api.Services.Common;
+using Microsoft.AspNetCore.Authorization;
 using CarePulse.Api.Data;
 using CarePulse.Api.DTOs;
 using CarePulse.Api.Entities;
@@ -6,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarePulse.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/v1/consultations")]
 public class ConsultationsController : ControllerBase
@@ -29,12 +32,15 @@ public class ConsultationsController : ControllerBase
             return NotFound($"Consultation {id} not found.");
         }
 
+        await _db.RequirePatientAsync(User, record.PatientId);
+        if (User.IsInRole("Doctor")) await _db.RequireDoctorAsync(User, record.DoctorId);
         return Ok(record);
     }
 
     // POST /api/v1/consultations/complete
     // Business operation: doctor finishes a visit, logs notes/prescription.
     [HttpPost("complete")]
+    [Authorize(Roles = "Doctor,Admin")]
     public async Task<IActionResult> CompleteConsultation([FromBody] ConsultationCompleteRequestDto request)
     {
         var slot = await _db.AppointmentSlots.FirstOrDefaultAsync(s => s.Id == request.SlotId);
@@ -49,6 +55,12 @@ public class ConsultationsController : ControllerBase
             return BadRequest("Cannot record a consultation for a slot that was never booked.");
         }
 
+        await _db.RequireDoctorAsync(User, slot.DoctorId);
+        if (slot.PatientId != request.PatientId || slot.DoctorId != request.DoctorId)
+            return BadRequest("Doctor and patient must match the booking.");
+        if (slot.SlotStart > DateTime.UtcNow) return BadRequest("The appointment has not started yet.");
+        if (string.IsNullOrWhiteSpace(request.Notes) || request.Notes.Length > 4000 || request.Prescription?.Length > 2000)
+            return BadRequest("Notes are required (maximum 4000 characters); prescriptions may contain at most 2000 characters.");
         var alreadyExists = await _db.ConsultationRecords.AnyAsync(c => c.SlotId == request.SlotId);
         if (alreadyExists)
         {

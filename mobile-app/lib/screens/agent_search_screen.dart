@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/patient_provider.dart';
 import 'package:intl/intl.dart';
 import '../api/api_client.dart';
 import '../models/agent_response.dart';
 import '../models/slot.dart';
 import '../theme/app_theme.dart';
 
-// Placeholder until Student 1's patient module (login/profile) exists.
-const _demoPatientId = '11111111-1111-1111-1111-111111111111';
 
 class AgentSearchScreen extends StatefulWidget {
   const AgentSearchScreen({super.key});
@@ -36,18 +36,20 @@ class _AgentSearchScreenState extends State<AgentSearchScreen> {
 
     try {
       final response = await _api.searchAgent(message);
-      setState(() => _result = response);
+      if (mounted) setState(() => _result = response);
     } catch (e) {
-      setState(() => _error = e.toString());
+      if (mounted) setState(() => _error = e.toString());
     } finally {
-      setState(() => _loading = false);
+      if (mounted) setState(() => _loading = false);
     }
   }
 
   Future<void> _bookSlot(AppointmentSlot slot) async {
     setState(() => _bookingSlotId = slot.slotId);
     try {
-      await _api.bookAppointment(slotId: slot.slotId, patientId: _demoPatientId);
+      final patientId = context.read<PatientProvider>().profile?.id;
+      if (patientId == null) throw ApiException('Complete your patient profile before booking.');
+      await _api.bookAppointment(slotId: slot.slotId, patientId: patientId);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Appointment booked!'), backgroundColor: AppColors.open),
@@ -68,6 +70,12 @@ class _AgentSearchScreenState extends State<AgentSearchScreen> {
     } finally {
       if (mounted) setState(() => _bookingSlotId = null);
     }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override

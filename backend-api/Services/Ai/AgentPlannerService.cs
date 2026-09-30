@@ -93,7 +93,7 @@ public class AgentPlannerService : IAgentPlannerService
         var toolCallSummary = $"GetPatientContextAsync({patientProfileId}) at {DateTime.UtcNow:O} -> " +
                                $"age={context.Age}, allergies={context.Allergies.Count}, chronicConditions={context.ChronicConditions.Count}";
 
-        var userPrompt = BuildUserPrompt(context, objective);
+        var userPrompt = GeminiTransport.Minimize(BuildUserPrompt(context, objective));
         var completion = await _plannerClient.GeneratePlanAsync(SystemPrompt, userPrompt);
 
         var workflow = new AiWorkflow
@@ -160,7 +160,7 @@ public class AgentPlannerService : IAgentPlannerService
     public async Task<ServiceResult<List<AiWorkflowDto>>> GetPendingReviewPlansAsync()
     {
         var workflows = await _db.AiWorkflows
-            .Where(w => w.Status == AiWorkflowStatus.PlanCreated && w.ReviewStatus == AiPlanReviewStatus.NotReviewed)
+            .Where(w => w.TriageTicketId == null && w.Status == AiWorkflowStatus.PlanCreated && w.ReviewStatus == AiPlanReviewStatus.NotReviewed)
             .OrderByDescending(w => w.CreatedAt)
             .ToListAsync();
 
@@ -188,6 +188,8 @@ public class AgentPlannerService : IAgentPlannerService
             return ServiceResult<AiWorkflowDto>.Fail(ServiceErrorType.NotFound, "AI plan not found.");
         }
 
+        if (workflow.TriageTicketId.HasValue)
+            return ServiceResult<AiWorkflowDto>.Fail(ServiceErrorType.Conflict, "Review this case through the triage approval queue.");
         if (workflow.Status != AiWorkflowStatus.PlanCreated)
         {
             return ServiceResult<AiWorkflowDto>.Fail(ServiceErrorType.ValidationFailed, "Only a successfully created plan can be reviewed.");
@@ -284,7 +286,7 @@ public class AgentPlannerService : IAgentPlannerService
             {
                 return (false, null, $"The AI response delegated to an unrecognised agent: '{step.Agent}'.");
             }
-            if (string.IsNullOrWhiteSpace(step.Task))
+            if (string.IsNullOrWhiteSpace(step.Task) || step.Task.Length > 500)
             {
                 return (false, null, "The AI response contained a step with no task description.");
             }
@@ -300,6 +302,8 @@ public class AgentPlannerService : IAgentPlannerService
             return (false, null, $"The AI response did not delegate to every required agent (missing: {string.Join(", ", missingAgents)}).");
         }
 
+        if (plan.Steps.Count != 3 || !plan.Steps.Select(s => s.Agent).SequenceEqual(new[] { "DomainAnalysis", "ActionTool", "Validation" }))
+            return (false, null, "Plan must contain exactly the three required steps in order.");
         return (true, plan, null);
     }
 
@@ -327,6 +331,8 @@ public class AgentPlannerService : IAgentPlannerService
             Summary = workflow.PlanSummary,
             Steps = steps,
             Status = workflow.Status.ToString(),
+            ExecutionStatus = workflow.ExecutionStatus, TriageTicketId = workflow.TriageTicketId,
+            Execution = JsonSerializer.Deserialize<object>(workflow.ExecutionJson),
             ErrorMessage = workflow.ErrorMessage,
             ModelUsed = workflow.ModelUsed,
             ToolCallSummary = workflow.ToolCallSummary,

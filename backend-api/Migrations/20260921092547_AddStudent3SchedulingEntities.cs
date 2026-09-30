@@ -11,6 +11,8 @@ namespace backend_api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // DoctorProfiles is introduced by the later merged staff migration.
+            // Its foreign keys are installed in IntegratedWorkflowSafety.
             migrationBuilder.CreateTable(
                 name: "AppointmentSlots",
                 columns: table => new
@@ -29,12 +31,6 @@ namespace backend_api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AppointmentSlots", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AppointmentSlots_DoctorProfiles_DoctorId",
-                        column: x => x.DoctorId,
-                        principalTable: "DoctorProfiles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,12 +51,6 @@ namespace backend_api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ClinicRosters", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ClinicRosters_DoctorProfiles_DoctorId",
-                        column: x => x.DoctorId,
-                        principalTable: "DoctorProfiles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

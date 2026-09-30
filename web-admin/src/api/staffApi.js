@@ -51,3 +51,8 @@ export const deleteNurse = async (id) => {
 export const restoreNurse = async (id) => {
   await apiClient.put(`/nurses/${id}/restore`);
 };
+
+export async function setNurseAvailability(id, isAvailable) {
+  const response = await apiClient.put(`/dispatch/nurses/${id}/availability`, { isAvailable });
+  return response.data;
+}

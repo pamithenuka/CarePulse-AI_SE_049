@@ -1,3 +1,4 @@
+using CarePulse.Api.Tests.Fakes;
 using CarePulse.Api.Controllers;
 using CarePulse.Api.DTOs;
 using CarePulse.Api.Entities;
@@ -45,10 +46,10 @@ public class AppointmentBookingTests
     {
         var slotId = await SeedOpenSlot();
         using var context = _fixture.CreateContext();
-        var controller = new AppointmentsController(context);
+        var controller = new AppointmentsController(context).As();
 
         var result = await controller.BookAppointment(
-            new BookAppointmentRequestDto(slotId, Guid.NewGuid()));
+            new BookAppointmentRequestDto(slotId, await TestActors.Patient(context)));
 
         Assert.IsType<OkObjectResult>(result.Result);
     }
@@ -60,15 +61,15 @@ public class AppointmentBookingTests
 
         using (var firstContext = _fixture.CreateContext())
         {
-            var firstController = new AppointmentsController(firstContext);
+            var firstController = new AppointmentsController(firstContext).As();
             await firstController.BookAppointment(
-                new BookAppointmentRequestDto(slotId, Guid.NewGuid()));
+                new BookAppointmentRequestDto(slotId, await TestActors.Patient(firstContext)));
         }
 
         using var secondContext = _fixture.CreateContext();
-        var secondController = new AppointmentsController(secondContext);
+        var secondController = new AppointmentsController(secondContext).As();
         var result = await secondController.BookAppointment(
-            new BookAppointmentRequestDto(slotId, Guid.NewGuid()));
+            new BookAppointmentRequestDto(slotId, await TestActors.Patient(secondContext)));
 
         Assert.IsType<ConflictObjectResult>(result.Result);
     }
@@ -90,13 +91,14 @@ public class AppointmentBookingTests
         Assert.NotNull(slotSeenByA);
         Assert.NotNull(slotSeenByB);
 
-        var controllerA = new AppointmentsController(contextA);
-        var controllerB = new AppointmentsController(contextB);
+        var patientId = await TestActors.Patient(contextA);
+        var controllerA = new AppointmentsController(contextA).As();
+        var controllerB = new AppointmentsController(contextB).As();
 
         var resultA = await controllerA.BookAppointment(
-            new BookAppointmentRequestDto(slotId, Guid.NewGuid()));
+            new BookAppointmentRequestDto(slotId, patientId));
         var resultB = await controllerB.BookAppointment(
-            new BookAppointmentRequestDto(slotId, Guid.NewGuid()));
+            new BookAppointmentRequestDto(slotId, patientId));
 
         var outcomes = new object?[] { resultA.Result, resultB.Result };
         Assert.Single(outcomes, r => r is OkObjectResult);

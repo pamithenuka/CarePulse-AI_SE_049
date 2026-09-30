@@ -1,79 +1,48 @@
-# CarePulse: Shared Developer & Architecture Guide
-**Software Engineering Frameworks (SE3090) — 2026**
+# CarePulse developer guide
 
-This document serves as the single source of truth for all team members (and AI coding assistants) working on the CarePulse monorepo.
+For reproducible commands and environment variables, start with [README](../README.md). For database preservation, use [DATABASE_UPGRADE](DATABASE_UPGRADE.md). The older project specification describes the intended design; [IMPLEMENTATION_STATUS](IMPLEMENTATION_STATUS.md) records actual behavior and verification.
 
----
+## Integration contracts
 
-## 1. Project Stack & Core Setup
-- **Backend API:** ASP.NET Core Web API (C# .NET 8.0) inside `backend-api/`
-- **Database:** PostgreSQL running locally on port `5432` (`carepulse_dev_db`)
-- **ORM:** Entity Framework Core v8.0 with Npgsql provider
-- **Web App:** React (Functional components + Hooks) inside `web-admin/`
-- **Mobile App:** Flutter / Dart inside `mobile-app/`
-- **Authentication:** JWT Bearer tokens + ASP.NET Core Identity
-- **Logging & Docs:** Serilog console logging + Swagger UI (`http://localhost:5000/swagger`)
+- One API root: `/api/v1`. Both clients send the same Identity-issued JWT. Public registration is Patient-only. Admin provisions staff; active doctor/nurse profiles are checked even for an existing token.
+- Resource IDs are different: Identity `UserId` is a string; patient/doctor/nurse profile IDs, slot IDs and dispatch IDs are GUIDs. Never substitute one for another or use a demo ID.
+- The patient profile owns triage and bookings. A consultation derives its patient/doctor from the booked slot. Nurses can read/update only their own dispatches. Doctor approval records the acting user; assignment requires that approving doctor or Admin.
+- UI success follows a successful API response. HTTP 400 means validation; 401 means reauthenticate; 403 means forbidden; 409 means refresh/reconcile state, not blindly repeat a new action.
+- Store timestamps in UTC. Roster dates/times and AI date filters use Asia/Colombo; display the chosen timezone clearly. Booking past slots and premature consultation completion are rejected.
+- `xmin` protects concurrent booking/triage/nurse/dispatch/workflow updates. DB uniqueness also prevents duplicate active nurse assignments, duplicate case dispatch and duplicate completion vitals. Business commands and workflow events save atomically.
+- Medical files have no public URL. Use the JWT-protected download action. Never put uploads back in static hosting or Git.
 
----
+## Executing workflow
 
-## 2. Monorepo Directory Layout
-```text
-SE3090_G07/
-├── .github/workflows/ci.yml   <-- Automated CI build & test workflow
-├── backend-api/               <-- ASP.NET Core REST API & AI Orchestrator
-│   ├── Data/                  <-- CarePulseDbContext (EF Core)
-│   ├── Entities/Base/         <-- BaseEntity (Audit fields)
-│   ├── Middleware/            <-- GlobalExceptionMiddleware
-│   └── Program.cs             <-- Service DI & JWT configuration
-├── web-admin/                 <-- React Web Application
-├── mobile-app/                <-- Flutter Mobile Application
-├── tests/                     <-- C# xUnit Test Suites
-└── docs/                      <-- Project ADRs & Traceability Matrix
+```mermaid
+flowchart LR
+  P[Patient submits symptoms] --> C[Planner: validated delegation]
+  C --> D[Domain analysis: bounded risk assessment]
+  D --> A[Action agent: read-only slot search]
+  A --> V[Safety: deterministic rules plus optional Gemini]
+  V --> H{Doctor review required?}
+  H -->|Yes| Q[Persist review queue]
+  Q --> R[Doctor approves or rejects]
+  R --> W[Approved case waits for nurse]
+  W --> N[Authorized assignment with safety acknowledgement]
+  N --> L[Assigned nurse sends GPS and confirms arrival]
+  L --> F[Persist vitals and release nurse]
+  F --> U[Patient sees completed visit]
+  H -->|No| U
+```
 
-3. Core Database & Base Entity Rules
-All PostgreSQL entity models MUST inherit from CarePulse.Api.Entities.Base.BaseEntity:
-C#
+`TriageWorkflowRunner` executes the four steps and links `AiWorkflow.TriageTicketId`. Scheduling uses a typed allow-listed search for this workflow; the separate natural-language search endpoint uses Gemini function calling. Standalone plan creation remains planning-only and cannot approve a linked triage workflow.
 
-public abstract class BaseEntity
-{
-    public Guid Id { get; set; } = Guid.NewGuid();
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-    public bool IsDeleted { get; set; } = false;
-}
-* Primary Keys: Must be Guid.
-* Soft deletes are automatically handled via global query filters in CarePulseDbContext.cs.
-* Register all entity sets inside Data/CarePulseDbContext.cs.
-4. Installed Packages in backend-api.csproj
-* Microsoft.EntityFrameworkCore (v8.0.0)
-* Npgsql.EntityFrameworkCore.PostgreSQL (v8.0.0)
-* Microsoft.AspNetCore.Identity.EntityFrameworkCore (v8.0.0)
-* Microsoft.AspNetCore.Authentication.JwtBearer (v8.0.0)
-* Swashbuckle.AspNetCore (v6.5.0)
-* Serilog.AspNetCore (v8.0.0)
-5. Team Component Ownership Matrix
-Student 1: Patient Identity, Medical Records & Document Vault
-* Entities: PatientProfiles, MedicalHistories, EmergencyContacts, MedicalDocuments
-* API Endpoints: POST /api/v1/patients/profile, GET /api/v1/patients/{id}/profile, PUT /api/v1/patients/{id}/history, POST /api/v1/patients/{id}/documents, POST /api/v1/patients/{id}/emergency-broadcast
-* AI Agent: Agent 1 (Planner Agent)
-Student 2: AI Triage Ingestion, Risk Assessment & Approval Queue
-* Entities: TriageTickets, AiTriageLogs, RiskAssessments, ApprovalQueues
-* API Endpoints: POST /api/v1/triage/submit, GET /api/v1/triage/pending-approvals, GET /api/v1/triage/{id}/audit-log, DELETE /api/v1/triage/{id}, POST /api/v1/triage/{id}/approve
-* AI Agent: Agent 2 (Domain Analysis Agent)
-Student 3: Doctor Rostering, Clinic Scheduling & Consultations
-* Entities: DoctorProfiles, ClinicRosters, AppointmentSlots, ConsultationRecords
-* API Endpoints: GET /api/v1/doctors/slots, POST /api/v1/appointments/book, PUT /api/v1/doctors/roster, GET /api/v1/consultations/{id}, POST /api/v1/consultations/complete
-* AI Agent: Agent 3 (Action / Tool Agent)
-Student 4 (Leader): Field Nurse Dispatch, GPS Operations & Safety Validation
-* Entities: NurseProfiles, DispatchTickets, RouteLogs, OnSiteVitalsRecords
-* API Endpoints: POST /api/v1/dispatch/assign, PUT /api/v1/dispatch/{id}/location, GET /api/v1/dispatch/active, GET /api/v1/dispatch/{id}/vitals, POST /api/v1/dispatch/{id}/complete-onsite
-* AI Agent: Agent 4 (Validation & Safety Agent)
-6. Shared Integration & Safety Rules
-1. Mandatory Doctor Approval Gate: Triage requests flagged as emergency MUST set status to "NEEDS_DOCTOR_APPROVAL". Emergency dispatches cannot execute without an authorized Doctor calling POST /api/v1/triage/{id}/approve. 
-2. Dispatch Lifecycle: Assigned $\rightarrow$ EnRoute $\rightarrow$ ArrivedOnSite $\rightarrow$ Completed (or Escalated).
-3. Role Authorization: Use ASP.NET Core attributes: [Authorize(Roles = "Patient")], [Authorize(Roles = "Doctor")], [Authorize(Roles = "Nurse")], [Authorize(Roles = "Admin")].
-7. Git & Development Guidelines
-* Integration Branch: develop
-* Feature Branches: feature/student1-patient-module, feature/student2-triage-module, feature/student3-roster-module, feature/student4-dispatch-module
-* Run local backend: dotnet run --project backend-api/backend-api.csproj
-* Access Swagger API docs: http://localhost:5000/swaggerEOF
+`ExecutionJson` stores structured summaries, tool outcomes and timing, not hidden chain-of-thought. Human approvals, assignment, escalation and completion append events. Model failures require clinical review; they never dispatch automatically. A periodic recovery worker marks Running workflows older than ten minutes for manual review. It does not replay writes or promise continuation of an interrupted model call. The worker is disabled in the Testing host; its recovery method is tested directly. A crash before the triage link is saved may leave only the workflow record; inspect it before resubmitting.
+
+## AI boundaries
+
+All active providers use `AI:GeminiApiKey` and `AI:GeminiModel`. Gemini transport has a 45-second budget and at most one retry for 429/5xx; safety's Semantic Kernel call has its own 30-second bound and rule fallback. Model JSON is parsed and validated; tool names/arguments are allow-listed. Provider content cannot grant roles, approve a case or book a slot. Safety warnings require an explicit human acknowledgement at assignment.
+
+Email/long-identifier minimization is **not** full anonymization of arbitrary prose. Names, addresses and clinical details can remain. No universal privacy interception agent or proven clinical classifier is implemented. Use synthetic data for evaluation and obtain a real data-governance design before processing real patient records with external models. Structured JSON constrains syntax, not medical truth; see [Gemini structured output](https://ai.google.dev/gemini-api/docs/structured-output) and [safety guidance](https://ai.google.dev/gemini-api/docs/safety-guidance).
+
+## Development and review
+
+Use feature branches and review into develop, then main. One migration snapshot lives under Data/Migrations even though historical migration files are in two directories. Do not scaffold migrations from stale snapshots. Run backend PostgreSQL tests and affected client checks before sharing; CI includes all three applications. Never pass the shared Neon connection as `CAREPULSE_TEST_CONNECTION`.
+
+The audit introduced broad integration changes. Each student should run their own manual cases, inspect the related diff and explain it in their own words. Keep actual commits/PRs/reviews, AI-assistance logs, measured results and screenshots. Do not label simulated SMS/straight-line ETA as production integrations or deterministic provider fakes as live-model evaluation.

@@ -27,6 +27,7 @@ public class StaffRegistrationService : IStaffRegistrationService
             return ServiceResult<DoctorProfileDto>.Fail(ServiceErrorType.Conflict, "An account with this email already exists.");
         }
 
+        await using var transaction = _db.Database.IsRelational() ? await _db.Database.BeginTransactionAsync() : null;
         var user = new ApplicationUser { UserName = dto.Email, Email = dto.Email, FullName = dto.FullName, EmailConfirmed = true };
         var createResult = await _userManager.CreateAsync(user, dto.Password);
         if (!createResult.Succeeded)
@@ -34,7 +35,8 @@ public class StaffRegistrationService : IStaffRegistrationService
             return ServiceResult<DoctorProfileDto>.Fail(
                 ServiceErrorType.ValidationFailed, string.Join(" ", createResult.Errors.Select(e => e.Description)));
         }
-        await _userManager.AddToRoleAsync(user, "Doctor");
+        var roleResult = await _userManager.AddToRoleAsync(user, "Doctor");
+        if (!roleResult.Succeeded) throw new InvalidOperationException("Could not assign the Doctor role.");
 
         var profile = new DoctorProfile
         {
@@ -48,6 +50,7 @@ public class StaffRegistrationService : IStaffRegistrationService
         _db.DoctorProfiles.Add(profile);
         await _db.SaveChangesAsync();
 
+        if (transaction != null) await transaction.CommitAsync();
         return ServiceResult<DoctorProfileDto>.Success(MapDoctor(profile));
     }
 
@@ -58,6 +61,7 @@ public class StaffRegistrationService : IStaffRegistrationService
             return ServiceResult<NurseProfileDto>.Fail(ServiceErrorType.Conflict, "An account with this email already exists.");
         }
 
+        await using var transaction = _db.Database.IsRelational() ? await _db.Database.BeginTransactionAsync() : null;
         var user = new ApplicationUser { UserName = dto.Email, Email = dto.Email, FullName = dto.FullName, EmailConfirmed = true };
         var createResult = await _userManager.CreateAsync(user, dto.Password);
         if (!createResult.Succeeded)
@@ -65,7 +69,8 @@ public class StaffRegistrationService : IStaffRegistrationService
             return ServiceResult<NurseProfileDto>.Fail(
                 ServiceErrorType.ValidationFailed, string.Join(" ", createResult.Errors.Select(e => e.Description)));
         }
-        await _userManager.AddToRoleAsync(user, "Nurse");
+        var roleResult = await _userManager.AddToRoleAsync(user, "Nurse");
+        if (!roleResult.Succeeded) throw new InvalidOperationException("Could not assign the Nurse role.");
 
         var profile = new NurseProfiles
         {
@@ -79,6 +84,7 @@ public class StaffRegistrationService : IStaffRegistrationService
         _db.NurseProfiles.Add(profile);
         await _db.SaveChangesAsync();
 
+        if (transaction != null) await transaction.CommitAsync();
         return ServiceResult<NurseProfileDto>.Success(MapNurse(profile));
     }
 
@@ -135,6 +141,9 @@ public class StaffRegistrationService : IStaffRegistrationService
         {
             return ServiceResult<bool>.Fail(ServiceErrorType.NotFound, "Doctor not found.");
         }
+        if (await _db.DispatchTickets.AnyAsync(d => d.DoctorId == id && d.Status != "Completed") ||
+            await _db.AppointmentSlots.AnyAsync(s => s.DoctorId == id && s.Status == CarePulse.Api.Entities.SlotStatus.Booked && s.SlotStart >= DateTime.UtcNow))
+            return ServiceResult<bool>.Fail(ServiceErrorType.Conflict, "Resolve active dispatches and future bookings before deleting this doctor.");
         doctor.IsDeleted = true;
         await _db.SaveChangesAsync();
         return ServiceResult<bool>.Success(true);
@@ -159,6 +168,8 @@ public class StaffRegistrationService : IStaffRegistrationService
         {
             return ServiceResult<bool>.Fail(ServiceErrorType.NotFound, "Nurse not found.");
         }
+        if (await _db.DispatchTickets.AnyAsync(d => d.NurseId == id && d.Status != "Completed"))
+            return ServiceResult<bool>.Fail(ServiceErrorType.Conflict, "Complete or transfer active dispatches before deleting this nurse.");
         nurse.IsDeleted = true;
         await _db.SaveChangesAsync();
         return ServiceResult<bool>.Success(true);

@@ -4,6 +4,8 @@ namespace CarePulse.Api.Entities;
 
 public class TriageTicket : BaseEntity
 {
+    [System.ComponentModel.DataAnnotations.Timestamp]
+    public uint RowVersion { get; set; }
     public Guid PatientProfileId { get; set; }
     public string Symptoms { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
@@ -14,6 +16,10 @@ public class TriageTicket : BaseEntity
     public string Reason { get; set; } = string.Empty;
     public bool FollowUpRecommended { get; set; }
     public string RecommendedSpecialty { get; set; } = string.Empty;
+
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
+    public bool AssessmentFailed { get; set; }
 
     // Navigation properties
     public ICollection<AiTriageLog> AiTriageLogs { get; set; } = new List<AiTriageLog>();

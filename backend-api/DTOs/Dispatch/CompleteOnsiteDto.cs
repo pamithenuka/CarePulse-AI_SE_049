@@ -15,10 +15,15 @@ public class CompleteOnsiteDtoValidator : AbstractValidator<CompleteOnsiteDto>
 {
     public CompleteOnsiteDtoValidator()
     {
-        RuleFor(x => x.HeartRate).GreaterThan(0);
-        RuleFor(x => x.BloodPressure).NotEmpty().Matches(@"^\d{2,3}\/\d{2,3}$").WithMessage("Format must be Systolic/Diastolic (e.g., 120/80)");
+        RuleFor(x => x.HeartRate).InclusiveBetween(0, 350);
+        RuleFor(x => x.BloodPressure).NotEmpty().Must(value =>
+        {
+            var parts = value?.Split('/');
+            return parts?.Length == 2 && int.TryParse(parts[0], out var systolic) && int.TryParse(parts[1], out var diastolic)
+                && systolic >= 0 && systolic <= 350 && diastolic >= 0 && diastolic <= systolic;
+        }).WithMessage("Use systolic/diastolic in 0–350 mmHg with systolic at least diastolic.");
         RuleFor(x => x.BodyTempC).InclusiveBetween(30, 45); // Reasonable limits
         RuleFor(x => x.OxygenSaturation).InclusiveBetween(0, 100);
-        RuleFor(x => x.ClinicalNotes).NotEmpty();
+        RuleFor(x => x.ClinicalNotes).NotEmpty().MaximumLength(2000);
     }
 }

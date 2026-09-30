@@ -15,13 +15,18 @@ public enum AiPlanReviewStatus
 }
 
 /// <summary>
-/// One record per Agent 1 (Planner/Coordinator) invocation. Immutable audit-style
-/// record — intentionally does NOT inherit BaseEntity (no soft delete), matching
-/// EmergencyAlertLog: a workflow run must never be hidden or edited, only reviewed.
+/// One durable record per planner invocation. Execution state advances with business
+/// commands; execution summaries are appended. No soft delete: workflow history is retained.
 /// </summary>
 public class AiWorkflow
 {
+    [System.ComponentModel.DataAnnotations.Timestamp]
+    public uint RowVersion { get; set; }
     public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid? TriageTicketId { get; set; }
+    public string ExecutionStatus { get; set; } = "PlanOnly";
+    public string ExecutionJson { get; set; } = "[]";
+    public DateTime? FinishedAt { get; set; }
     public Guid PatientProfileId { get; set; }
 
     public string Objective { get; set; } = string.Empty;

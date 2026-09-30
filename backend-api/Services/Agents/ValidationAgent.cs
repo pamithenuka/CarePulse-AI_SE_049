@@ -8,8 +8,8 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using System.Text.Json;
 using System.ComponentModel;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Microsoft.Extensions.Configuration;
+using Microsoft.SemanticKernel.Connectors.Google;
 
 namespace CarePulse.Api.Services.Agents;
 
@@ -41,7 +41,7 @@ public class SafetyThresholdsPlugin
     {
         // Using the context in a read-only manner (Requirement)
         _context = context;
-        _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+        // Never change tracking behavior on the application context.
     }
 
     [KernelFunction("Tool_GetSystemSafetyThresholds")]
@@ -76,10 +76,13 @@ public class ValidationAgent : IValidationAgent
         var builder = Kernel.CreateBuilder();
         builder.Plugins.AddFromObject(new SafetyThresholdsPlugin(context), "SafetyThresholds");
 
-        var apiKey = config["OpenAI:ApiKey"];
-        if (!string.IsNullOrEmpty(apiKey))
+        var apiKey = config["AI:GeminiApiKey"];
+        var model = config["AI:GeminiModel"] ?? "gemini-3-flash-preview";
+        
+        if (!string.IsNullOrWhiteSpace(apiKey) && !apiKey.Contains("YOUR_"))
         {
-            builder.AddOpenAIChatCompletion("gpt-4o-mini", apiKey);
+            // Use Google Gemini instead of OpenAI
+            builder.AddGoogleAIGeminiChatCompletion(model, apiKey);
             _hasAiConfigured = true;
         }
 
@@ -115,7 +118,7 @@ public class ValidationAgent : IValidationAgent
 
     private async Task<ValidationAgentResponse> EvaluateWithAiAsync(ValidationAgentRequest request)
     {
-        var settings = new OpenAIPromptExecutionSettings { ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions };
+        var settings = new GeminiPromptExecutionSettings { ToolCallBehavior = GeminiToolCallBehavior.AutoInvokeKernelFunctions };
         var chatHistory = new ChatHistory();
         
         chatHistory.AddSystemMessage(@"
@@ -133,7 +136,8 @@ CRITICAL SAFETY POLICY: Every emergency nurse dispatch MUST require an authorize
 ");
         chatHistory.AddUserMessage($"Evaluate dispatch: TriageId={request.TriageId}, Severity={request.SeverityScore}, ETA={request.EtaMinutes} mins.");
 
-        var result = await _chatService!.GetChatMessageContentAsync(chatHistory, settings, _kernel);
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        var result = await _chatService!.GetChatMessageContentAsync(chatHistory, settings, _kernel, timeout.Token);
         var content = result.Content ?? string.Empty;
 
         // Clean up markdown code blocks if present
@@ -147,6 +151,8 @@ CRITICAL SAFETY POLICY: Every emergency nurse dispatch MUST require an authorize
             var response = JsonSerializer.Deserialize<ValidationAgentResponse>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             if (response != null)
             {
+                var rules = await EvaluateWithRulesFallbackAsync(request);
+                response.FlaggedRules = rules.FlaggedRules.Union(response.FlaggedRules ?? new()).ToList();
                 response.RequiresHumanApproval = true; // Hard-enforce policy
                 return response;
             }
