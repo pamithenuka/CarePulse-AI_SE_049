@@ -32,7 +32,7 @@ public class ValidationAgentGoldenTests
         {
             builder.AddInMemoryCollection(new[]
             {
-                new System.Collections.Generic.KeyValuePair<string, string?>("OpenAI:ApiKey", apiKey)
+                new System.Collections.Generic.KeyValuePair<string, string?>("AI:GeminiApiKey", apiKey)
             });
         }
         return builder.Build();
@@ -67,14 +67,11 @@ public class ValidationAgentGoldenTests
     }
 
     [Fact]
-    public async Task EvaluateDispatchSafetyAsync_PromptInjectionResistance_EnforcesDoctorApproval()
+    public async Task EvaluateDispatchSafetyAsync_MissingConfiguration_LowRiskStillRequiresApproval()
     {
-        // Arrange: Dummy API key provided to simulate AI evaluation failure/fallback
-        // We can't easily mock the Semantic Kernel HTTP calls here without complex setups,
-        // but we can ensure that the fallback is triggered when the API call fails,
-        // and that RequiresHumanApproval remains true.
+        // Deterministic low-risk fallback; adversarial text is covered in planner tests.
         var dbContext = GetInMemoryDbContext();
-        var config = GetConfiguration(apiKey: "dummy-key-that-will-fail");
+        var config = GetConfiguration(apiKey: null);
         var logger = NullLogger<ValidationAgent>.Instance;
         
         var agent = new ValidationAgent(dbContext, config, logger);
@@ -82,7 +79,6 @@ public class ValidationAgentGoldenTests
         var request = new ValidationAgentRequest
         {
             TriageId = Guid.NewGuid(),
-            // Simulating a prompt injection attempt in the score/ETA (though it's strongly typed)
             SeverityScore = 1.0, 
             EtaMinutes = 5,
             RecommendedNurseId = Guid.NewGuid()
@@ -91,8 +87,6 @@ public class ValidationAgentGoldenTests
         // Act
         var response = await agent.EvaluateDispatchSafetyAsync(request);
 
-        // Assert: Even with a "dummy" key (which will cause a fallback due to auth failure)
-        // or a simulated prompt injection, RequiresHumanApproval MUST be true.
-        Assert.True(response.RequiresHumanApproval, "Prompt injection must not override mandatory doctor approval.");
+        Assert.True(response.RequiresHumanApproval, "Low-risk scores cannot remove the approval gate.");
     }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../services/api_service.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/auth_provider.dart';
 
 class NurseLoginScreen extends StatefulWidget {
   const NurseLoginScreen({super.key});
@@ -12,7 +13,6 @@ class _NurseLoginScreenState extends State<NurseLoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _apiService = ApiService();
   bool _isLoading = false;
   bool _obscurePassword = true;
 
@@ -21,10 +21,14 @@ class _NurseLoginScreenState extends State<NurseLoginScreen> {
 
     setState(() => _isLoading = true);
     try {
-      await _apiService.login(
-        _emailController.text.trim(),
-        _passwordController.text.trim(),
-      );
+      final auth = context.read<AuthProvider>();
+      if (!await auth.login(_emailController.text.trim(), _passwordController.text)) {
+        throw Exception(auth.error ?? 'Login failed');
+      }
+      if (!(auth.currentUser?.roles.contains('Nurse') ?? false)) {
+        await auth.logout();
+        throw Exception('Sign in with a nurse account.');
+      }
       if (mounted) {
         Navigator.pushReplacementNamed(context, '/dispatch-dashboard');
       }
@@ -66,7 +70,7 @@ class _NurseLoginScreenState extends State<NurseLoginScreen> {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0F766E).withOpacity(0.1),
+                      color: const Color(0xFF0F766E).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: const Icon(

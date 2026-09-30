@@ -1,3 +1,5 @@
+import 'package:provider/provider.dart';
+import '../providers/patient_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../api/api_client.dart';
@@ -5,8 +7,6 @@ import '../models/doctor.dart';
 import '../models/slot.dart';
 import '../theme/app_theme.dart';
 
-// Placeholder until Student 1's patient module (login/profile) exists.
-const _demoPatientId = '11111111-1111-1111-1111-111111111111';
 
 class BookingScreen extends StatefulWidget {
   final Doctor doctor;
@@ -41,11 +41,11 @@ class _BookingScreenState extends State<BookingScreen> {
         doctorId: widget.doctor.id,
         date: _selectedDate,
       );
-      setState(() => _slots = slots);
+      if (mounted) setState(() => _slots = slots);
     } catch (e) {
-      setState(() => _error = e.toString());
+      if (mounted) setState(() => _error = e.toString());
     } finally {
-      setState(() => _loading = false);
+      if (mounted) setState(() => _loading = false);
     }
   }
 
@@ -66,6 +66,7 @@ class _BookingScreenState extends State<BookingScreen> {
         return;
       }
 
+      if (!mounted) return;
       final nextDate = upcoming.first.slotStart;
       setState(() {
         _selectedDate = DateTime(nextDate.year, nextDate.month, nextDate.day);
@@ -111,11 +112,13 @@ class _BookingScreenState extends State<BookingScreen> {
         ],
       ),
     );
-    if (confirmed != true) return;
+    if (confirmed != true || !mounted) return;
 
     setState(() => _bookingSlotId = slot.slotId);
     try {
-      await _api.bookAppointment(slotId: slot.slotId, patientId: _demoPatientId);
+      final patient = context.read<PatientProvider>().profile;
+      if (patient == null) throw ApiException('Complete your patient profile before booking.');
+      await _api.bookAppointment(slotId: slot.slotId, patientId: patient.id);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Appointment booked!'), backgroundColor: AppColors.open),
@@ -243,7 +246,7 @@ class _BookingScreenState extends State<BookingScreen> {
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
       itemCount: _slots.length + 1,
-      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      separatorBuilder: (_, _) => const SizedBox(height: 8),
       itemBuilder: (context, i) {
         if (i == 0) {
           return Padding(

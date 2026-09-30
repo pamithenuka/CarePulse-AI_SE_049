@@ -16,7 +16,7 @@ public class GeminiAiPlannerClient : IAiPlannerClient
     {
         _httpClient = httpClient;
         _logger = logger;
-        ModelName = configuration["AI:GeminiModel"] ?? "gemini-1.5-flash";
+        ModelName = configuration["AI:GeminiModel"] ?? "gemini-3-flash-preview";
         _apiKey = configuration["AI:GeminiApiKey"] ?? "";
     }
 
@@ -24,7 +24,7 @@ public class GeminiAiPlannerClient : IAiPlannerClient
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(_apiKey))
+            if (string.IsNullOrWhiteSpace(_apiKey) || _apiKey.Contains("YOUR_"))
                 return new AiPlanCompletionResult(false, null, "Gemini API Key is not configured.");
 
             var requestPayload = new
@@ -34,7 +34,7 @@ public class GeminiAiPlannerClient : IAiPlannerClient
                     new
                     {
                         role = "user",
-                        parts = new[] { new { text = userPrompt } }
+                        parts = new[] { new { text = GeminiTransport.Minimize(userPrompt) } }
                     }
                 },
                 system_instruction = new
@@ -47,26 +47,18 @@ public class GeminiAiPlannerClient : IAiPlannerClient
                 }
             };
 
-            var url = $"https://generativelanguage.googleapis.com/v1beta/models/{ModelName}:generateContent?key={_apiKey}";
-            var response = await _httpClient.PostAsJsonAsync(url, requestPayload, cancellationToken);
-            
-            if (!response.IsSuccessStatusCode)
-            {
-                var body = await response.Content.ReadAsStringAsync(cancellationToken);
-                _logger.LogWarning("Gemini returned {StatusCode}: {Body}", response.StatusCode, body);
-                return new AiPlanCompletionResult(false, null, $"Gemini returned HTTP {(int)response.StatusCode}.");
-            }
-
-            var responseJson = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: cancellationToken);
+            var body = await GeminiTransport.SendAsync(_httpClient, ModelName, _apiKey, JsonSerializer.Serialize(requestPayload), cancellationToken);
+            var responseJson = JsonSerializer.Deserialize<JsonElement>(body);
             var candidates = responseJson.GetProperty("candidates");
             if (candidates.GetArrayLength() == 0)
                 return new AiPlanCompletionResult(false, null, "No candidates returned from Gemini.");
 
-            var contentText = candidates[0]
+            var contentText = string.Concat(candidates[0]
                 .GetProperty("content")
-                .GetProperty("parts")[0]
-                .GetProperty("text")
-                .GetString();
+                .GetProperty("parts").EnumerateArray()
+                .Where(part => !(part.TryGetProperty("thought", out var thought) && thought.ValueKind == JsonValueKind.True))
+                .Where(part => part.TryGetProperty("text", out _))
+                .Select(part => part.GetProperty("text").GetString()));
 
             if (string.IsNullOrWhiteSpace(contentText))
                 return new AiPlanCompletionResult(false, null, "Empty response from Gemini.");
@@ -79,6 +71,11 @@ public class GeminiAiPlannerClient : IAiPlannerClient
 
             return new AiPlanCompletionResult(true, contentText, null);
         }
+        catch (GeminiProviderException ex)
+        {
+            _logger.LogWarning("Gemini rejected planning request with HTTP {StatusCode}.", (int)ex.StatusCode);
+            return new AiPlanCompletionResult(false, null, ex.Message);
+        }
         catch (TaskCanceledException)
         {
             _logger.LogWarning("Gemini request timed out.");
@@ -89,7 +86,7 @@ public class GeminiAiPlannerClient : IAiPlannerClient
             _logger.LogWarning(ex, "Could not reach Gemini.");
             return new AiPlanCompletionResult(false, null, "The AI planning service is unavailable.");
         }
-        catch (JsonException ex)
+        catch (Exception ex) when (ex is JsonException or InvalidOperationException or KeyNotFoundException)
         {
             _logger.LogWarning(ex, "Gemini returned unparsable JSON.");
             return new AiPlanCompletionResult(false, null, "The AI planning service returned an unreadable response.");

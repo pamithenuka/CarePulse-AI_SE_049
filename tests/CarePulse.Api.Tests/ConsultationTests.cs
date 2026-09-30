@@ -1,3 +1,4 @@
+using CarePulse.Api.Tests.Fakes;
 using CarePulse.Api.Controllers;
 using CarePulse.Api.DTOs;
 using CarePulse.Api.Entities;
@@ -27,12 +28,12 @@ public class ConsultationTests
         };
         context.DoctorProfiles.Add(doctor);
 
-        var patientId = Guid.NewGuid();
+        var patientId = await TestActors.Patient(context);
         var slot = new AppointmentSlot
         {
             DoctorId = doctor.Id,
-            SlotStart = DateTime.UtcNow.AddDays(1),
-            SlotEnd = DateTime.UtcNow.AddDays(1).AddMinutes(30),
+            SlotStart = DateTime.UtcNow.AddMinutes(-30),
+            SlotEnd = DateTime.UtcNow.AddMinutes(-30).AddMinutes(30),
             Status = SlotStatus.Booked,
             PatientId = patientId
         };
@@ -47,7 +48,7 @@ public class ConsultationTests
     {
         var (doctorId, slotId, patientId) = await SeedBookedSlot();
         using var context = _fixture.CreateContext();
-        var controller = new ConsultationsController(context);
+        var controller = new ConsultationsController(context).As();
 
         var result = await controller.CompleteConsultation(new ConsultationCompleteRequestDto(
             slotId, doctorId, patientId, "Patient is doing well.", null));
@@ -62,13 +63,13 @@ public class ConsultationTests
 
         using (var firstContext = _fixture.CreateContext())
         {
-            var firstController = new ConsultationsController(firstContext);
+            var firstController = new ConsultationsController(firstContext).As();
             await firstController.CompleteConsultation(new ConsultationCompleteRequestDto(
                 slotId, doctorId, patientId, "First visit note.", null));
         }
 
         using var secondContext = _fixture.CreateContext();
-        var secondController = new ConsultationsController(secondContext);
+        var secondController = new ConsultationsController(secondContext).As();
         var result = await secondController.CompleteConsultation(new ConsultationCompleteRequestDto(
             slotId, doctorId, patientId, "Accidental duplicate entry.", null));
 
@@ -91,14 +92,14 @@ public class ConsultationTests
         var openSlot = new AppointmentSlot
         {
             DoctorId = doctor.Id,
-            SlotStart = DateTime.UtcNow.AddDays(1),
-            SlotEnd = DateTime.UtcNow.AddDays(1).AddMinutes(30),
+            SlotStart = DateTime.UtcNow.AddMinutes(-30),
+            SlotEnd = DateTime.UtcNow.AddMinutes(-30).AddMinutes(30),
             Status = SlotStatus.Open
         };
         context.AppointmentSlots.Add(openSlot);
         await context.SaveChangesAsync();
 
-        var controller = new ConsultationsController(context);
+        var controller = new ConsultationsController(context).As();
         var result = await controller.CompleteConsultation(new ConsultationCompleteRequestDto(
             openSlot.Id, doctor.Id, Guid.NewGuid(), "Should not be allowed.", null));
 
@@ -113,7 +114,7 @@ public class ConsultationTests
         Guid createdId;
         using (var writeContext = _fixture.CreateContext())
         {
-            var writeController = new ConsultationsController(writeContext);
+            var writeController = new ConsultationsController(writeContext).As();
             var createResult = await writeController.CompleteConsultation(new ConsultationCompleteRequestDto(
                 slotId, doctorId, patientId, "Routine check-up.", "Paracetamol 500mg"));
 
@@ -123,7 +124,7 @@ public class ConsultationTests
         }
 
         using var readContext = _fixture.CreateContext();
-        var readController = new ConsultationsController(readContext);
+        var readController = new ConsultationsController(readContext).As();
         var getResult = await readController.GetConsultation(createdId);
 
         var getOk = Assert.IsType<OkObjectResult>(getResult);

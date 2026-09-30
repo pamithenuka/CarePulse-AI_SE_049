@@ -1,3 +1,5 @@
+import 'package:provider/provider.dart';
+import '../../../providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../services/api_service.dart';
@@ -13,6 +15,7 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen> {
   final ApiService _apiService = ApiService();
   List<dynamic> _dispatches = [];
   bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -21,32 +24,16 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen> {
   }
 
   Future<void> _loadDispatches() async {
-    setState(() => _isLoading = true);
+    setState(() { _isLoading = true; _error = null; });
     try {
       final data = await _apiService.getActiveDispatches();
+      if (!mounted) return;
       setState(() {
         _dispatches = data['tickets'] ?? [];
         _isLoading = false;
       });
     } catch (e) {
-      setState(() => _isLoading = false);
-      // Show demo data for standalone testing
-      setState(() {
-        _dispatches = [
-          {
-            'id': 'demo-1',
-            'status': 'Assigned',
-            'assignedAt': DateTime.now().toIso8601String(),
-            'triageTicketId': 'triage-001',
-          },
-          {
-            'id': 'demo-2',
-            'status': 'EnRoute',
-            'assignedAt': DateTime.now().subtract(const Duration(hours: 1)).toIso8601String(),
-            'triageTicketId': 'triage-002',
-          },
-        ];
-      });
+      if (mounted) setState(() { _isLoading = false; _error = e.toString(); _dispatches = []; });
     }
   }
 
@@ -112,20 +99,21 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen> {
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.white),
             onPressed: () async {
-              await _apiService.clearToken();
-              if (mounted) Navigator.pushReplacementNamed(context, '/login');
+              await context.read<AuthProvider>().logout();
+              if (context.mounted) Navigator.pushReplacementNamed(context, '/login');
             },
           ),
         ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: Color(0xFF0F766E)))
+          : _error != null ? Center(child: Text(_error!))
           : _dispatches.isEmpty
               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.inbox_outlined, size: 64, color: const Color(0xFF94A3B8).withOpacity(0.5)),
+                      Icon(Icons.inbox_outlined, size: 64, color: const Color(0xFF94A3B8).withValues(alpha: 0.5)),
                       const SizedBox(height: 16),
                       const Text(
                         'No active dispatches',
@@ -176,7 +164,7 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen> {
                                 leading: Container(
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
-                                    color: _statusColor(status).withOpacity(0.1),
+                                    color: _statusColor(status).withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Icon(_statusIcon(status), color: _statusColor(status)),
@@ -198,7 +186,7 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen> {
                               trailing: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                 decoration: BoxDecoration(
-                                  color: _statusColor(status).withOpacity(0.1),
+                                  color: _statusColor(status).withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(

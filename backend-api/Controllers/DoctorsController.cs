@@ -1,3 +1,5 @@
+using CarePulse.Api.Services.Common;
+using Microsoft.AspNetCore.Authorization;
 using CarePulse.Api.Data;
 using CarePulse.Api.DTOs;
 using CarePulse.Api.Entities;
@@ -6,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarePulse.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/v1/doctors")]
 public class DoctorsController : ControllerBase
@@ -23,7 +26,7 @@ public class DoctorsController : ControllerBase
     {
         var doctors = await _db.DoctorProfiles            
             .OrderBy(d => d.FullName)
-            .Select(d => new { d.Id, d.FullName, d.Specialty, d.PhoneNumber, d.Email })
+            .Select(d => new { d.Id, d.UserId, d.FullName, d.Specialty, d.PhoneNumber, d.Email })
             .ToListAsync();
 
         return Ok(doctors);
@@ -39,7 +42,7 @@ public class DoctorsController : ControllerBase
     {
         var query = _db.AppointmentSlots
             .Include(s => s.Doctor)
-            .Where(s => s.Status == SlotStatus.Open);
+            .Where(s => s.Status == SlotStatus.Open && s.SlotStart > DateTime.UtcNow);
 
         if (doctorId is not null)
         {
@@ -48,14 +51,14 @@ public class DoctorsController : ControllerBase
 
         if (date is not null)
         {
-            var dayStart = DateTime.SpecifyKind(date.Value.ToDateTime(TimeOnly.MinValue), DateTimeKind.Utc);
+            var dayStart = ClinicTime.ToUtc(date.Value, TimeSpan.Zero);
             var dayEnd = dayStart.AddDays(1);
             query = query.Where(s => s.SlotStart >= dayStart && s.SlotStart < dayEnd);
         }
 
         if (!string.IsNullOrWhiteSpace(specialty))
         {
-            query = query.Where(s => s.Doctor!.Specialty.ToLower() == specialty.ToLower());
+            query = query.Where(s => s.Doctor!.Specialty.Replace(" ", "_").ToLower() == specialty.Replace(" ", "_").ToLower());
         }
 
         var results = await query
@@ -88,15 +91,17 @@ public class DoctorsController : ControllerBase
 
     // POST /api/v1/doctors/{doctorId}/generate-slots
     [HttpPost("{doctorId}/generate-slots")]
+    [Authorize(Roles = "Doctor,Admin")]
     public async Task<IActionResult> GenerateSlots(Guid doctorId, [FromBody] GenerateSlotsRequestDto request)
     {
+        await _db.RequireDoctorAsync(User, doctorId);
         var doctor = await _db.DoctorProfiles.FindAsync(doctorId);
         if (doctor is null)
         {
             return NotFound($"Doctor {doctorId} not found.");
         }
 
-        if (request.EndDate < request.StartDate)
+        if (request.EndDate < request.StartDate || request.EndDate.DayNumber - request.StartDate.DayNumber > 90)
         {
             return BadRequest("EndDate must be on or after StartDate.");
         }
@@ -122,17 +127,17 @@ public class DoctorsController : ControllerBase
         {
             var roster = rosters.FirstOrDefault(r => r.DayOfWeek == date.DayOfWeek);
             if (roster is null) continue;
+            if (roster.SlotDurationMinutes < 5 || roster.SlotDurationMinutes > 240)
+                return BadRequest("Correct the invalid roster duration before generating slots.");
 
-            var slotStart = DateTime.SpecifyKind(
-                date.ToDateTime(TimeOnly.FromTimeSpan(roster.StartTime)), DateTimeKind.Utc);
-            var dayEnd = DateTime.SpecifyKind(
-                date.ToDateTime(TimeOnly.FromTimeSpan(roster.EndTime)), DateTimeKind.Utc);
+            var slotStart = ClinicTime.ToUtc(date, roster.StartTime);
+            var dayEnd = ClinicTime.ToUtc(date, roster.EndTime);
 
             while (slotStart.AddMinutes(roster.SlotDurationMinutes) <= dayEnd)
             {
                 var slotEnd = slotStart.AddMinutes(roster.SlotDurationMinutes);
 
-                if (!existingStarts.Contains(slotStart))
+                if (slotStart > DateTime.UtcNow && !existingStarts.Contains(slotStart))
                 {
                     newSlots.Add(new AppointmentSlot
                     {
@@ -156,14 +161,20 @@ public class DoctorsController : ControllerBase
 
     // PUT /api/v1/doctors/roster
     [HttpPut("roster")]
+    [Authorize(Roles = "Doctor,Admin")]
     public async Task<IActionResult> UpdateRoster([FromBody] RosterUpdateRequestDto request)
     {
+        if (!Enum.IsDefined(request.DayOfWeek) || request.SlotDurationMinutes < 5 || request.SlotDurationMinutes > 240 ||
+            request.StartTime < TimeSpan.Zero || request.EndTime > TimeSpan.FromDays(1) ||
+            request.EndTime - request.StartTime < TimeSpan.FromMinutes(request.SlotDurationMinutes))
+            return BadRequest("Use a valid weekday, a 5–240 minute slot, and a valid daily time range.");
         var doctorExists = await _db.DoctorProfiles.AnyAsync(d => d.Id == request.DoctorId);
         if (!doctorExists)
         {
             return NotFound($"Doctor {request.DoctorId} not found.");
         }
 
+        await _db.RequireDoctorAsync(User, request.DoctorId);
         if (request.StartTime >= request.EndTime)
         {
             return BadRequest("StartTime must be before EndTime.");

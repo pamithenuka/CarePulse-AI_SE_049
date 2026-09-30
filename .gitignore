@@ -66,3 +66,8 @@ Thumbs.db
 TestResults/
 coverage/
 *.trx
+
+# Machine-specific configuration and private medical uploads
+backend-api/appsettings.Local.json
+backend-api/App_Data/
+backend-api/wwwroot/uploads/

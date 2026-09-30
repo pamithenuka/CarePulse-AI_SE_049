@@ -1,3 +1,4 @@
+using CarePulse.Api.Tests.Fakes;
 using CarePulse.Api.Controllers;
 using CarePulse.Api.DTOs;
 using CarePulse.Api.Entities;
@@ -54,10 +55,10 @@ public class SlotGenerationTests
     public async Task GeneratingSlots_ForAWeekWithOneMonday_CreatesExpectedCount()
     {
         var doctorId = await SeedDoctorWithRoster();
-        var monday = NextMonday(DateOnly.FromDateTime(DateTime.UtcNow));
+        var monday = NextMonday(DateOnly.FromDateTime(DateTime.UtcNow.AddDays(1)));
 
         using var context = _fixture.CreateContext();
-        var controller = new DoctorsController(context);
+        var controller = new DoctorsController(context).As();
 
         var result = await controller.GenerateSlots(doctorId,
             new GenerateSlotsRequestDto(monday, monday.AddDays(6)));
@@ -71,18 +72,18 @@ public class SlotGenerationTests
     public async Task GeneratingSlots_TwiceForTheSameRange_DoesNotCreateDuplicates()
     {
         var doctorId = await SeedDoctorWithRoster();
-        var monday = NextMonday(DateOnly.FromDateTime(DateTime.UtcNow));
+        var monday = NextMonday(DateOnly.FromDateTime(DateTime.UtcNow.AddDays(1)));
         var request = new GenerateSlotsRequestDto(monday, monday.AddDays(6));
 
         using (var firstContext = _fixture.CreateContext())
         {
-            var firstController = new DoctorsController(firstContext);
+            var firstController = new DoctorsController(firstContext).As();
             await firstController.GenerateSlots(doctorId, request);
         }
 
         using (var secondContext = _fixture.CreateContext())
         {
-            var secondController = new DoctorsController(secondContext);
+            var secondController = new DoctorsController(secondContext).As();
             await secondController.GenerateSlots(doctorId, request);
         }
 

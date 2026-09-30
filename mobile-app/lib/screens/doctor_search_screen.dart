@@ -35,11 +35,11 @@ class _DoctorSearchScreenState extends State<DoctorSearchScreen> {
     });
     try {
       final doctors = await _api.getDoctors();
-      setState(() => _doctors = doctors);
+      if (mounted) setState(() => _doctors = doctors);
     } catch (e) {
-      setState(() => _error = e.toString());
+      if (mounted) setState(() => _error = e.toString());
     } finally {
-      setState(() => _loading = false);
+      if (mounted) setState(() => _loading = false);
     }
   }
 
@@ -130,7 +130,7 @@ class _DoctorSearchScreenState extends State<DoctorSearchScreen> {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: _specialties.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            separatorBuilder: (_, _) => const SizedBox(width: 8),
             itemBuilder: (context, i) {
               final specialty = _specialties[i];
               final selected = specialty == _selectedSpecialty;

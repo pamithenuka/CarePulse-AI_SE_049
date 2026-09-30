@@ -550,7 +550,7 @@ public class PatientService : IPatientService
             return ServiceResult<bool>.Fail(ServiceErrorType.ValidationFailed, "A patient must keep at least one emergency contact.");
         }
 
-        _db.EmergencyContacts.Remove(contact);
+        contact.IsDeleted = true;
         await _db.SaveChangesAsync();
 
         return ServiceResult<bool>.Success(true);
@@ -589,15 +589,29 @@ public class PatientService : IPatientService
             return ServiceResult<MedicalDocumentDto>.Fail(ServiceErrorType.Forbidden, "You are not allowed to upload documents for this patient.");
         }
 
-        if (file.Length == 0)
+        if (file.Length == 0 || file.Length > 10 * 1024 * 1024)
         {
-            return ServiceResult<MedicalDocumentDto>.Fail(ServiceErrorType.ValidationFailed, "The uploaded file is empty.");
+            return ServiceResult<MedicalDocumentDto>.Fail(ServiceErrorType.ValidationFailed, "Upload a non-empty file of at most 10 MB.");
         }
 
-        var webRoot = string.IsNullOrEmpty(_environment.WebRootPath)
-            ? Path.Combine(_environment.ContentRootPath, "wwwroot")
-            : _environment.WebRootPath;
+        var webRoot = Path.Combine(_environment.ContentRootPath, "App_Data");
 
+        var allowedTypes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        { [".pdf"] = "application/pdf", [".png"] = "image/png", [".jpg"] = "image/jpeg", [".jpeg"] = "image/jpeg" };
+        if (!allowedTypes.TryGetValue(Path.GetExtension(file.FileName), out var safeContentType))
+            return ServiceResult<MedicalDocumentDto>.Fail(ServiceErrorType.ValidationFailed, "Upload a PDF, PNG or JPEG file.");
+        await using (var input = file.OpenReadStream())
+        {
+            var header = new byte[8];
+            var count = await input.ReadAsync(header);
+            var valid = safeContentType switch
+            {
+                "application/pdf" => count >= 5 && System.Text.Encoding.ASCII.GetString(header, 0, 5) == "%PDF-",
+                "image/png" => count >= 8 && header.SequenceEqual(new byte[] {137,80,78,71,13,10,26,10}),
+                _ => count >= 3 && header[0] == 255 && header[1] == 216 && header[2] == 255
+            };
+            if (!valid) return ServiceResult<MedicalDocumentDto>.Fail(ServiceErrorType.ValidationFailed, "File content does not match its type.");
+        }
         var relativeDir = Path.Combine("uploads", "patients", patientProfileId.ToString());
         var absoluteDir = Path.Combine(webRoot, relativeDir);
         Directory.CreateDirectory(absoluteDir);
@@ -615,7 +629,7 @@ public class PatientService : IPatientService
             PatientProfileId = patientProfileId,
             FileName = file.FileName,
             FilePath = Path.Combine(relativeDir, storedFileName).Replace("\\", "/"),
-            ContentType = file.ContentType,
+            ContentType = safeContentType,
             DocumentType = documentType
         };
 
@@ -698,7 +712,22 @@ public class PatientService : IPatientService
         var webRoot = string.IsNullOrEmpty(_environment.WebRootPath)
             ? Path.Combine(_environment.ContentRootPath, "wwwroot")
             : _environment.WebRootPath;
-        var absolutePath = Path.Combine(webRoot, document.FilePath.Replace("/", Path.DirectorySeparatorChar.ToString()));
+        var privateRoot = Path.GetFullPath(Path.Combine(_environment.ContentRootPath, "App_Data"));
+        var relative = document.FilePath.Replace("/", Path.DirectorySeparatorChar.ToString());
+        var absolutePath = Path.GetFullPath(Path.Combine(privateRoot, relative));
+        if (!absolutePath.StartsWith(privateRoot + Path.DirectorySeparatorChar, StringComparison.Ordinal))
+            return ServiceResult<(string, string, string)>.Fail(ServiceErrorType.NotFound, "Document not found.");
+        // Existing uploads remain accessible only through this authorized endpoint.
+        if (!File.Exists(absolutePath))
+        {
+            var legacyRoot = Path.GetFullPath(webRoot);
+            var legacyPath = Path.GetFullPath(Path.Combine(legacyRoot, relative));
+            if (legacyPath.StartsWith(legacyRoot + Path.DirectorySeparatorChar, StringComparison.Ordinal) && File.Exists(legacyPath))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(absolutePath)!);
+                File.Copy(legacyPath, absolutePath, overwrite: false);
+            }
+        }
 
         if (!File.Exists(absolutePath))
         {
@@ -980,7 +1009,7 @@ public class PatientService : IPatientService
     {
         Id = document.Id,
         FileName = document.FileName,
-        FileUrl = $"/{document.FilePath}",
+        FileUrl = $"/api/v1/patients/{document.PatientProfileId}/documents/{document.Id}/download",
         DocumentType = document.DocumentType,
         CreatedAt = document.CreatedAt
     };

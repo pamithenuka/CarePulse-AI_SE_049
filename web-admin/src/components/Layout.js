@@ -17,6 +17,9 @@ export default function Layout() {
           <Link to="/emergency-alerts">Emergency Alerts</Link>
           <Link to="/dispatch">Dispatch Center</Link>
           <Link to="/triage">AI Triage</Link>
+          <Link to="/roster">Rosters</Link>
+          <Link to="/slots">Slots</Link>
+          <Link to="/consultations">Consultations</Link>
           {isAdmin && <Link to="/audit-log">Audit Log</Link>}
           {isAdmin && <Link to="/doctors">Doctors</Link>}
           {isAdmin && <Link to="/nurses">Nurses</Link>}

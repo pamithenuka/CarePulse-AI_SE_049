@@ -166,7 +166,9 @@ class _PlanCard extends StatelessWidget {
                 Icon(Icons.fact_check_outlined, size: 16, color: Theme.of(context).colorScheme.outline),
                 const SizedBox(width: 4),
                 Text(
-                  plan.reviewStatus == 'NotReviewed'
+                  plan.status != 'PlanCreated'
+                      ? 'Plan generation failed — please try again'
+                      : plan.reviewStatus == 'NotReviewed'
                       ? 'Awaiting doctor review'
                       : '${plan.reviewStatus}${plan.reviewedByName != null ? ' by ${plan.reviewedByName}' : ''}',
                   style: Theme.of(context).textTheme.bodySmall,

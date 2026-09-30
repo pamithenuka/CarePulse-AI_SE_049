@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { triageApi } from '../services/triageApi';
 import './DoctorApprovalModal.css';
+import { useAuth } from '../context/AuthContext';
 
 const DoctorApprovalModal = ({ triageCase, onClose, onApprove, onReject }) => {
+  const { hasRole } = useAuth();
+  const [workflow, setWorkflow] = useState(null);
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notes, setNotes] = useState('');
@@ -14,6 +17,7 @@ const DoctorApprovalModal = ({ triageCase, onClose, onApprove, onReject }) => {
       try {
         const data = await triageApi.getAuditLog(triageCase.id);
         setLogs(data);
+        setWorkflow(await triageApi.getStatus(triageCase.id));
       } catch (err) {
         console.error("Failed to fetch logs", err);
       } finally {
@@ -24,7 +28,7 @@ const DoctorApprovalModal = ({ triageCase, onClose, onApprove, onReject }) => {
   }, [triageCase.id]);
 
   const requireNotes = (actionLabel) => {
-    if (!notes.trim()) {
+    if (notes.trim().length < 3) {
       alert(`Please enter doctor's notes before ${actionLabel}.`);
       return false;
     }
@@ -84,6 +88,10 @@ const DoctorApprovalModal = ({ triageCase, onClose, onApprove, onReject }) => {
         </div>
 
         <div className="modal-body">
+          {workflow && <details><summary>Workflow: {workflow.workflowStatus}</summary>
+            {(workflow.execution || []).map((event, i) => <div key={i}><strong>{event.Step}</strong> — {new Date(event.At).toLocaleString()}<pre>{JSON.stringify(event.Result, null, 2)}</pre></div>)}
+          </details>}
+          {!hasRole('Doctor') && <p>Doctor approval requires signing in with a doctor account.</p>}
           <div className="case-details">
             <div className="detail-group">
               <label>Patient ID</label>
@@ -141,9 +149,9 @@ const DoctorApprovalModal = ({ triageCase, onClose, onApprove, onReject }) => {
               className="input-field" 
               rows="3" 
               placeholder="Enter clinical rationale for approval or rejection..."
-              value={notes}
+              maxLength={500} value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              disabled={submitting}
+              disabled={submitting || !hasRole('Doctor')}
             ></textarea>
           </div>
 
@@ -164,27 +172,27 @@ const DoctorApprovalModal = ({ triageCase, onClose, onApprove, onReject }) => {
               <button
                 className="btn btn-secondary"
                 onClick={() => setConfirmingReject(false)}
-                disabled={submitting}
+                disabled={submitting || !hasRole('Doctor')}
               >
                 Back
               </button>
               <button
                 className="btn btn-danger"
                 onClick={handleConfirmReject}
-                disabled={submitting}
+                disabled={submitting || !hasRole('Doctor')}
               >
                 {submitting ? 'Rejecting...' : 'Confirm Reject'}
               </button>
             </>
           ) : (
             <>
-              <button className="btn btn-secondary" onClick={onClose} disabled={submitting}>
+              <button className="btn btn-secondary" onClick={onClose} disabled={submitting || !hasRole('Doctor')}>
                 Cancel
               </button>
-              <button className="btn btn-danger" onClick={handleRejectClick} disabled={submitting}>
+              <button className="btn btn-danger" onClick={handleRejectClick} disabled={submitting || !hasRole('Doctor')}>
                 Reject
               </button>
-              <button className="btn btn-primary" onClick={handleApprove} disabled={submitting}>
+              <button className="btn btn-primary" onClick={handleApprove} disabled={submitting || !hasRole('Doctor')}>
                 {submitting ? 'Approving...' : 'Approve for Dispatch'}
               </button>
             </>

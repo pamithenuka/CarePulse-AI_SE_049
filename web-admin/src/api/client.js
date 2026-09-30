@@ -1,35 +1,12 @@
-const BASE_URL = 'http://localhost:5014/api/v1';
+import client from './apiClient';
 
 async function request(path, options = {}) {
-  const res = await fetch(`${BASE_URL}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
-    ...options
-  });
-
-  let body = null;
-  const text = await res.text();
-  if (text) {
-    try {
-      body = JSON.parse(text);
-    } catch {
-      body = text;
-    }
-  }
-
-  if (!res.ok) {
-    const message =
-      (body && (body.message || body.Message || body.title || body)) ||
-      `Request failed with status ${res.status}`;
-    const error = new Error(typeof message === 'string' ? message : JSON.stringify(message));
-    error.status = res.status;
-    error.body = body;
-    throw error;
-  }
-
-  return body;
+  const response = await client.request({ url: path, method: options.method || 'GET', data: options.body ? JSON.parse(options.body) : undefined });
+  return response.data;
 }
 
 export const api = {
+  getBooked: doctorId => request(`/appointments/booked?doctorId=${doctorId}`),
   getDoctors: () => request('/doctors'),
 
   getRoster: (doctorId) => request(`/doctors/${doctorId}/roster`),

@@ -1,6 +1,11 @@
+import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
+import '../providers/patient_provider.dart';
+import '../features/dispatch/services/location_service.dart';
 import 'package:flutter/material.dart';
 import '../services/triage_api_service.dart';
 import 'triage_status_screen.dart';
+import 'triage_history_screen.dart';
 
 class SymptomIntakeScreen extends StatefulWidget {
   const SymptomIntakeScreen({super.key});
@@ -29,11 +34,22 @@ class _SymptomIntakeScreenState extends State<SymptomIntakeScreen> {
     'Vomiting': false,
   };
 
-  // Mock patient ID for testing
-  final String _patientProfileId = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
+  Position? _position;
+  Future<void> _captureLocation() async {
+    try {
+      final location = LocationService();
+      if (!await location.requestPermission()) throw Exception('Enable location permission, or ask staff to confirm your destination.');
+      final position = await location.getCurrentPosition();
+      if (mounted) setState(() => _position = position);
+    } catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+  @override
+  void dispose() { _symptomsController.dispose(); super.dispose(); }
 
   Future<void> _submitTriage() async {
-    if (_symptomsController.text.isEmpty) {
+    if (_symptomsController.text.trim().length < 5) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please describe your symptoms.")),
       );
@@ -48,8 +64,11 @@ class _SymptomIntakeScreenState extends State<SymptomIntakeScreen> {
           .map((e) => e.key)
           .toList();
 
+      final patient = context.read<PatientProvider>().profile;
+      if (patient == null) throw Exception('Complete your patient profile first.');
       final result = await _apiService.submitTriage(
-        patientProfileId: _patientProfileId,
+        patientProfileId: patient.id,
+        latitude: _position?.latitude, longitude: _position?.longitude,
         symptoms: _symptomsController.text,
         duration: _selectedDuration,
         severity: _selectedSeverity,
@@ -60,7 +79,7 @@ class _SymptomIntakeScreenState extends State<SymptomIntakeScreen> {
       if (!mounted) return;
 
       // Navigate to status screen with the result
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => TriageStatusScreen(triageData: result),
@@ -81,6 +100,7 @@ class _SymptomIntakeScreenState extends State<SymptomIntakeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Report Symptoms'),
+        actions: [IconButton(icon: const Icon(Icons.history), tooltip: 'My cases', onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TriageHistoryScreen())))],
         backgroundColor: Colors.blue.shade800,
         foregroundColor: Colors.white,
       ),
@@ -96,7 +116,7 @@ class _SymptomIntakeScreenState extends State<SymptomIntakeScreen> {
             const SizedBox(height: 10),
             TextField(
               controller: _symptomsController,
-              maxLines: 4,
+              maxLines: 4, maxLength: 1000,
               decoration: InputDecoration(
                 hintText: "E.g., I have severe chest pain...",
                 border: OutlineInputBorder(
@@ -114,7 +134,7 @@ class _SymptomIntakeScreenState extends State<SymptomIntakeScreen> {
             ),
             const SizedBox(height: 10),
             DropdownButtonFormField<String>(
-              value: _selectedDuration,
+              initialValue: _selectedDuration,
               items: _durations.map((d) => DropdownMenuItem(value: d, child: Text(d))).toList(),
               onChanged: (val) => setState(() => _selectedDuration = val!),
               decoration: InputDecoration(
@@ -128,14 +148,10 @@ class _SymptomIntakeScreenState extends State<SymptomIntakeScreen> {
               "How severe is it?",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            Column(
-              children: _severities.map((s) => RadioListTile<String>(
-                title: Text(s),
-                value: s,
-                groupValue: _selectedSeverity,
-                onChanged: (val) => setState(() => _selectedSeverity = val!),
-                contentPadding: EdgeInsets.zero,
-              )).toList(),
+            DropdownButtonFormField<String>(
+              initialValue: _selectedSeverity,
+              items: _severities.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
+              onChanged: (value) => setState(() => _selectedSeverity = value!),
             ),
             const SizedBox(height: 10),
 
@@ -155,17 +171,11 @@ class _SymptomIntakeScreenState extends State<SymptomIntakeScreen> {
 
             const SizedBox(height: 20),
             OutlinedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Photo attachment not supported yet.")),
-                );
-              },
-              icon: const Icon(Icons.camera_alt),
-              label: const Text("Add Photo"),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.all(15),
-              ),
+              onPressed: _isLoading ? null : _captureLocation,
+              icon: const Icon(Icons.my_location),
+              label: Text(_position == null ? 'Share current location for dispatch' : 'Location captured'),
             ),
+            const Text('Use the medical document vault to upload photos. Do not include names or contact details in symptom text.'),
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: _isLoading ? null : _submitTriage,

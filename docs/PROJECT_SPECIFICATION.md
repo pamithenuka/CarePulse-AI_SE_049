@@ -1,3 +1,5 @@
+> Implementation note (28 September 2026): this document preserves the original design context. For current behavior, setup and verified limitations, use [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) and [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md). Aspirational statements here are not proof of implementation or assignment compliance.
+
 # CarePulse: Master System Architecture & Domain Context
 **SE3090 — Software Engineering Frameworks (2026)**
 

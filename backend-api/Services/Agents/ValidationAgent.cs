@@ -41,7 +41,7 @@ public class SafetyThresholdsPlugin
     {
         // Using the context in a read-only manner (Requirement)
         _context = context;
-        _context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+        // Never change tracking behavior on the application context.
     }
 
     [KernelFunction("Tool_GetSystemSafetyThresholds")]
@@ -77,9 +77,9 @@ public class ValidationAgent : IValidationAgent
         builder.Plugins.AddFromObject(new SafetyThresholdsPlugin(context), "SafetyThresholds");
 
         var apiKey = config["AI:GeminiApiKey"];
-        var model = config["AI:GeminiModel"] ?? "gemini-1.5-flash";
+        var model = config["AI:GeminiModel"] ?? "gemini-3-flash-preview";
         
-        if (!string.IsNullOrEmpty(apiKey))
+        if (!string.IsNullOrWhiteSpace(apiKey) && !apiKey.Contains("YOUR_"))
         {
             // Use Google Gemini instead of OpenAI
             builder.AddGoogleAIGeminiChatCompletion(model, apiKey);
@@ -136,7 +136,8 @@ CRITICAL SAFETY POLICY: Every emergency nurse dispatch MUST require an authorize
 ");
         chatHistory.AddUserMessage($"Evaluate dispatch: TriageId={request.TriageId}, Severity={request.SeverityScore}, ETA={request.EtaMinutes} mins.");
 
-        var result = await _chatService!.GetChatMessageContentAsync(chatHistory, settings, _kernel);
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        var result = await _chatService!.GetChatMessageContentAsync(chatHistory, settings, _kernel, timeout.Token);
         var content = result.Content ?? string.Empty;
 
         // Clean up markdown code blocks if present
@@ -150,6 +151,8 @@ CRITICAL SAFETY POLICY: Every emergency nurse dispatch MUST require an authorize
             var response = JsonSerializer.Deserialize<ValidationAgentResponse>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             if (response != null)
             {
+                var rules = await EvaluateWithRulesFallbackAsync(request);
+                response.FlaggedRules = rules.FlaggedRules.Union(response.FlaggedRules ?? new()).ToList();
                 response.RequiresHumanApproval = true; // Hard-enforce policy
                 return response;
             }

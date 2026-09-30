@@ -90,6 +90,24 @@ public class CarePulseDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey<ConsultationRecord>(c => c.SlotId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.Entity<AppointmentSlot>().HasOne<PatientProfile>().WithMany().HasForeignKey(s => s.PatientId).OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<ClinicRoster>().HasIndex(r => new { r.DoctorId, r.DayOfWeek }).IsUnique();
+        builder.Entity<DispatchTickets>(entity =>
+        {
+            entity.HasOne<TriageTicket>().WithMany().HasForeignKey(d => d.TriageTicketId).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<NurseProfiles>().WithMany().HasForeignKey(d => d.NurseId).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<DoctorProfile>().WithMany().HasForeignKey(d => d.DoctorId).OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(d => d.TriageTicketId).IsUnique();
+            entity.HasIndex(d => d.NurseId).IsUnique().HasFilter("\"IsDeleted\" = false AND \"Status\" IN ('Assigned','EnRoute','ArrivedOnSite')");
+            entity.Property(d => d.Status).HasMaxLength(40);
+        });
+        builder.Entity<RouteLogs>().HasOne<DispatchTickets>().WithMany().HasForeignKey(r => r.DispatchTicketId).OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<RouteLogs>().HasIndex(r => new { r.DispatchTicketId, r.RecordedAt });
+        builder.Entity<OnSiteVitalsRecords>().HasOne<DispatchTickets>().WithMany().HasForeignKey(r => r.DispatchTicketId).OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<OnSiteVitalsRecords>().HasIndex(r => r.DispatchTicketId).IsUnique();
+        builder.Entity<AiWorkflow>().HasOne<TriageTicket>().WithMany().HasForeignKey(w => w.TriageTicketId).OnDelete(DeleteBehavior.Restrict);
+        builder.Entity<AiWorkflow>().HasIndex(w => w.TriageTicketId).IsUnique();
+
         // Student 2 Models Configuration
         builder.Entity<TriageTicket>(entity =>
         {
@@ -108,8 +126,7 @@ public class CarePulseDbContext : IdentityDbContext<ApplicationUser>
                   .HasForeignKey<ApprovalQueue>(a => a.TriageTicketId)
                   .OnDelete(DeleteBehavior.Cascade);
 
-            // PatientProfileId will be configured as foreign key when PatientProfile entity is added by Student 1
-            entity.Property(e => e.PatientProfileId).IsRequired();
+            entity.HasOne<PatientProfile>().WithMany().HasForeignKey(e => e.PatientProfileId).OnDelete(DeleteBehavior.Restrict);
 
             entity.Property(e => e.Symptoms).HasMaxLength(2000);
             entity.Property(e => e.Status).HasMaxLength(100);

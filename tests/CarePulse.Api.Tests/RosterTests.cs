@@ -1,3 +1,4 @@
+using CarePulse.Api.Tests.Fakes;
 using CarePulse.Api.Controllers;
 using CarePulse.Api.DTOs;
 using CarePulse.Api.Entities;
@@ -34,7 +35,7 @@ public class RosterTests
     {
         var doctorId = await SeedDoctor();
         using var context = _fixture.CreateContext();
-        var controller = new DoctorsController(context);
+        var controller = new DoctorsController(context).As();
 
         var result = await controller.UpdateRoster(new RosterUpdateRequestDto(
             doctorId, DayOfWeek.Monday, new TimeSpan(9, 0, 0), new TimeSpan(13, 0, 0), 30));
@@ -46,7 +47,7 @@ public class RosterTests
     public async Task Roster_ForANonExistentDoctor_ReturnsNotFound()
     {
         using var context = _fixture.CreateContext();
-        var controller = new DoctorsController(context);
+        var controller = new DoctorsController(context).As();
 
         var result = await controller.UpdateRoster(new RosterUpdateRequestDto(
             Guid.NewGuid(), DayOfWeek.Monday, new TimeSpan(9, 0, 0), new TimeSpan(13, 0, 0), 30));
@@ -59,7 +60,7 @@ public class RosterTests
     {
         var doctorId = await SeedDoctor();
         using var context = _fixture.CreateContext();
-        var controller = new DoctorsController(context);
+        var controller = new DoctorsController(context).As();
 
         var result = await controller.UpdateRoster(new RosterUpdateRequestDto(
             doctorId, DayOfWeek.Monday, new TimeSpan(17, 0, 0), new TimeSpan(9, 0, 0), 30));

@@ -1,4 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/auth_provider.dart';
+import '../../../services/api_exception.dart';
 import '../services/api_service.dart';
 
 class VitalsEntryScreen extends StatefulWidget {
@@ -14,6 +19,35 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
   final _formKey = GlobalKey<FormState>();
   final _apiService = ApiService();
   bool _isSubmitting = false;
+  bool _needsLogin = false;
+  final _draftStorage = const FlutterSecureStorage();
+  String get _draftKey => 'vitals_${context.read<AuthProvider>().currentUser?.userId}_${widget.dispatch['id']}';
+  List<TextEditingController> get _fields => [_heartRateController, _systolicController, _diastolicController, _tempController, _oxygenController, _notesController];
+
+  @override
+  void initState() {
+    super.initState();
+    _restoreDraft();
+  }
+
+  Future<void> _restoreDraft() async {
+    try {
+      final key = _draftKey;
+      final raw = await _draftStorage.read(key: key);
+      if (raw == null || !mounted) return;
+      final draft = jsonDecode(raw) as Map<String, dynamic>;
+      if (DateTime.parse(draft['expiresAt']).isBefore(DateTime.now())) {
+        await _draftStorage.delete(key: key);
+        return;
+      }
+      final values = draft['values'] as List;
+      if (values.length != _fields.length) return;
+      for (var i = 0; i < _fields.length; i++) {
+        if (_fields[i].text.isEmpty) _fields[i].text = values[i] as String;
+      }
+    } catch (_) { /* An unavailable draft never fabricates measurements. */ }
+  }
+
 
   final _heartRateController = TextEditingController();
   final _systolicController = TextEditingController();
@@ -27,6 +61,11 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
 
     setState(() => _isSubmitting = true);
     try {
+      final key = _draftKey;
+      await _draftStorage.write(key: key, value: jsonEncode({
+        'expiresAt': DateTime.now().add(const Duration(hours: 24)).toIso8601String(),
+        'values': _fields.map((field) => field.text).toList(),
+      }));
       await _apiService.completeOnsite(
         widget.dispatch['id'],
         {
@@ -37,6 +76,7 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
           'clinicalNotes': _notesController.text,
         },
       );
+      await _draftStorage.delete(key: key);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Vitals recorded successfully!'), backgroundColor: Color(0xFF22C55E)),
@@ -45,6 +85,7 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
       }
     } catch (e) {
       if (mounted) {
+        setState(() => _needsLogin = e is ApiException && e.statusCode == 401);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${e.toString()}'), backgroundColor: Colors.redAccent),
         );
@@ -68,7 +109,7 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
           ],
         ),
         content: const Text(
-          'This will escalate the dispatch to a higher priority and alert the supervising doctor immediately. Continue?',
+          'Record an escalation on the staff dashboard? Contact your supervising doctor directly for an immediate response.',
           style: TextStyle(color: Colors.white70),
         ),
         actions: [
@@ -77,14 +118,14 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
             child: const Text('Cancel', style: TextStyle(color: Colors.white54)),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(ctx);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Emergency escalated! Doctor has been notified.'),
-                  backgroundColor: Color(0xFFEF4444),
-                ),
-              );
+              try {
+                await _apiService.escalate(widget.dispatch['id'], _notesController.text.trim().length >= 3 ? _notesController.text.trim() : 'Nurse requests urgent doctor review.');
+                if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Escalation recorded. Contact your supervisor for an immediate response.')));
+              } catch (e) {
+                if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFEF4444),
@@ -184,6 +225,10 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (_needsLogin) TextButton(
+                onPressed: () => Navigator.pushNamed(context, '/login'),
+                child: const Text('Sign in again. Your attempted submission is saved for 24 hours.'),
+              ),
               // Section Header
               Container(
                 padding: const EdgeInsets.all(16),
@@ -221,7 +266,7 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'Required';
                   final n = int.tryParse(v);
-                  if (n == null || n <= 0) return 'Enter a valid number';
+                  if (n == null || n < 0 || n > 350) return 'Enter a valid number';
                   return null;
                 },
               ),
@@ -236,7 +281,7 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
                       validator: (v) {
                         if (v == null || v.isEmpty) return 'Required';
                         final n = int.tryParse(v);
-                        if (n == null || n <= 0) return 'Invalid';
+                        if (n == null || n < 0 || n > 350) return 'Invalid';
                         return null;
                       },
                     ),
@@ -251,7 +296,8 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
                       validator: (v) {
                         if (v == null || v.isEmpty) return 'Required';
                         final n = int.tryParse(v);
-                        if (n == null || n <= 0) return 'Invalid';
+                        if (n == null || n < 0 || n > 350) return 'Invalid';
+                        if (n > (int.tryParse(_systolicController.text) ?? 350)) return 'Exceeds systolic';
                         return null;
                       },
                     ),
@@ -266,7 +312,7 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'Required';
                   final n = double.tryParse(v);
-                  if (n == null || n < 30 || n > 45) return '30-45°C range';
+                  if (n == null || !n.isFinite || n < 30 || n > 45) return '30-45°C range';
                   return null;
                 },
               ),
@@ -288,7 +334,7 @@ class _VitalsEntryScreenState extends State<VitalsEntryScreen> {
                 controller: _notesController,
                 keyboardType: TextInputType.multiline,
                 maxLines: 4,
-                validator: (v) => (v == null || v.isEmpty) ? 'Notes are required' : null,
+                validator: (v) => (v == null || v.trim().isEmpty) ? 'Notes are required' : v.length > 2000 ? 'Maximum 2000 characters' : null,
               ),
 
               const SizedBox(height: 8),

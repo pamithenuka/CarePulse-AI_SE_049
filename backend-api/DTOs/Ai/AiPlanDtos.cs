@@ -17,6 +17,9 @@ public class AiPlanStepDto
 
 public class AiWorkflowDto
 {
+    public string ExecutionStatus { get; set; } = string.Empty;
+    public Guid? TriageTicketId { get; set; }
+    public object? Execution { get; set; }
     public Guid Id { get; set; }
     public Guid PatientProfileId { get; set; }
     // Only populated on the cross-patient pending-review listing (GetPendingReviewPlansAsync) -

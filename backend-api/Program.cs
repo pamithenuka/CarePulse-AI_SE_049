@@ -21,6 +21,9 @@ using CarePulse.Api.DTOs.Dispatch;
 using CarePulse.Api.Services.Agents;
 
 var builder = WebApplication.CreateBuilder(args);
+if (!builder.Environment.IsEnvironment("Testing"))
+    builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: false);
+builder.Configuration.AddEnvironmentVariables().AddCommandLine(args);
 
 // 1. Serilog Setup
 Log.Logger = new LoggerConfiguration()
@@ -29,16 +32,19 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // 2. Database Connection (PostgreSQL)
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<CarePulseDbContext>(options =>
-    options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<CarePulseDbContext>((sp, options) =>
+    options.UseNpgsql(sp.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")));
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddDbContext<ReadOnlyCarePulseDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<ReadOnlyCarePulseDbContext>(sp => new ReadOnlyCarePulseDbContext(
+    new DbContextOptionsBuilder<CarePulseDbContext>().UseNpgsql(sp.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")).Options,
+    sp.GetRequiredService<ICurrentUserService>()));
 
 builder.Services.AddScoped<CarePulse.Api.Services.GeminiAgentService>();
+builder.Services.AddScoped<CarePulse.Api.Services.ISchedulingAgent>(sp => sp.GetRequiredService<CarePulse.Api.Services.GeminiAgentService>());
+builder.Services.AddScoped<TriageWorkflowRunner>();
+if (!builder.Environment.IsEnvironment("Testing")) builder.Services.AddHostedService<WorkflowRecoveryService>();
 
 // 3. ASP.NET Core Identity Setup
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -51,9 +57,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddDefaultTokenProviders();
 
 // 4. JWT Authentication Setup
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-var key = Encoding.UTF8.GetBytes(jwtSettings["Secret"]!);
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -61,26 +64,49 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false;
+    var jwtSettings = builder.Configuration.GetSection("Jwt");
+    var secret = jwtSettings["Secret"];
+    if (string.IsNullOrWhiteSpace(secret) || secret.Length < 32)
+        throw new InvalidOperationException("Set Jwt__Secret (at least 32 characters). See README.md.");
+    var key = Encoding.UTF8.GetBytes(secret);
+    options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
+        ClockSkew = TimeSpan.FromSeconds(15),
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtSettings["Issuer"],
         ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async context =>
+        {
+            var db = context.HttpContext.RequestServices.GetRequiredService<CarePulseDbContext>();
+            var id = context.Principal?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var principal = context.Principal!;
+            var active = id != null && await db.Users.AnyAsync(u => u.Id == id);
+            if (principal.IsInRole("Doctor")) active &= await db.DoctorProfiles.AnyAsync(d => d.UserId == id);
+            if (principal.IsInRole("Nurse")) active &= await db.NurseProfiles.AnyAsync(n => n.UserId == id);
+            if (principal.IsInRole("Patient")) active &= !await db.PatientProfiles.IgnoreQueryFilters().AnyAsync(p => p.UserId == id && p.IsDeleted);
+            if (!active) context.Fail("Account is no longer active.");
+        }
+    };
 });
+
+builder.Services.AddAuthorization(options => options.FallbackPolicy =
+    new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build());
 
 // 5. CORS Policy
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        policy.WithOrigins(builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>()).AllowAnyMethod().AllowAnyHeader();
     });
 });
 
@@ -142,50 +168,28 @@ builder.Services.AddScoped<IAgentPlannerService, AgentPlannerService>();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+if (builder.Configuration.GetValue<bool>("Database:SeedOnStartup"))
 {
+    using var scope = app.Services.CreateScope();
     await DbSeeder.SeedAsync(scope.ServiceProvider);
 }
 
 // Configure HTTP Request Pipeline
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || builder.Configuration.GetValue<bool>("Swagger:Enabled"))
 {
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CarePulse API v1"));
 }
 
-app.UseStaticFiles();
+// Medical files are served exclusively through authorized controller actions.
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHealthChecks("/health");
-
-// --- DB Connectivity Verification Block ---
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<CarePulseDbContext>();
-    try
-    {
-        bool canConnect = await dbContext.Database.CanConnectAsync();
-        if (canConnect)
-        {
-            Log.Information("✅ Successfully connected to the PostgreSQL database.");
-        }
-        else
-        {
-            Log.Error("❌ Failed to connect to the PostgreSQL database.");
-        }
-    }
-    catch (Exception ex)
-    {
-        Log.Error(ex, "❌ Exception occurred while trying to connect to the PostgreSQL database.");
-    }
-}
-// -------------------------------------------
+app.MapHealthChecks("/health").AllowAnonymous();
 
 app.Run();
 
