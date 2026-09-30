@@ -1,5 +1,7 @@
 # CarePulse — simple setup
 
+**Team members pulling `develop`:** follow [the step-by-step team setup and testing guide](docs/TEAM_SETUP_AND_TESTING.md) for shared Neon configuration, app startup, test accounts and all four modules' manual tests.
+
 Start the **backend**, **web app**, and **Flutter app** in three separate terminals. Keep all three running while testing.
 
 You need .NET 8, Node.js 22, Flutter 3.47.1 (Dart 3.13.1), and a PostgreSQL database. Docker is optional.
