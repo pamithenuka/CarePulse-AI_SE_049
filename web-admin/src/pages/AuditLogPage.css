@@ -1,0 +1,147 @@
+.page-subtitle {
+  color: #666;
+  margin-top: -0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.filters {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.filters input {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #ccd3d6;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.audit-table th,
+.audit-table td {
+  padding: 0.6rem 0.85rem;
+  text-align: left;
+  border-bottom: 1px solid #eef1f2;
+  font-size: 0.85rem;
+}
+
+.audit-table th {
+  background: #f0f4f5;
+}
+
+.audit-row {
+  cursor: pointer;
+}
+
+.audit-row:hover {
+  background: #f7fbfb;
+}
+
+.audit-table a {
+  color: #0b5f6b;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.audit-table a:hover {
+  text-decoration: underline;
+}
+
+.action-pill {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.action-created {
+  background: #e2f3e5;
+  color: #227a3d;
+}
+
+.action-updated {
+  background: #fdf1dc;
+  color: #935700;
+}
+
+.action-deleted {
+  background: #f4e1e1;
+  color: #a13d3d;
+}
+
+.audit-detail-row td {
+  background: #fafcfc;
+}
+
+.change-diff {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.82rem;
+}
+
+.change-diff li {
+  padding: 0.2rem 0;
+}
+
+.old-value {
+  color: #a13d3d;
+  text-decoration: line-through;
+}
+
+.new-value {
+  color: #227a3d;
+  font-weight: 600;
+}
+
+.hint-text {
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  font-size: 0.9rem;
+}
+
+.pagination button {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid #ccd3d6;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .audit-table {
+    display: block;
+    overflow-x: auto;
+  }
+}

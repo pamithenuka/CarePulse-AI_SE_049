@@ -1,0 +1,31 @@
+import 'dart:async';
+import 'package:geolocator/geolocator.dart';
+import 'api_service.dart';
+
+class LocationService {
+  final ApiService _apiService = ApiService();
+  StreamSubscription<Position>? _positionSubscription;
+  bool _sending = false;
+  Future<bool> requestPermission() async {
+    if (!await Geolocator.isLocationServiceEnabled()) return false;
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) permission = await Geolocator.requestPermission();
+    return permission != LocationPermission.denied && permission != LocationPermission.deniedForever;
+  }
+  Future<Position> getCurrentPosition() => Geolocator.getCurrentPosition(
+    locationSettings: const LocationSettings(accuracy: LocationAccuracy.high, timeLimit: Duration(seconds: 20)));
+  void startTracking(String id, {void Function(Position)? onUpdate, void Function(Object)? onError}) {
+    stopTracking();
+    _positionSubscription = Geolocator.getPositionStream(locationSettings:
+      const LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 10)).listen((position) async {
+        if (_sending) return;
+        _sending = true;
+        try {
+          await _apiService.updateLocation(id, position.latitude, position.longitude, position.speed * 3.6, position.heading);
+          onUpdate?.call(position);
+        } catch (e) { stopTracking(); onError?.call(e); }
+        finally { _sending = false; }
+      }, onError: (Object e) { stopTracking(); onError?.call(e); });
+  }
+  void stopTracking() { _positionSubscription?.cancel(); _positionSubscription = null; }
+}

@@ -1,0 +1,142 @@
+.ai-plan-field-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.35rem;
+}
+
+.ai-plan-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+
+.ai-plan-item {
+  border: 1px solid #eef1f2;
+  border-left-width: 4px;
+  border-radius: 6px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.ai-plan-plancreated {
+  border-left-color: #227a3d;
+}
+
+.ai-plan-validationfailed {
+  border-left-color: #935700;
+}
+
+.ai-plan-llmerror {
+  border-left-color: #a13d3d;
+}
+
+.ai-plan-header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.ai-status-badge.ai-status-plancreated,
+.ai-status-badge.ai-status-approved {
+  background: #e2f3e5;
+  color: #227a3d;
+}
+
+.ai-status-badge.ai-status-validationfailed,
+.ai-status-badge.ai-status-rejected {
+  background: #fdf1dc;
+  color: #935700;
+}
+
+.ai-status-badge.ai-status-llmerror {
+  background: #f4e1e1;
+  color: #a13d3d;
+}
+
+.ai-plan-objective {
+  font-size: 0.88rem;
+  margin: 0.3rem 0;
+}
+
+.ai-plan-summary {
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin: 0.4rem 0;
+}
+
+.ai-plan-error {
+  color: #a13d3d;
+  font-size: 0.88rem;
+}
+
+.ai-plan-steps {
+  margin: 0.4rem 0 0.6rem 1.1rem;
+  padding: 0;
+  font-size: 0.85rem;
+}
+
+.ai-plan-steps li {
+  margin-bottom: 0.3rem;
+}
+
+.ai-plan-tool {
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+}
+
+.ai-plan-review {
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px dashed #eef1f2;
+}
+
+.ai-plan-review > button {
+  background: #0b5f6b;
+  color: #fff;
+  border: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.ai-review-form textarea {
+  width: 100%;
+  min-height: 50px;
+  box-sizing: border-box;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #ccd3d6;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  margin-bottom: 0.5rem;
+  resize: vertical;
+}
+
+.ai-review-form .form-actions button {
+  background: #0b5f6b;
+  color: #fff;
+  border: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.ai-review-form .form-actions .btn-danger {
+  background: #fff;
+  color: #b3261e;
+  border: 1px solid #f5c2c0;
+}
+
+.ai-review-form .form-actions .btn-secondary {
+  background: #fff;
+  color: #0b5f6b;
+  border: 1px solid #cfe3e1;
+}

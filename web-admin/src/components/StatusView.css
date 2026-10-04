@@ -1,0 +1,24 @@
+.status-view {
+  padding: 2rem;
+  text-align: center;
+  color: #555;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px dashed #ccd3d6;
+}
+
+.status-view-error {
+  color: #b3261e;
+  border-color: #f5c2c0;
+  background: #fdecea;
+}
+
+.status-view-error button {
+  margin-top: 0.75rem;
+  background: #b3261e;
+  color: #fff;
+  border: none;
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
