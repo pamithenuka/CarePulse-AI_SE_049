@@ -24,6 +24,7 @@ import ConsultationsPage from "./pages/ConsultationsPage";
 import { DoctorProvider } from "./components/DoctorContext";
 import "./App.css";
 import "./styles.css";
+import "./healthcare-theme.css";
 
 export default function App() {
   return (

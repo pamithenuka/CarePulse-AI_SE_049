@@ -1,0 +1,146 @@
+/* Shared clinical palette. Loaded after legacy page styles. */
+:root {
+  --color-bg: #f3f7f8; --color-surface: #fff; --color-primary: #087f83;
+  --color-primary-dark: #075c63; --color-ink: #17343d; --color-muted: #526b75;
+  --color-border: #d8e4e8; --font-display: var(--font-body);
+  --bg-primary: #f3f7f8; --bg-secondary: #fff; --bg-glass: #fff;
+  --text-primary: #17343d; --text-secondary: #526b75;
+  --accent-color: #087f83; --accent-hover: #075c63; --border-color: #d8e4e8;
+  --radius: 12px; --shadow-lg: 0 8px 28px #17343d0d;
+}
+body { background: var(--color-bg); color: var(--color-ink); }
+h1, h2, h3 { font-family: var(--font-body); line-height: 1.3; }
+h1 { font-size: clamp(1.6rem, 3vw, 2rem); margin-bottom: 12px; }
+h2 { font-size: 1.25rem; margin-bottom: 12px; }
+.app-shell { display: grid; grid-template-columns: 228px minmax(0, 1fr); background: var(--color-bg); }
+.app-header { position: sticky; top: 0; height: 100vh; padding: 28px 16px; display: flex; flex-direction: column; align-items: stretch; flex-wrap: nowrap; background: #fff; color: var(--color-ink); border-right: 1px solid var(--color-border); overflow-y: auto; }
+.app-header .brand { color: var(--color-primary-dark); font-size: 1.5rem; padding: 0 12px 20px; letter-spacing: -.7px; }
+.app-nav { display: flex; flex-direction: column; gap: 5px; }
+.app-nav a { padding: 10px 14px; color: var(--color-muted); border-radius: 9px; font-weight: 500; transition: background .16s, color .16s; }
+.app-nav a:hover { background: #f0f7f7; text-decoration: none; color: var(--color-primary-dark); }
+.app-nav a.active { background: #e1f3f1; color: #075c63; font-weight: 700; box-shadow: inset 3px 0 #087f83; }
+.app-user { border-top: 1px solid var(--color-border); padding-top: 18px; display: flex; flex-direction: column; align-items: stretch; }
+.app-user span { overflow-wrap: anywhere; font-weight: 600; }
+.app-user em { display: block; font-size: .8rem; font-style: normal; color: var(--color-muted); }
+.app-user button { color: #075c63; background: #eff7f7; border: 1px solid #c8dddf; }
+.app-user button:hover { background: #dcefed; }
+.app-content { padding: 36px clamp(18px, 3vw, 48px); max-width: 1500px; min-width: 0; }
+.skip-link { position: fixed; left: 16px; top: -100px; z-index: 9999; padding: 12px; background: #fff; }
+.skip-link:focus { top: 12px; }
+button, input, select, textarea { font: inherit; }
+button:not(.leaflet-control-zoom-in):not(.leaflet-control-zoom-out) { min-height: 40px; border-radius: 9px; transition: background .16s, box-shadow .16s; cursor: pointer; }
+form button:not([class]), .card > button:not([class]) { background: #087f83; color: white; border: 1px solid #087f83; padding: 10px 18px; font-weight: 600; }
+form button:not([class]):hover:not(:disabled) { background: #075c63; }
+button:disabled { cursor: not-allowed; opacity: .55; }
+input:not([type=checkbox]):not([type=radio]), select, textarea { border: 1px solid #bfced4; border-radius: 8px; background: #fff; color: #17343d; padding: 10px 12px; max-width: 100%; min-height: 44px; }
+textarea { min-height: 104px; resize: vertical; }
+input[type=checkbox], input[type=radio] { accent-color: #087f83; width: 18px; height: 18px; vertical-align: middle; }
+:where(button, a, input, select, textarea):focus-visible { outline: 3px solid #087f83; outline-offset: 3px; }
+form.card, form.dispatch-card { display: flex; flex-direction: column; align-items: stretch; gap: 18px; }
+form.card label, form.dispatch-card label { display: flex; flex-direction: column; gap: 7px; font-size: .9rem; font-weight: 600; }
+form label:has(input[type=checkbox]) { flex-direction: row; align-items: center; }
+.card, .dispatch-card, .glass-panel { background: #fff; border: 1px solid var(--color-border); border-radius: 14px; box-shadow: 0 3px 16px #17343d06; padding: 24px; }
+.dispatch-card { margin: 12px 0 24px; }
+table { width: 100%; border-collapse: collapse; background: #fff; }
+th { background: #edf4f5; color: #425e67; font-size: .85rem; }
+th, td { padding: 15px 16px; text-align: left; border-bottom: 1px solid #e4ecef; }
+tbody tr:hover { background: #f5fafa; }
+[role=alert] { border-radius: 8px; padding: 12px 14px; background: #fff1f0; color: #a52b28; border: 1px solid #f0cdca; }
+.ecc-content { min-height: 560px; }
+.ecc-sidebar { width: 340px; }
+.live-badge { color: #126846; }
+.login-page { min-height: 100vh; background: radial-gradient(ellipse at top left, #dcefeb, transparent 65%), #f3f7f8; padding: 24px; }
+.login-card { width: 100%; max-width: 460px; border: 1px solid #d8e4e8; border-radius: 20px; box-shadow: 0 16px 60px #17343d12; padding: 36px; }
+.login-card h1 { color: #075c63; }
+.login-card .hint { color: #526b75; line-height: 1.6; }
+@media (max-width: 1050px) { .ecc-content { flex-direction: column; } .ecc-sidebar { width: 100%; } .ecc-map-area { min-height: 380px; } }
+@media (max-width: 760px) {
+  .app-shell { display: flex; flex-direction: column; }
+  .app-header { position: static; height: auto; padding: 16px; gap: 14px; }
+  .app-header .brand { padding: 0; }
+  .app-nav { flex-direction: row; overflow-x: auto; width: 100%; padding-bottom: 6px; }
+  .app-nav a { white-space: nowrap; }
+  .app-user { flex-direction: row; align-items: center; justify-content: space-between; }
+  .app-content { padding: 22px 14px; overflow-x: auto; }
+  .header-brand, .page-header { flex-wrap: wrap; }
+  .doctor-picker { flex-wrap: wrap; }
+  .card, .dispatch-card { padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+
+/* Gentle colour distinguishes service areas; red remains a clinical alert. */
+.app-shell { --section-accent: #087f83; --section-tint: #e4f5f2;
+  background: radial-gradient(ellipse at 90% 5%, #b8d5f5 0%, transparent 52%), linear-gradient(135deg, #c7e9e6 0%, #dae6f5 55%, #d9d6f0 100%);
+  background-attachment: fixed; }
+.app-shell[data-section=records] { --section-accent: #24745c; --section-tint: #e3f4ec; }
+.app-shell[data-section=appointments] { --section-accent: #245db0; --section-tint: #e7effc; }
+.app-shell[data-section=ai] { --section-accent: #7050a3; --section-tint: #f0eafa; }
+.app-header { background: linear-gradient(165deg, #163657 0%, #125a70 60%, #167b80 100%); border-right: 0; box-shadow: 6px 0 28px #12395418; }
+.app-header .brand { background: none; color: #ffffff; }
+.app-header .app-nav a { color: #e4f0fa; }
+.app-header .app-nav a.active { background: #ffffff; color: #164d66; box-shadow: inset 4px 0 #36b7b0; }
+.app-header .app-nav a:hover { background: #ffffff20; color: #fff; }
+.app-header .app-nav a.active:hover { background: #e7f6f5; color: #164d66; }
+.app-header .app-user { border-color: #ffffff35; color: #fff; }
+.app-header .app-user em { color: #c8e5ed; }
+.app-header .app-user button { background: #ffffff18; color: #fff; border-color: #ffffff55; }
+.app-header .app-user button:hover { background: #ffffff30; }
+.app-nav a::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #087f83; margin-right: 10px; }
+.app-nav a[href='/triage']::before { background: #7050a3; }
+.app-nav a:is([href='/doctors'], [href='/roster'], [href='/slots'], [href='/consultations'])::before { background: #245db0; }
+.app-nav a[href='/patients']::before { background: #24745c; }
+.app-nav a[href='/emergency-alerts']::before { background: #b53735; }
+.app-nav a.active { background: var(--section-tint); color: var(--section-accent); box-shadow: inset 3px 0 var(--section-accent); }
+.app-content > div > h1, .page-header h1 { color: var(--section-accent); }
+.app-content .doctor-picker { background: #e7effc; border: 1px solid #cbdcf6; border-radius: 14px; }
+.app-content form.card { border-top: 4px solid var(--section-accent); }
+.app-content th { background: var(--section-tint); }
+.app-content .card, .app-content .dispatch-card { box-shadow: 0 6px 24px #245d7010; }
+.login-page { background: radial-gradient(ellipse at 15% 20%, #288d99 0%, transparent 55%), linear-gradient(135deg, #163657, #24547c 55%, #67679e); }
+.login-card { border-top: 5px solid #087f83; }
+.app-nav a:hover { background: #e8f1f6; }
+@media (forced-colors: active) { .app-header .brand { background: none; color: LinkText; } }
+
+.app-content .card, .app-content .dispatch-card, .login-card { background: #fff; box-shadow: 0 10px 30px #16365714; }
+
+/* Consistent selection controls, retaining native keyboard and form behavior. */
+.app-shell select, .login-page select {
+  appearance: none;
+  -webkit-appearance: none;
+  color: #173e55;
+  background-color: #f7fbff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23245d78' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E"), linear-gradient(110deg, #ffffff, #edf5fb);
+  background-repeat: no-repeat;
+  background-position: right 14px center, center;
+  background-size: 20px, 100%;
+  border: 1px solid #a9c5d8;
+  border-radius: 12px;
+  padding: 12px 46px 12px 16px;
+  min-height: 48px;
+  font-weight: 500;
+  line-height: 1.4;
+  box-shadow: 0 2px 5px #16365708;
+  cursor: pointer;
+  transition: border-color .16s, box-shadow .16s, background-color .16s;
+}
+.app-shell select:hover:not(:disabled) { border-color: #408d9e; box-shadow: 0 3px 10px #125a7018; }
+.app-shell select:focus-visible { border-color: #087f83; outline: 3px solid #087f8350; outline-offset: 2px; }
+.app-shell select:disabled { opacity: .65; cursor: not-allowed; background-color: #e6edf2; }
+.app-shell select option { background: #fff; color: #173e55; }
+.app-shell select[multiple], .app-shell select[size]:not([size='1']) { background-image: none; padding: 12px; }
+.app-shell .doctor-picker { padding: 18px; gap: 14px; }
+.app-shell .doctor-picker label { font-size: .85rem; font-weight: 700; color: #245478; }
+.app-shell .doctor-picker select { flex: 1; min-width: 0; }
+.app-shell .filters { gap: 12px; flex-wrap: wrap; }
+.app-shell .filters select { min-width: 150px; }
+.app-shell .tab-bar { padding: 7px; gap: 6px; background: #e5eef6; border: 1px solid #c5d8e6; border-radius: 14px; overflow-x: auto; }
+.app-shell .tab-button { border: 0; border-radius: 9px; padding: 11px 16px; color: #405e74; background: transparent; white-space: nowrap; }
+.app-shell .tab-button:hover { background: #f6faff; color: #164d66; }
+.app-shell .tab-button.active { background: #fff; color: #075c63; box-shadow: 0 2px 7px #16365718; font-weight: 700; }
+@media (forced-colors: active) {
+  .app-shell select, .login-page select { appearance: auto; background-image: none; border: 1px solid ButtonText; }
+  .app-shell .tab-button.active { border: 2px solid Highlight; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell select, .login-page select { transition: none; }
+}
