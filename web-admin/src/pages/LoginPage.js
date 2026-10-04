@@ -42,6 +42,7 @@ export default function LoginPage() {
         <label htmlFor="email">Email</label>
         <input
           id="email"
+          autoComplete="username"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -51,6 +52,7 @@ export default function LoginPage() {
         <label htmlFor="password">Password</label>
         <input
           id="password"
+          autoComplete="current-password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -62,7 +64,7 @@ export default function LoginPage() {
         </button>
 
         <p className="hint">
-          Seeded account: <code>admin@carepulse.dev</code> / <code>Admin@12345</code>
+          Use your staff account. Contact your administrator if you need access.
         </p>
       </form>
     </div>

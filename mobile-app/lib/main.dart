@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'theme/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/patient_provider.dart';
@@ -32,11 +33,16 @@ class CarePulseApp extends StatelessWidget {
       child: MaterialApp(
         title: 'CarePulse',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0F766E)),
-          useMaterial3: true,
-          appBarTheme: const AppBarTheme(centerTitle: false),
-          inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder()),
+        theme: buildAppTheme(),
+        builder: (context, child) => DecoratedBox(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFFC7E9E6), Color(0xFFDAE6F5), Color(0xFFD9D6F0)],
+            ),
+          ),
+          child: child ?? const SizedBox.shrink(),
         ),
         initialRoute: '/',
         onGenerateRoute: (settings) {

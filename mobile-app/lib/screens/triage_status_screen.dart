@@ -418,7 +418,7 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
         style: TextStyle(color: _error == null ? null : Colors.red)))),
       appBar: AppBar(
         title: const Text('Triage Status'),
-        backgroundColor: Colors.blue.shade800,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
