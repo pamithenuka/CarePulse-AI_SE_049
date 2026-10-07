@@ -170,6 +170,25 @@ public class IntegratedWorkflowTests(TestDatabaseFixture database)
         Assert.Equal(TriageConstants.StatusApproved, (await db.TriageTickets.FindAsync(ids[1-winner]))!.Status);
         var waiting = await Ok(await first.GetAsync("/api/v1/dispatch/waiting"));
         Assert.Contains(waiting.EnumerateArray(), item => item.GetProperty("id").GetGuid() == ids[1-winner]);
+
+        // Finish the winning visit, then prove that the waiting case can claim the released nurse.
+        var winningDispatch = initial.GetProperty("id").GetGuid();
+        SignIn(first, factory, nurse.user, "Nurse");
+        await Ok(await first.PutAsJsonAsync($"/api/v1/dispatch/{winningDispatch}/location",
+            new { latitude = 6.92, longitude = 79.86, speedKmh = 0, heading = 0 }));
+        await Ok(await first.PutAsync($"/api/v1/dispatch/{winningDispatch}/arrive", null));
+        await Ok(await first.PostAsJsonAsync($"/api/v1/dispatch/{winningDispatch}/complete-onsite",
+            new CompleteOnsiteDto { HeartRate = 80, BloodPressure = "120/80", BodyTempC = 37,
+                OxygenSaturation = 98, ClinicalNotes = "Synthetic completed visit before reassignment" }));
+        SignIn(first, factory, doctor.user, "Doctor");
+        var reassigned = await Ok(await first.PostAsJsonAsync("/api/v1/dispatch/assign", requests[1-winner]));
+        Assert.NotEqual(winningDispatch, reassigned.GetProperty("id").GetGuid());
+        using var verify = database.CreateContext();
+        Assert.Equal("Completed", (await verify.DispatchTickets.FindAsync(winningDispatch))!.Status);
+        Assert.Equal(1, await verify.DispatchTickets.CountAsync(d => d.NurseId == nurse.profile && d.Status != "Completed"));
+        Assert.False((await verify.NurseProfiles.FindAsync(nurse.profile))!.IsAvailable);
+        var remaining = await Ok(await first.GetAsync("/api/v1/dispatch/waiting"));
+        Assert.DoesNotContain(remaining.EnumerateArray(), item => item.GetProperty("id").GetGuid() == ids[1-winner]);
     }
 
     [Fact]

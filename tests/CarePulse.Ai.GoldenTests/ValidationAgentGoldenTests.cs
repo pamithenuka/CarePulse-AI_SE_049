@@ -38,6 +38,28 @@ public class ValidationAgentGoldenTests
         return builder.Build();
     }
 
+    [Theory]
+    [InlineData(8.49, 29, false, false)]
+    [InlineData(8.5, 30, false, false)]
+    [InlineData(8.51, 30, true, false)]
+    [InlineData(8.5, 31, false, true)]
+    [InlineData(8.51, 31, true, true)]
+    [InlineData(8.49, 31, false, true)]
+    public async Task SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval(
+        double severity, int eta, bool severityFlag, bool etaFlag)
+    {
+        using var db = GetInMemoryDbContext();
+        var agent = new ValidationAgent(db, GetConfiguration(), NullLogger<ValidationAgent>.Instance);
+        var response = await agent.EvaluateDispatchSafetyAsync(new ValidationAgentRequest
+        {
+            TriageId = Guid.NewGuid(), SeverityScore = severity, EtaMinutes = eta
+        });
+        Assert.True(response.RequiresHumanApproval);
+        Assert.Equal(severityFlag, response.FlaggedRules.Exists(r => r.Contains("Severity Score")));
+        Assert.Equal(etaFlag, response.FlaggedRules.Exists(r => r.Contains("ETA")));
+        Assert.Equal((severityFlag ? 1 : 0) + (etaFlag ? 1 : 0), response.FlaggedRules.Count);
+    }
+
     [Fact]
     public async Task EvaluateDispatchSafetyAsync_FallbackRecovery_EnforcesDoctorApproval()
     {
