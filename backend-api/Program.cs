@@ -177,6 +177,25 @@ if (builder.Configuration.GetValue<bool>("Database:SeedOnStartup"))
 // Configure HTTP Request Pipeline
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
+// Baseline security headers (found missing by the OWASP ZAP baseline scan). Swagger UI is skipped
+// because a strict CSP would stop its inline scripts; it is only exposed in Development or when enabled.
+app.Use(async (context, next) =>
+{
+    context.Response.OnStarting(() =>
+    {
+        var headers = context.Response.Headers;
+        headers["X-Content-Type-Options"] = "nosniff";
+        headers["Referrer-Policy"] = "no-referrer";
+        if (!context.Request.Path.StartsWithSegments("/swagger"))
+        {
+            headers["X-Frame-Options"] = "DENY";
+            headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'";
+        }
+        return Task.CompletedTask;
+    });
+    await next();
+});
+
 if (app.Environment.IsDevelopment() || builder.Configuration.GetValue<bool>("Swagger:Enabled"))
 {
     app.UseSwagger();

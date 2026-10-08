@@ -39,7 +39,7 @@ export default function RegisterPatientPage() {
 
   const validate = () => {
     const nextErrors = {};
-    if (!/^\S+@\S+\.\S+$/.test(form.email)) nextErrors.email = "Enter a valid email address.";
+    if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) nextErrors.email = "Enter a valid email address.";
     if (form.password.length < 8) nextErrors.password = "Password must be at least 8 characters.";
     if (!form.fullName.trim()) nextErrors.fullName = "Full name is required.";
     if (!form.dateOfBirth) {
@@ -47,10 +47,10 @@ export default function RegisterPatientPage() {
     } else if (form.dateOfBirth > TODAY) {
       nextErrors.dateOfBirth = "Date of birth cannot be in the future.";
     }
-    if (!NIC_PATTERN.test(form.nationalId)) {
+    if (!NIC_PATTERN.test(form.nationalId.trim())) {
       nextErrors.nationalId = "Enter 9 digits + V/X, or 12 digits.";
     }
-    if (!PHONE_PATTERN.test(form.phoneNumber)) {
+    if (!PHONE_PATTERN.test(form.phoneNumber.trim())) {
       nextErrors.phoneNumber = "Enter a 10-digit number starting with 0.";
     }
 
@@ -74,6 +74,10 @@ export default function RegisterPatientPage() {
     try {
       const payload = {
         ...form,
+        email: form.email.trim(),
+        fullName: form.fullName.trim(),
+        nationalId: form.nationalId.trim(),
+        phoneNumber: form.phoneNumber.trim(),
         emergencyContacts: contacts.filter((c) => c.fullName.trim() && c.relationshipToPatient.trim() && c.phoneNumber.trim()),
       };
       const created = await registerPatient(payload);
