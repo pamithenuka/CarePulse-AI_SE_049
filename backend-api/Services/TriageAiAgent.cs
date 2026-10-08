@@ -20,7 +20,7 @@ public class TriageAiAgent : ITriageAiAgent
     {
         _logger = logger;
         _apiKey = configuration["AI:GeminiApiKey"] ?? "";
-        _model = configuration["AI:GeminiModel"] ?? "gemini-3-flash-preview";
+        _model = configuration["AI:GeminiModel"] ?? "gemini-3.5-flash-lite";
 
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
