@@ -1,0 +1,11 @@
+{
+  "executor": "Before/fix/initial after: Codex. Subsequent personal verification: student, 7 passed.",
+  "base_commit": "df0bd5d6ccbf18c00bd66eb2039163e6d6884606",
+  "sha256": {
+    "mobile-app/lib/features/dispatch/services/location_service.dart": "b9058c5591c8872ffd75d1d47def0758a6e8eed433b3a6a08fca90d0bc2b3260",
+    "mobile-app/test/services/dispatch_tracking_test.dart": "fc4d0b588690585105d0921b06908b56e84513cd046d1cc7a063e7a005cd37d9",
+    "docs/qm/evidence/personal/student4-tracking-before.log": "69cdb91552a253f612f778bdf09c489ffd00f068ca73391477ab1f6a41822341",
+    "docs/qm/evidence/personal/student4-tracking-after.log": "f6737faecaf34839286bd8913a72946395889e948a1064798d75edc10932b99e",
+    "docs/qm/evidence/personal/student4-tracking-personal.log": "96065dbcd8edc024db43a78aa402f9cdfa04d84be6ffbb94fc9f9f47a5b84a8f"
+  }
+}

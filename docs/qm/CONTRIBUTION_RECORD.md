@@ -83,6 +83,15 @@ Do not claim authorship of an existing test just because you ran it. If the lect
 - Latest selected-suite results: 14 distinct cases (4 Flutter, 2 backend, 8 safety), from separate runs, not a fresh full-project run.
 - Attribution: AI-generated test applied and executed by the student with guidance. Independent design/understanding has not yet been demonstrated. No real network, GPS or deployed-system coverage claimed.
 
+## Student 4 — personal verification of tracking defect fix
+
+- Date: 8 October 2026. Defect: S4-DEF-01 (old location responses affecting paused/restarted tracking).
+- Codex reproduced two failing regression cases, implemented the fix and verified it. Student then personally ran `flutter test test/services/dispatch_tracking_test.dart test/services/dispatch_session_test.dart --reporter expanded` from mobile-app.
+- Actual: 7 passed, confirmed by student-pasted terminal output ending `00:00 +7: All tests passed!`. A subsequent personal rerun was saved in [student4-tracking-personal.log](evidence/personal/student4-tracking-personal.log); Codex inspected the file and confirmed 7 passed. The separate before/after logs belong to Codex's runs.
+- Attribution: personal verification of an AI-assisted fix; not independent discovery or test authorship.
+- Coverage count across historical personal runs is now 17 distinct cases (7 Flutter including 3 new tracking cases, 2 backend, 8 safety). Backend and safety results remain from 6 October, not freshly rerun against this fix. Do not count the overlapping four session cases twice.
+- See student4-handover/DISPATCH_TRACKING_DEFECT.md for cause, fix, evidence and report wording. Original 6 October no-defect statements remain historical; the additional review found one real product defect. Fix and new evidence have not been committed/deployed by Codex.
+
 ## AI declaration
 
 The exact module CLEAR instructions are still pending. Obtain them from the lecturer, then write the required declaration using actual use and verification. Do not invent the framework's wording or a student's reflection.
