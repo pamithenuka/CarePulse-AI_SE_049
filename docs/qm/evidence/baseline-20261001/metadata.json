@@ -1,0 +1,21 @@
+{
+  "startedAtUtc": "2026-10-01T03:13:40.655556+00:00",
+  "commit": "1c638e6512e3e1ac6d87a5d4b06c0a11cda09dd7",
+  "workingTree": "?? docs/qm/\n",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "database": "isolated localhost:55439 disposable test databases; no Neon",
+  "ai": "provider mocks or rule fallback; no live AI in baseline",
+  "dotnet": "8.0.423",
+  "postgresBinary": "postgres (PostgreSQL) 18.4 (Homebrew)",
+  "flutter": {
+    "flutterVersion": "3.47.1",
+    "frameworkVersion": "3.47.1",
+    "dartSdkVersion": "3.13.1",
+    "channel": "stable"
+  },
+  "exitCodes": {
+    "backend": 0,
+    "webTestsAndBuild": 0,
+    "flutterTests": 0
+  }
+}

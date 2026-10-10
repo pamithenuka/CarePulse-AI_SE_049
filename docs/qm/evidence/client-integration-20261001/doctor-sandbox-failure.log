@@ -1,0 +1,31 @@
+
+> web-admin@0.1.0 test
+> react-scripts test --watchAll=false --runInBand --runTestsByPath src/qm/dispatch.client.test.js
+
+FAIL src/qm/dispatch.client.test.js
+  ✕ QM real API: React services approve, assign and observe completion (31 ms)
+
+  ● QM real API: React services approve, assign and observe completion
+
+    connect EPERM 127.0.0.1:5516 - Local (0.0.0.0:0)
+
+      2 | export const triageApi = {
+      3 |   submitTriage: async (patientProfileId, symptoms) => (await client.post('/triage/submit', { patientProfileId, symptoms })).data,
+    > 4 |   getPendingApprovals: async () => (await client.get('/triage/pending-approvals')).data,
+        |                                     ^
+      5 |   getAuditLog: async id => (await client.get(`/triage/${id}/audit-log`)).data,
+      6 |   getStatus: async id => (await client.get(`/triage/${id}`)).data,
+      7 |   approveTriage: async (id, notes) => (await client.post(`/triage/${id}/approve`, { notes })).data,
+
+      at AxiosError.from (node_modules/axios/dist/node/axios.cjs:1577:24)
+      at RedirectableRequest.handleRequestError (node_modules/axios/dist/node/axios.cjs:4792:25)
+      at ClientRequest.eventHandlers.<computed> (node_modules/follow-redirects/index.js:56:24)
+      at Axios.request (node_modules/axios/dist/node/axios.cjs:6308:43)
+      at Object.getPendingApprovals (src/services/triageApi.js:4:37)
+      at Object.<anonymous> (src/qm/dispatch.client.test.js:16:21)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        0.433 s
+Ran all test suites within paths "src/qm/dispatch.client.test.js".

@@ -1,0 +1,12 @@
+
+> web-admin@0.1.0 test
+> react-scripts test --watchAll=false --runInBand --runTestsByPath src/qm/dispatch.client.test.js
+
+PASS src/qm/dispatch.client.test.js
+  ✓ QM real API: React services approve, assign and observe completion (148 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        0.29 s, estimated 1 s
+Ran all test suites within paths "src/qm/dispatch.client.test.js".

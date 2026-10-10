@@ -1,0 +1,22 @@
+{
+  "recordedUtc": "2026-10-01T03:29:18.100041+00:00",
+  "baseCommit": "1c638e6512e3e1ac6d87a5d4b06c0a11cda09dd7",
+  "sourceSha256": {
+    "tests/CarePulse.ClientHarness/EntryPoint.cs": "60e6cf298ea881123a669ea22506af933b912c829a4312bf65e17a76d35f94b7",
+    "tests/CarePulse.ClientHarness/CarePulse.ClientHarness.csproj": "5cb3af7dd5ce4b7f9629809c1de7d67e2cb881707fb3a3da099fd21c5d8b3499",
+    "mobile-app/qm/cross_client_test.dart": "43e3fdf42d0723129c2488559fe0825731b46b9a64e54e7840184f648269cc2e",
+    "web-admin/src/qm/dispatch.client.test.js": "31504ffab3ea964c2a78eb2ab363b7eb5e904fc4c35dadca38ec844edb6df15a"
+  },
+  "database": "disposable local PostgreSQL, loopback port 55439",
+  "api": "loopback HTTP port 5516, WebApplicationFactory backend",
+  "ai": "deterministic planner/domain fixtures and rule fallback",
+  "passedPhases": [
+    "Flutter patient",
+    "React doctor",
+    "Flutter nurse/patient completion",
+    "React verification"
+  ],
+  "environmentFailure": "initial sandbox blocked React HTTP with EPERM; permitted rerun passed",
+  "uiAutomation": false,
+  "tokenFileCaptured": false
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "paragraph": 181,
+    "before": "Student 1: Windows 11 laptop. Student 4: separate laptop (see Student 4 evidence logs).",
+    "after": "Student 1: Windows 11 laptop. Student 4: macOS on Apple Silicon; .NET test output identifies arm64. PostgreSQL 18 ran in an isolated local Docker container."
+  },
+  {
+    "paragraph": 195,
+    "before": "Student 4 ran the selected Flutter, backend and safety tests; PR #11 merged",
+    "after": "Student 4 ran the selected Flutter, backend and safety tests on 6 October 2026. Contribution commit df0bd5d and PR #11 followed on 7 October 2026; the test date is not the merge date."
+  },
+  {
+    "paragraph": 700,
+    "before": "Session rejected before any telemetry is sent",
+    "after": "SessionStore.token rejects the expired token with ApiException status 401. No service request is exercised by this token-only test; S4-FL-04 checks zero outgoing requests."
+  },
+  {
+    "paragraph": 716,
+    "before": "Conflict is propagated, success is not shown",
+    "after": "The service propagates ApiException status 409. This is a service test, not a rendered UI assertion."
+  },
+  {
+    "paragraph": 794,
+    "before": "No AI configuration",
+    "after": "No Gemini API key in the test configuration; severity 1.0 and ETA 5."
+  },
+  {
+    "paragraph": 795,
+    "before": "Evaluate a low-risk case",
+    "after": "EvaluateDispatchSafetyAsync with severity 1.0 and ETA 5."
+  },
+  {
+    "paragraph": 796,
+    "before": "Fallback is used; Doctor approval still required",
+    "after": "RequiresHumanApproval is true. This case does not assert the fallback message."
+  },
+  {
+    "paragraph": 802,
+    "before": "AI unavailable",
+    "after": "No Gemini API key in the test configuration."
+  },
+  {
+    "paragraph": 803,
+    "before": "Evaluate with fallback recovery",
+    "after": "EvaluateDispatchSafetyAsync with severity 9.0 and ETA 45."
+  },
+  {
+    "paragraph": 804,
+    "before": "Doctor approval is enforced",
+    "after": "Human approval required; severity and ETA warnings present; verdict contains Fallback Execution."
+  },
+  {
+    "paragraph": 1059,
+    "before": "All paths are relative to the repository root. Items marked \"local\" are ignored by .gitignore and must be added to the submission ZIP by hand.",
+    "after": "All paths are relative to the repository root. Student 4 log and TRX files listed in section 6.4 are tracked in commit df0bd5d and do not need manual recovery from ignored files. For other members, confirm tracked status with git ls-files; files marked local must be supplied separately if not tracked."
+  },
+  {
+    "paragraph": 1305,
+    "before": "Group performance and security evidence is described separately and is not part of Student 4's personal execution.",
+    "after": "Separate load testing is not part of Student 4 personal execution. The session rejection and ownership checks provide targeted security coverage, while nurse concurrency/reassignment and failure propagation cover reliability/recovery. These do not replace the group performance and security evaluation."
+  }
+]

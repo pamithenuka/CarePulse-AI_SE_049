@@ -1,0 +1,159 @@
+{
+  "engine": {
+    "name": "axe-core",
+    "version": "4.13.0"
+  },
+  "environment": {
+    "userAgent": "Mozilla/5.0 (darwin) AppleWebKit/537.36 (KHTML, like Gecko) jsdom/16.7.0",
+    "windowWidth": 1024,
+    "windowHeight": 768
+  },
+  "timestamp": "2026-10-03T03:49:51.659Z",
+  "violations": [],
+  "incomplete": [
+    {
+      "id": "form-field-multiple-labels",
+      "impact": "moderate",
+      "tags": [
+        "cat.forms",
+        "wcag2a",
+        "wcag332",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.3.3.2",
+        "RGAAv4",
+        "RGAA-11.2.1"
+      ],
+      "description": "Ensure form field does not have multiple label elements",
+      "help": "Form field must not have multiple label elements",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/form-field-multiple-labels?application=axeAPI",
+      "nodes": [
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Nurse <select required=\"\"><option value=\"\">Select available nurse</option><option value=\"n1\">Synthetic Nurse</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>Confirmed latitude <input required=\"\" min=\"-90\" max=\"90\" step=\"any\" type=\"number\" value=\"6.9271\"></label>",
+                  "target": [
+                    "label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Confirmed longitude <input required=\"\" min=\"-180\" max=\"180\" step=\"any\" type=\"number\" value=\"79.8612\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<select required=\"\"><option value=\"\">Select available nurse</option><option value=\"n1\">Synthetic Nurse</option></select>",
+          "target": [
+            "select"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Nurse <select required=\"\"><option value=\"\">Select available nurse</option><option value=\"n1\">Synthetic Nurse</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>Confirmed latitude <input required=\"\" min=\"-90\" max=\"90\" step=\"any\" type=\"number\" value=\"6.9271\"></label>",
+                  "target": [
+                    "label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Confirmed longitude <input required=\"\" min=\"-180\" max=\"180\" step=\"any\" type=\"number\" value=\"79.8612\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<input required=\"\" min=\"-90\" max=\"90\" step=\"any\" type=\"number\" value=\"6.9271\">",
+          "target": [
+            "input[min=\"-90\"]"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Nurse <select required=\"\"><option value=\"\">Select available nurse</option><option value=\"n1\">Synthetic Nurse</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>Confirmed latitude <input required=\"\" min=\"-90\" max=\"90\" step=\"any\" type=\"number\" value=\"6.9271\"></label>",
+                  "target": [
+                    "label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Confirmed longitude <input required=\"\" min=\"-180\" max=\"180\" step=\"any\" type=\"number\" value=\"79.8612\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<input required=\"\" min=\"-180\" max=\"180\" step=\"any\" type=\"number\" value=\"79.8612\">",
+          "target": [
+            "input[min=\"-180\"]"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        }
+      ]
+    }
+  ],
+  "passedRuleIds": [
+    "button-name",
+    "empty-heading",
+    "heading-order",
+    "label-title-only",
+    "label",
+    "nested-interactive",
+    "select-name"
+  ],
+  "scope": "Rendered component in jsdom; color contrast disabled; manual review required for incomplete checks"
+}

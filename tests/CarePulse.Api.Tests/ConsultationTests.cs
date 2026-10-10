@@ -3,6 +3,7 @@ using CarePulse.Api.Controllers;
 using CarePulse.Api.DTOs;
 using CarePulse.Api.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarePulse.Api.Tests;
 
@@ -41,6 +42,69 @@ public class ConsultationTests
 
         await context.SaveChangesAsync();
         return (doctor.Id, slot.Id, patientId);
+    }
+
+    [Fact]
+    public async Task FutureAppointment_IsRejected_WithoutPersistingConsultation()
+    {
+        var (doctor, slot, patient) = await SeedBookedSlot();
+        using (var setup = _fixture.CreateContext())
+        {
+            var booking = await setup.AppointmentSlots.FindAsync(slot);
+            booking!.SlotStart = DateTime.UtcNow.AddHours(1);
+            booking.SlotEnd = booking.SlotStart.AddMinutes(30);
+            await setup.SaveChangesAsync();
+        }
+        using var context = _fixture.CreateContext();
+        var result = await new ConsultationsController(context).As().CompleteConsultation(
+            new(slot, doctor, patient, "Synthetic early completion", null));
+        Assert.IsType<BadRequestObjectResult>(result);
+        using var verify = _fixture.CreateContext();
+        Assert.False(await verify.ConsultationRecords.AnyAsync(c => c.SlotId == slot));
+        Assert.Equal(SlotStatus.Booked, (await verify.AppointmentSlots.FindAsync(slot))!.Status);
+    }
+
+    [Theory]
+    [InlineData(0, 0, false)]
+    [InlineData(4000, 2000, true)]
+    [InlineData(4001, 0, false)]
+    [InlineData(10, 2001, false)]
+    public async Task NoteAndPrescriptionLimits_EnforceBoundaryAndPersistence(int notesLength, int prescriptionLength, bool accepted)
+    {
+        var (doctor, slot, patient) = await SeedBookedSlot();
+        var notes = new string('n', notesLength);
+        var prescription = new string('p', prescriptionLength);
+        using var context = _fixture.CreateContext();
+        var result = await new ConsultationsController(context).As().CompleteConsultation(
+            new(slot, doctor, patient, notes, prescription));
+        if (accepted) Assert.IsType<OkObjectResult>(result);
+        else Assert.IsType<BadRequestObjectResult>(result);
+        using var verify = _fixture.CreateContext();
+        var saved = await verify.ConsultationRecords.SingleOrDefaultAsync(c => c.SlotId == slot);
+        if (accepted)
+        {
+            Assert.NotNull(saved);
+            Assert.Equal(notes, saved.Notes);
+            Assert.Equal(prescription, saved.Prescription);
+            Assert.Equal(patient, saved.PatientId);
+            Assert.Equal(doctor, saved.DoctorId);
+        }
+        else Assert.Null(saved);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task MismatchedBookingIdentity_IsRejected_WithoutWritingRecord(bool wrongPatient)
+    {
+        var (doctor, slot, patient) = await SeedBookedSlot();
+        using var context = _fixture.CreateContext();
+        var result = await new ConsultationsController(context).As().CompleteConsultation(
+            new(slot, wrongPatient ? doctor : Guid.NewGuid(), wrongPatient ? Guid.NewGuid() : patient,
+                "Synthetic mismatched identity", null));
+        Assert.IsType<BadRequestObjectResult>(result);
+        using var verify = _fixture.CreateContext();
+        Assert.False(await verify.ConsultationRecords.AnyAsync(c => c.SlotId == slot));
     }
 
     [Fact]

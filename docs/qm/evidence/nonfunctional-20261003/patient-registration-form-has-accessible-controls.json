@@ -1,0 +1,1250 @@
+{
+  "engine": {
+    "name": "axe-core",
+    "version": "4.13.0"
+  },
+  "environment": {
+    "userAgent": "Mozilla/5.0 (darwin) AppleWebKit/537.36 (KHTML, like Gecko) jsdom/16.7.0",
+    "windowWidth": 1024,
+    "windowHeight": 768
+  },
+  "timestamp": "2026-10-03T03:49:51.616Z",
+  "violations": [],
+  "incomplete": [
+    {
+      "id": "form-field-multiple-labels",
+      "impact": "moderate",
+      "tags": [
+        "cat.forms",
+        "wcag2a",
+        "wcag332",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.3.3.2",
+        "RGAAv4",
+        "RGAA-11.2.1"
+      ],
+      "description": "Ensure form field does not have multiple label elements",
+      "help": "Form field must not have multiple label elements",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/form-field-multiple-labels?application=axeAPI",
+      "nodes": [
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Email<input type=\"email\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Temporary password<input type=\"text\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Full name<input value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Date of birth<input max=\"2026-10-03\" type=\"date\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Gender<select><option value=\"Female\">Female</option><option value=\"Male\">Male</option><option value=\"Other\">Other</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Phone number<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                },
+                {
+                  "html": "<label>National ID<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(6)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Address<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(7)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Allergies (comma-separated)<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(8)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"checkbox-label\"><input type=\"checkbox\" checked=\"\">Primary</label>",
+                  "target": [
+                    ".checkbox-label"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<input type=\"email\" value=\"\">",
+          "target": [
+            "input[type=\"email\"]"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Email<input type=\"email\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Temporary password<input type=\"text\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Full name<input value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Date of birth<input max=\"2026-10-03\" type=\"date\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Gender<select><option value=\"Female\">Female</option><option value=\"Male\">Male</option><option value=\"Other\">Other</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Phone number<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                },
+                {
+                  "html": "<label>National ID<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(6)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Address<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(7)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Allergies (comma-separated)<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(8)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"checkbox-label\"><input type=\"checkbox\" checked=\"\">Primary</label>",
+                  "target": [
+                    ".checkbox-label"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<input type=\"text\" value=\"\">",
+          "target": [
+            "input[type=\"text\"]"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Email<input type=\"email\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Temporary password<input type=\"text\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Full name<input value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Date of birth<input max=\"2026-10-03\" type=\"date\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Gender<select><option value=\"Female\">Female</option><option value=\"Male\">Male</option><option value=\"Other\">Other</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Phone number<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                },
+                {
+                  "html": "<label>National ID<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(6)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Address<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(7)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Allergies (comma-separated)<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(8)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"checkbox-label\"><input type=\"checkbox\" checked=\"\">Primary</label>",
+                  "target": [
+                    ".checkbox-label"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<input value=\"\">",
+          "target": [
+            ".form-grid:nth-child(4) > label:nth-child(1) > input"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Email<input type=\"email\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Temporary password<input type=\"text\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Full name<input value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Date of birth<input max=\"2026-10-03\" type=\"date\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Gender<select><option value=\"Female\">Female</option><option value=\"Male\">Male</option><option value=\"Other\">Other</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Phone number<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                },
+                {
+                  "html": "<label>National ID<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(6)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Address<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(7)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Allergies (comma-separated)<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(8)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"checkbox-label\"><input type=\"checkbox\" checked=\"\">Primary</label>",
+                  "target": [
+                    ".checkbox-label"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<input max=\"2026-10-03\" type=\"date\" value=\"\">",
+          "target": [
+            "input[max=\"2026-10-03\"]"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Email<input type=\"email\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Temporary password<input type=\"text\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Full name<input value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Date of birth<input max=\"2026-10-03\" type=\"date\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Gender<select><option value=\"Female\">Female</option><option value=\"Male\">Male</option><option value=\"Other\">Other</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Phone number<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                },
+                {
+                  "html": "<label>National ID<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(6)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Address<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(7)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Allergies (comma-separated)<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(8)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"checkbox-label\"><input type=\"checkbox\" checked=\"\">Primary</label>",
+                  "target": [
+                    ".checkbox-label"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<select><option value=\"Female\">Female</option><option value=\"Male\">Male</option><option value=\"Other\">Other</option></select>",
+          "target": [
+            "label:nth-child(3) > select"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Email<input type=\"email\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Temporary password<input type=\"text\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Full name<input value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Date of birth<input max=\"2026-10-03\" type=\"date\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Gender<select><option value=\"Female\">Female</option><option value=\"Male\">Male</option><option value=\"Other\">Other</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Phone number<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                },
+                {
+                  "html": "<label>National ID<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(6)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Address<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(7)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Allergies (comma-separated)<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(8)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"checkbox-label\"><input type=\"checkbox\" checked=\"\">Primary</label>",
+                  "target": [
+                    ".checkbox-label"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<select><option value=\"\">Unknown</option><option value=\"A+\">A+</option><option value=\"A-\">A-</option><option value=\"B+\">B+</option><option value=\"B-\">B-</option><option value=\"AB+\">AB+</option><option value=\"AB-\">AB-</option><option value=\"O+\">O+</option><option value=\"O-\">O-</option></select>",
+          "target": [
+            "label:nth-child(4) > select"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Email<input type=\"email\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Temporary password<input type=\"text\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Full name<input value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Date of birth<input max=\"2026-10-03\" type=\"date\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Gender<select><option value=\"Female\">Female</option><option value=\"Male\">Male</option><option value=\"Other\">Other</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Phone number<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                },
+                {
+                  "html": "<label>National ID<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(6)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Address<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(7)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Allergies (comma-separated)<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(8)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"checkbox-label\"><input type=\"checkbox\" checked=\"\">Primary</label>",
+                  "target": [
+                    ".checkbox-label"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<input value=\"\">",
+          "target": [
+            "label:nth-child(5) > input"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Email<input type=\"email\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Temporary password<input type=\"text\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Full name<input value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Date of birth<input max=\"2026-10-03\" type=\"date\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Gender<select><option value=\"Female\">Female</option><option value=\"Male\">Male</option><option value=\"Other\">Other</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Phone number<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                },
+                {
+                  "html": "<label>National ID<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(6)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Address<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(7)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Allergies (comma-separated)<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(8)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"checkbox-label\"><input type=\"checkbox\" checked=\"\">Primary</label>",
+                  "target": [
+                    ".checkbox-label"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<input value=\"\">",
+          "target": [
+            "label:nth-child(6) > input"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Email<input type=\"email\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Temporary password<input type=\"text\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Full name<input value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Date of birth<input max=\"2026-10-03\" type=\"date\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Gender<select><option value=\"Female\">Female</option><option value=\"Male\">Male</option><option value=\"Other\">Other</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Phone number<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                },
+                {
+                  "html": "<label>National ID<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(6)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Address<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(7)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Allergies (comma-separated)<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(8)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"checkbox-label\"><input type=\"checkbox\" checked=\"\">Primary</label>",
+                  "target": [
+                    ".checkbox-label"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<input value=\"\">",
+          "target": [
+            ".span-2:nth-child(7) > input"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Email<input type=\"email\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Temporary password<input type=\"text\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Full name<input value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Date of birth<input max=\"2026-10-03\" type=\"date\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Gender<select><option value=\"Female\">Female</option><option value=\"Male\">Male</option><option value=\"Other\">Other</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Phone number<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                },
+                {
+                  "html": "<label>National ID<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(6)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Address<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(7)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Allergies (comma-separated)<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(8)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"checkbox-label\"><input type=\"checkbox\" checked=\"\">Primary</label>",
+                  "target": [
+                    ".checkbox-label"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<input value=\"\">",
+          "target": [
+            ".span-2:nth-child(8) > input"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Email<input type=\"email\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Temporary password<input type=\"text\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Full name<input value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Date of birth<input max=\"2026-10-03\" type=\"date\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Gender<select><option value=\"Female\">Female</option><option value=\"Male\">Male</option><option value=\"Other\">Other</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Phone number<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                },
+                {
+                  "html": "<label>National ID<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(6)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Address<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(7)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Allergies (comma-separated)<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(8)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"checkbox-label\"><input type=\"checkbox\" checked=\"\">Primary</label>",
+                  "target": [
+                    ".checkbox-label"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<input placeholder=\"Full name\" value=\"\">",
+          "target": [
+            "input[placeholder=\"Full name\"]"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Email<input type=\"email\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Temporary password<input type=\"text\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Full name<input value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Date of birth<input max=\"2026-10-03\" type=\"date\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Gender<select><option value=\"Female\">Female</option><option value=\"Male\">Male</option><option value=\"Other\">Other</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Phone number<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                },
+                {
+                  "html": "<label>National ID<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(6)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Address<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(7)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Allergies (comma-separated)<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(8)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"checkbox-label\"><input type=\"checkbox\" checked=\"\">Primary</label>",
+                  "target": [
+                    ".checkbox-label"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<input placeholder=\"Relationship\" value=\"\">",
+          "target": [
+            "input[placeholder=\"Relationship\"]"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Email<input type=\"email\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Temporary password<input type=\"text\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Full name<input value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Date of birth<input max=\"2026-10-03\" type=\"date\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Gender<select><option value=\"Female\">Female</option><option value=\"Male\">Male</option><option value=\"Other\">Other</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Phone number<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                },
+                {
+                  "html": "<label>National ID<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(6)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Address<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(7)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Allergies (comma-separated)<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(8)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"checkbox-label\"><input type=\"checkbox\" checked=\"\">Primary</label>",
+                  "target": [
+                    ".checkbox-label"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<input placeholder=\"Phone number\" value=\"\">",
+          "target": [
+            "input[placeholder=\"Phone number\"]"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Email<input type=\"email\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Temporary password<input type=\"text\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(2) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Full name<input value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Date of birth<input max=\"2026-10-03\" type=\"date\" value=\"\"></label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Gender<select><option value=\"Female\">Female</option><option value=\"Male\">Male</option><option value=\"Other\">Other</option></select></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                },
+                {
+                  "html": "<label>",
+                  "target": [
+                    ".form-grid:nth-child(4) > label:nth-child(4)"
+                  ]
+                },
+                {
+                  "html": "<label>Phone number<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(5)"
+                  ]
+                },
+                {
+                  "html": "<label>National ID<input value=\"\"></label>",
+                  "target": [
+                    "label:nth-child(6)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Address<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(7)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"span-2\">Allergies (comma-separated)<input value=\"\"></label>",
+                  "target": [
+                    ".span-2:nth-child(8)"
+                  ]
+                },
+                {
+                  "html": "<label class=\"checkbox-label\"><input type=\"checkbox\" checked=\"\">Primary</label>",
+                  "target": [
+                    ".checkbox-label"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<input type=\"checkbox\" checked=\"\">",
+          "target": [
+            "input[type=\"checkbox\"]"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        }
+      ]
+    }
+  ],
+  "passedRuleIds": [
+    "button-name",
+    "empty-heading",
+    "heading-order",
+    "label-title-only",
+    "label",
+    "link-name",
+    "nested-interactive",
+    "select-name"
+  ],
+  "scope": "Rendered component in jsdom; color contrast disabled; manual review required for incomplete checks"
+}

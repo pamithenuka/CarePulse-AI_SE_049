@@ -1,0 +1,91 @@
+{
+  "tests": [
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.Security_InvalidUpload_IsRejectedWithoutDocument(filename: \"empty.pdf\", body: \"\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.2553855"
+    },
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.GoldenWorkflow_ExecutesAllAgents_EnforcesApproval_Ownership_AndDurableCompletion",
+      "outcome": "Passed",
+      "duration": "00:00:00.1623792"
+    },
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.AdversarialPlannerOutput_CannotExecuteUnapprovedTool_AndRecoversForManualReview",
+      "outcome": "Passed",
+      "duration": "00:00:00.4192311"
+    },
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.SafetyAgent_DoesNotDisableApplicationTracking",
+      "outcome": "Passed",
+      "duration": "00:00:00.0040367"
+    },
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.Security_InvalidUpload_IsRejectedWithoutDocument(filename: \"forged.png\", body: \"this is not a PNG file\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0702433"
+    },
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.Security_AnonymousRequests_CannotReadProtectedResources(path: \"/api/v1/dispatch/active\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0680263"
+    },
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.Security_AdminCannotPerformDoctorApproval_AndStateIsUnchanged",
+      "outcome": "Passed",
+      "duration": "00:00:00.0943039"
+    },
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.PublicRegistration_CannotEscalatePrivileges_AndTriageRequiresAuthentication",
+      "outcome": "Passed",
+      "duration": "00:00:00.0964020"
+    },
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.Security_AnonymousRequests_CannotReadProtectedResources(path: \"/api/v1/patients\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0603363"
+    },
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.Security_InvalidUpload_IsRejectedWithoutDocument(filename: \"payload.html\", body: \"<script>alert('synthetic')</script>\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0652773"
+    },
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.Security_AnonymousRequests_CannotReadProtectedResources(path: \"/api/v1/triage/pending-approvals\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0545768"
+    },
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.Security_AnonymousRequests_CannotReadProtectedResources(path: \"/uploads/patients/security-test.pdf\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.2486061"
+    },
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.Security_InvalidTriageCoordinates_AreRejectedBeforePersistence",
+      "outcome": "Passed",
+      "duration": "00:00:00.0701338"
+    },
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.Security_CrossPatientUpload_IsRejectedWithoutDocument",
+      "outcome": "Passed",
+      "duration": "00:00:00.0697781"
+    },
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.ExpiredJwt_RejectsTelemetry_AndOtherPatientCannotReadTriage",
+      "outcome": "Passed",
+      "duration": "00:00:00.0969209"
+    },
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.ConcurrentAssignments_ClaimNurseOnce_KeepOtherCaseWaiting_AndAllowRetry",
+      "outcome": "Passed",
+      "duration": "00:00:00.4250548"
+    },
+    {
+      "name": "CarePulse.Api.Tests.IntegratedWorkflowTests.Security_TamperedJwtSignature_IsRejected",
+      "outcome": "Passed",
+      "duration": "00:00:00.1928944"
+    }
+  ],
+  "passed": 17,
+  "failed": 0
+}

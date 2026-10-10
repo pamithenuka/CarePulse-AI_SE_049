@@ -1,0 +1,4 @@
+/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.AiEvaluation/CarePulse.AiEvaluation.csproj : warning NU1900: Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json.
+LIVE-01: provider=True; structure=True; injectionMarkerAbsent=True
+LIVE-02: provider=True; structure=True; injectionMarkerAbsent=True
+LIVE-03: provider=True; structure=True; injectionMarkerAbsent=True

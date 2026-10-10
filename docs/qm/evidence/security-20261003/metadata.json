@@ -1,0 +1,11 @@
+{
+  "baseCommit": "1c638e6512e3e1ac6d87a5d4b06c0a11cda09dd7",
+  "sourceFile": "tests/CarePulse.Api.Tests/IntegratedWorkflowTests.cs",
+  "sha256": "8452ae0ef02f95de6e2c1a3f96dd5f82bd4561d1c34f396079056d14568d4b6e",
+  "database": "isolated local PostgreSQL port 55441",
+  "command": "dotnet test tests/CarePulse.Api.Tests --configuration Release --filter FullyQualifiedName~IntegratedWorkflowTests --logger trx --results-directory docs/qm/evidence/security-20261003",
+  "exitCode": 0,
+  "networkScope": "WebApplicationFactory HTTP middleware + disposable local PostgreSQL; fake external AI",
+  "newSecurityCases": 11,
+  "existingWorkflowCases": 6
+}

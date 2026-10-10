@@ -46,5 +46,8 @@
     "transformIgnorePatterns": [
       "node_modules/(?!react-leaflet|@react-leaflet)/"
     ]
+  },
+  "devDependencies": {
+    "axe-core": "4.13.0"
   }
 }

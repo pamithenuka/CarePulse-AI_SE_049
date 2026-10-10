@@ -1,0 +1,19 @@
+{
+  "recordedUtc": "2026-10-03T03:36:56.889637+00:00",
+  "baseCommit": "1c638e6512e3e1ac6d87a5d4b06c0a11cda09dd7",
+  "model": "gemini-3-flash-preview",
+  "database": "isolated PostgreSQL /tmp/carepulse-qm-pg-20261003 port 55441",
+  "aiDeterministicCases": 40,
+  "aiDeterministicRetestPassed": 40,
+  "liveGenerationsBefore": 3,
+  "liveGenerationsAfter": 3,
+  "defect": "QM-AI-001",
+  "semanticReviewer": "AI assistant; student review pending",
+  "promptFix": "prompt-fix.patch",
+  "sourceSha256": {
+    "tests/CarePulse.AiEvaluation/Program.cs": "b44acb464ee63fd440a6b477d3236f2aa95ec23d72b4332bc69d6678130d68c5",
+    "backend-api/Services/Ai/AgentPlannerService.cs": "ef258e0bf6db3db768a936726a8e32da35887fe5090d71f101ae63b816343a04"
+  },
+  "deterministicFilter": "FullyQualifiedName~AgentPlannerServiceTests|FullyQualifiedName~Gemini|FullyQualifiedName~ValidationAgentGoldenTests|FullyQualifiedName~IntegratedWorkflowTests|FullyQualifiedName~SchedulingSearchTests",
+  "environmentIssues": "Initial sandbox blocked .NET HTTP and PostgreSQL shared memory; port 55439 occupied. Permitted runs used fresh port 55441. NU1900 package audit warning retained."
+}

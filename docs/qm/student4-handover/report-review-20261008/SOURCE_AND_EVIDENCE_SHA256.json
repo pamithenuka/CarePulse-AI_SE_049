@@ -1,0 +1,16 @@
+{
+  "packaging_commit": "df0bd5d6ccbf18c00bd66eb2039163e6d6884606",
+  "warning": "Hashes identify committed source snapshots, not proof of the exact uncommitted source at the historical run time.",
+  "source": {
+    "mobile-app/test/services/dispatch_session_test.dart": "ccd3c204094493b71ac5870d9909eb967c51cfd82bf54f7d161206c66006ef71",
+    "tests/CarePulse.Ai.GoldenTests/ValidationAgentGoldenTests.cs": "32adbb5e7e74208b1f5ee8558f9b4477e06538d4d0c7926ca3652f9780a91823",
+    "tests/CarePulse.Api.Tests/IntegratedWorkflowTests.cs": "7c407c873bd768742360f85dc8625883734362bfe8ec1bab84bb8882478a31e9"
+  },
+  "evidence": {
+    "docs/qm/evidence/personal/student4-safety-run2/_192_2026-10-06_15_54_30.trx": "4f4680a09f0d6aae7dbf1397d1fbcf300d51c4da4f40d7bb3bf260b81b9c2f87",
+    "docs/qm/evidence/personal/student4-run1/_192_2026-10-06_15_44_29.trx": "69f173ee07394b02c9bb0c210af2c953706ec6350af73093ee8dafad1824bb42",
+    "docs/qm/evidence/personal/student4-safety-run1/_192_2026-10-06_15_49_13.trx": "c76e5904311dec0ae2b22ce40afaf9f67b159ff3f9abe150a6931efd818e2a27",
+    "docs/qm/evidence/personal/student4-flutter-run1/extended-results.log": "cc40febb936749da083201c359ecff59238200b5d171f30d0aa712a0eaaffa0b",
+    "docs/qm/evidence/personal/student4-flutter-run1/results.log": "f8713f3cfeed8766d9f45f2d249394f6ae64a08875bc64001ff915e7f3c59554"
+  }
+}

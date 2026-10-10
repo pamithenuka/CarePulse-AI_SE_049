@@ -1,0 +1,14 @@
+{
+  "recordedUtc": "2026-10-01T03:21:51.551292+00:00",
+  "baseCommit": "1c638e6512e3e1ac6d87a5d4b06c0a11cda09dd7",
+  "workingTreeTestChanges": "changes.patch",
+  "database": "isolated PostgreSQL 18.4 on localhost:55439",
+  "dotnet": "8.0.423",
+  "command": "dotnet test CarePulse.sln --configuration Release --logger trx --results-directory docs/qm/evidence/gap-tests-20261001/backend",
+  "environment": "CAREPULSE_TEST_CONNECTION set to isolated local server, never Neon",
+  "provider": "fake AI / deterministic rule fallback",
+  "exitCode": 0,
+  "passed": 128,
+  "failed": 0,
+  "skipped": 0
+}

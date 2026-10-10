@@ -1,0 +1,144 @@
+diff --git a/tests/CarePulse.Ai.GoldenTests/ValidationAgentGoldenTests.cs b/tests/CarePulse.Ai.GoldenTests/ValidationAgentGoldenTests.cs
+index 9143089..b89a0e6 100644
+--- a/tests/CarePulse.Ai.GoldenTests/ValidationAgentGoldenTests.cs
++++ b/tests/CarePulse.Ai.GoldenTests/ValidationAgentGoldenTests.cs
+@@ -38,6 +38,27 @@ public class ValidationAgentGoldenTests
+         return builder.Build();
+     }
+ 
++    [Theory]
++    [InlineData(8.49, 29, false, false)]
++    [InlineData(8.5, 30, false, false)]
++    [InlineData(8.51, 30, true, false)]
++    [InlineData(8.5, 31, false, true)]
++    [InlineData(8.51, 31, true, true)]
++    public async Task SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval(
++        double severity, int eta, bool severityFlag, bool etaFlag)
++    {
++        using var db = GetInMemoryDbContext();
++        var agent = new ValidationAgent(db, GetConfiguration(), NullLogger<ValidationAgent>.Instance);
++        var response = await agent.EvaluateDispatchSafetyAsync(new ValidationAgentRequest
++        {
++            TriageId = Guid.NewGuid(), SeverityScore = severity, EtaMinutes = eta
++        });
++        Assert.True(response.RequiresHumanApproval);
++        Assert.Equal(severityFlag, response.FlaggedRules.Exists(r => r.Contains("Severity Score")));
++        Assert.Equal(etaFlag, response.FlaggedRules.Exists(r => r.Contains("ETA")));
++        Assert.Equal((severityFlag ? 1 : 0) + (etaFlag ? 1 : 0), response.FlaggedRules.Count);
++    }
++
+     [Fact]
+     public async Task EvaluateDispatchSafetyAsync_FallbackRecovery_EnforcesDoctorApproval()
+     {
+diff --git a/tests/CarePulse.Api.Tests/ConsultationTests.cs b/tests/CarePulse.Api.Tests/ConsultationTests.cs
+index e2fd4ea..29804f1 100644
+--- a/tests/CarePulse.Api.Tests/ConsultationTests.cs
++++ b/tests/CarePulse.Api.Tests/ConsultationTests.cs
+@@ -3,6 +3,7 @@ using CarePulse.Api.Controllers;
+ using CarePulse.Api.DTOs;
+ using CarePulse.Api.Entities;
+ using Microsoft.AspNetCore.Mvc;
++using Microsoft.EntityFrameworkCore;
+ 
+ namespace CarePulse.Api.Tests;
+ 
+@@ -43,6 +44,69 @@ public class ConsultationTests
+         return (doctor.Id, slot.Id, patientId);
+     }
+ 
++    [Fact]
++    public async Task FutureAppointment_IsRejected_WithoutPersistingConsultation()
++    {
++        var (doctor, slot, patient) = await SeedBookedSlot();
++        using (var setup = _fixture.CreateContext())
++        {
++            var booking = await setup.AppointmentSlots.FindAsync(slot);
++            booking!.SlotStart = DateTime.UtcNow.AddHours(1);
++            booking.SlotEnd = booking.SlotStart.AddMinutes(30);
++            await setup.SaveChangesAsync();
++        }
++        using var context = _fixture.CreateContext();
++        var result = await new ConsultationsController(context).As().CompleteConsultation(
++            new(slot, doctor, patient, "Synthetic early completion", null));
++        Assert.IsType<BadRequestObjectResult>(result);
++        using var verify = _fixture.CreateContext();
++        Assert.False(await verify.ConsultationRecords.AnyAsync(c => c.SlotId == slot));
++        Assert.Equal(SlotStatus.Booked, (await verify.AppointmentSlots.FindAsync(slot))!.Status);
++    }
++
++    [Theory]
++    [InlineData(0, 0, false)]
++    [InlineData(4000, 2000, true)]
++    [InlineData(4001, 0, false)]
++    [InlineData(10, 2001, false)]
++    public async Task NoteAndPrescriptionLimits_EnforceBoundaryAndPersistence(int notesLength, int prescriptionLength, bool accepted)
++    {
++        var (doctor, slot, patient) = await SeedBookedSlot();
++        var notes = new string('n', notesLength);
++        var prescription = new string('p', prescriptionLength);
++        using var context = _fixture.CreateContext();
++        var result = await new ConsultationsController(context).As().CompleteConsultation(
++            new(slot, doctor, patient, notes, prescription));
++        if (accepted) Assert.IsType<OkObjectResult>(result);
++        else Assert.IsType<BadRequestObjectResult>(result);
++        using var verify = _fixture.CreateContext();
++        var saved = await verify.ConsultationRecords.SingleOrDefaultAsync(c => c.SlotId == slot);
++        if (accepted)
++        {
++            Assert.NotNull(saved);
++            Assert.Equal(notes, saved.Notes);
++            Assert.Equal(prescription, saved.Prescription);
++            Assert.Equal(patient, saved.PatientId);
++            Assert.Equal(doctor, saved.DoctorId);
++        }
++        else Assert.Null(saved);
++    }
++
++    [Theory]
++    [InlineData(true)]
++    [InlineData(false)]
++    public async Task MismatchedBookingIdentity_IsRejected_WithoutWritingRecord(bool wrongPatient)
++    {
++        var (doctor, slot, patient) = await SeedBookedSlot();
++        using var context = _fixture.CreateContext();
++        var result = await new ConsultationsController(context).As().CompleteConsultation(
++            new(slot, wrongPatient ? doctor : Guid.NewGuid(), wrongPatient ? Guid.NewGuid() : patient,
++                "Synthetic mismatched identity", null));
++        Assert.IsType<BadRequestObjectResult>(result);
++        using var verify = _fixture.CreateContext();
++        Assert.False(await verify.ConsultationRecords.AnyAsync(c => c.SlotId == slot));
++    }
++
+     [Fact]
+     public async Task CompletingAConsultation_ForABookedSlot_Succeeds()
+     {
+diff --git a/tests/CarePulse.Api.Tests/IntegratedWorkflowTests.cs b/tests/CarePulse.Api.Tests/IntegratedWorkflowTests.cs
+index 4c7edb0..a169234 100644
+--- a/tests/CarePulse.Api.Tests/IntegratedWorkflowTests.cs
++++ b/tests/CarePulse.Api.Tests/IntegratedWorkflowTests.cs
+@@ -170,6 +170,25 @@ public class IntegratedWorkflowTests(TestDatabaseFixture database)
+         Assert.Equal(TriageConstants.StatusApproved, (await db.TriageTickets.FindAsync(ids[1-winner]))!.Status);
+         var waiting = await Ok(await first.GetAsync("/api/v1/dispatch/waiting"));
+         Assert.Contains(waiting.EnumerateArray(), item => item.GetProperty("id").GetGuid() == ids[1-winner]);
++
++        // Finish the winning visit, then prove that the waiting case can claim the released nurse.
++        var winningDispatch = initial.GetProperty("id").GetGuid();
++        SignIn(first, factory, nurse.user, "Nurse");
++        await Ok(await first.PutAsJsonAsync($"/api/v1/dispatch/{winningDispatch}/location",
++            new { latitude = 6.92, longitude = 79.86, speedKmh = 0, heading = 0 }));
++        await Ok(await first.PutAsync($"/api/v1/dispatch/{winningDispatch}/arrive", null));
++        await Ok(await first.PostAsJsonAsync($"/api/v1/dispatch/{winningDispatch}/complete-onsite",
++            new CompleteOnsiteDto { HeartRate = 80, BloodPressure = "120/80", BodyTempC = 37,
++                OxygenSaturation = 98, ClinicalNotes = "Synthetic completed visit before reassignment" }));
++        SignIn(first, factory, doctor.user, "Doctor");
++        var reassigned = await Ok(await first.PostAsJsonAsync("/api/v1/dispatch/assign", requests[1-winner]));
++        Assert.NotEqual(winningDispatch, reassigned.GetProperty("id").GetGuid());
++        using var verify = database.CreateContext();
++        Assert.Equal("Completed", (await verify.DispatchTickets.FindAsync(winningDispatch))!.Status);
++        Assert.Equal(1, await verify.DispatchTickets.CountAsync(d => d.NurseId == nurse.profile && d.Status != "Completed"));
++        Assert.False((await verify.NurseProfiles.FindAsync(nurse.profile))!.IsAvailable);
++        var remaining = await Ok(await first.GetAsync("/api/v1/dispatch/waiting"));
++        Assert.DoesNotContain(remaining.EnumerateArray(), item => item.GetProperty("id").GetGuid() == ids[1-winner]);
+     }
+ 
+     [Fact]

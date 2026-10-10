@@ -1,0 +1,13 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  backend-api -> /Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/backend-api/bin/Release/net8.0/backend-api.dll
+/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Api.Tests/MigrationTests.cs(27,39): warning EF1002: Method 'ExecuteSqlRawAsync' inserts interpolated strings directly into the SQL, without any protection against SQL injection. Consider using 'ExecuteSqlAsync' instead, which protects against SQL injection, or make sure that the value is sanitized and suppress the warning. [/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Api.Tests/CarePulse.Api.Tests.csproj]
+  CarePulse.Api.Tests -> /Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Api.Tests/bin/Release/net8.0/CarePulse.Api.Tests.dll
+Test run for /Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Api.Tests/bin/Release/net8.0/CarePulse.Api.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.11.1 (arm64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+Results File: /Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/docs/qm/evidence/security-20261003/_Pamiths-MacBook-Air-2_2026-10-03_09_15_04.trx
+
+Passed!  - Failed:     0, Passed:    17, Skipped:     0, Total:    17, Duration: 2 s - CarePulse.Api.Tests.dll (net8.0)

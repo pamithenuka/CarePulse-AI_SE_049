@@ -1,0 +1,161 @@
+{
+  "engine": {
+    "name": "axe-core",
+    "version": "4.13.0"
+  },
+  "environment": {
+    "userAgent": "Mozilla/5.0 (darwin) AppleWebKit/537.36 (KHTML, like Gecko) jsdom/16.7.0",
+    "windowWidth": 1024,
+    "windowHeight": 768
+  },
+  "timestamp": "2026-10-03T03:49:51.645Z",
+  "violations": [],
+  "incomplete": [
+    {
+      "id": "form-field-multiple-labels",
+      "impact": "moderate",
+      "tags": [
+        "cat.forms",
+        "wcag2a",
+        "wcag332",
+        "TTv5",
+        "TT5.c",
+        "EN-301-549",
+        "EN-9.3.3.2",
+        "RGAAv4",
+        "RGAA-11.2.1"
+      ],
+      "description": "Ensure form field does not have multiple label elements",
+      "help": "Form field must not have multiple label elements",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/form-field-multiple-labels?application=axeAPI",
+      "nodes": [
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Booked appointment <select required=\"\"><option value=\"\">Select appointment</option><option value=\"s1\">Synthetic Patient — 10/4/2026, 9:30:00 AM</option></select></label>",
+                  "target": [
+                    "form > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Notes <textarea required=\"\" maxlength=\"4000\"></textarea></label>",
+                  "target": [
+                    "label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Prescription (optional) <textarea maxlength=\"2000\"></textarea></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<select required=\"\"><option value=\"\">Select appointment</option><option value=\"s1\">Synthetic Patient — 10/4/2026, 9:30:00 AM</option></select>",
+          "target": [
+            "label:nth-child(1) > select"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Booked appointment <select required=\"\"><option value=\"\">Select appointment</option><option value=\"s1\">Synthetic Patient — 10/4/2026, 9:30:00 AM</option></select></label>",
+                  "target": [
+                    "form > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Notes <textarea required=\"\" maxlength=\"4000\"></textarea></label>",
+                  "target": [
+                    "label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Prescription (optional) <textarea maxlength=\"2000\"></textarea></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<textarea required=\"\" maxlength=\"4000\"></textarea>",
+          "target": [
+            "textarea[maxlength=\"4000\"]"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        },
+        {
+          "any": [],
+          "all": [],
+          "none": [
+            {
+              "id": "multiple-label",
+              "data": null,
+              "relatedNodes": [
+                {
+                  "html": "<label>Booked appointment <select required=\"\"><option value=\"\">Select appointment</option><option value=\"s1\">Synthetic Patient — 10/4/2026, 9:30:00 AM</option></select></label>",
+                  "target": [
+                    "form > label:nth-child(1)"
+                  ]
+                },
+                {
+                  "html": "<label>Notes <textarea required=\"\" maxlength=\"4000\"></textarea></label>",
+                  "target": [
+                    "label:nth-child(2)"
+                  ]
+                },
+                {
+                  "html": "<label>Prescription (optional) <textarea maxlength=\"2000\"></textarea></label>",
+                  "target": [
+                    "label:nth-child(3)"
+                  ]
+                }
+              ],
+              "impact": "moderate",
+              "message": "Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+            }
+          ],
+          "impact": "moderate",
+          "html": "<textarea maxlength=\"2000\"></textarea>",
+          "target": [
+            "textarea[maxlength=\"2000\"]"
+          ],
+          "failureSummary": "Fix all of the following:\n  Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information."
+        }
+      ]
+    }
+  ],
+  "passedRuleIds": [
+    "button-name",
+    "duplicate-id-aria",
+    "empty-heading",
+    "form-field-multiple-labels",
+    "heading-order",
+    "label-title-only",
+    "label",
+    "nested-interactive",
+    "select-name"
+  ],
+  "scope": "Rendered component in jsdom; color contrast disabled; manual review required for incomplete checks"
+}

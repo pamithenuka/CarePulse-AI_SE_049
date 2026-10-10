@@ -67,6 +67,10 @@ TestResults/
 coverage/
 *.trx
 
+# Reviewed synthetic assignment evidence (general logs/results stay ignored).
+!docs/qm/evidence/**/*.trx
+!docs/qm/evidence/**/*.log
+
 # Machine-specific configuration and private medical uploads
 backend-api/appsettings.Local.json
 backend-api/App_Data/

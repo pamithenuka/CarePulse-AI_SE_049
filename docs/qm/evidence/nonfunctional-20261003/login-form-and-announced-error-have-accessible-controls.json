@@ -1,0 +1,29 @@
+{
+  "engine": {
+    "name": "axe-core",
+    "version": "4.13.0"
+  },
+  "environment": {
+    "userAgent": "Mozilla/5.0 (darwin) AppleWebKit/537.36 (KHTML, like Gecko) jsdom/16.7.0",
+    "windowWidth": 1024,
+    "windowHeight": 768
+  },
+  "timestamp": "2026-10-03T03:49:51.582Z",
+  "violations": [],
+  "incomplete": [],
+  "passedRuleIds": [
+    "aria-allowed-role",
+    "aria-deprecated-role",
+    "aria-required-attr",
+    "aria-roles",
+    "button-name",
+    "duplicate-id-aria",
+    "empty-heading",
+    "form-field-multiple-labels",
+    "heading-order",
+    "label-title-only",
+    "label",
+    "nested-interactive"
+  ],
+  "scope": "Rendered component in jsdom; color contrast disabled; manual review required for incomplete checks"
+}

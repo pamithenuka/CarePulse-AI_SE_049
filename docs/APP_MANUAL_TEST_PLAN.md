@@ -1,5 +1,7 @@
 # CarePulse — test using only the web and Flutter apps
 
+> Patient navigation: **Profile**, **Triage** and **Doctors** are in the bottom bar. Tap **More** to open **Medical History**, **Emergency Contacts**, **Documents** or **AI Care Plan**. Where steps below say History, Contacts or AI Plan, use the matching More menu item. SOS stays visible.
+
 This guide uses screens, menus and buttons. You do **not** need Swagger, API requests, browser address-bar routes, database queries or copied record IDs.
 
 Start all three applications using the [simple README](../README.md). Use synthetic people and symptoms. Keep the backend terminal running. A working Gemini key is needed to evaluate live AI behavior.

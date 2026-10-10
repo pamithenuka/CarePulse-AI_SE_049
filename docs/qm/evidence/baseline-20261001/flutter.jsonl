@@ -1,0 +1,182 @@
+Resolving dependencies...
+Downloading packages...
+  clock 1.1.2 (1.1.3 available)
+  code_assets 1.2.1 (2.1.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_icons 1.0.9 (2.0.0 available)
+  dbus 0.7.15 (0.8.0 available)
+  flutter_map 7.0.2 (8.3.2 available)
+  flutter_secure_storage 9.2.4 (11.2.0 available)
+  flutter_secure_storage_linux 1.2.3 (3.0.3 available)
+  flutter_secure_storage_macos 3.1.3 (4.0.0 available)
+  flutter_secure_storage_platform_interface 1.1.2 (2.1.1 available)
+  flutter_secure_storage_web 1.2.1 (2.1.1 available)
+  flutter_secure_storage_windows 3.1.2 (4.2.2 available)
+  geolocator 14.0.2 (14.1.1 available)
+  geolocator_android 5.0.3 (5.1.1 available)
+  geolocator_linux 0.2.4 (0.2.6 available)
+  geolocator_platform_interface 4.3.0 (4.4.0 available)
+  google_fonts 6.3.3 (9.0.0 available)
+  gsettings 0.2.8 (0.2.9 available)
+  hooks 2.0.2 (2.2.0 available)
+  jni 1.0.3 (1.1.0 available)
+  jni_flutter 1.0.3 (1.0.4 available)
+  js 0.6.7 (0.7.2 available)
+  latlong2 0.9.1 (0.10.1 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  meta 1.18.3 (1.19.0 available)
+  mgrs_dart 2.0.0 (3.0.0 available)
+  objective_c 9.5.0 (9.6.2 available)
+  package_info_plus 9.0.1 (10.2.1 available)
+  package_info_plus_platform_interface 3.2.1 (4.1.0 available)
+  petitparser 7.0.2 (7.1.0 available)
+  proj4dart 2.1.0 (3.0.0 available)
+  record_use 0.6.0 (1.1.1 available)
+  stack_trace 1.12.1 (1.12.2 available)
+  test_api 0.7.12 (0.7.14 available)
+  unicode 0.3.1 (1.1.9 available)
+  vector_math 2.4.0 (2.4.3 available)
+  win32 5.15.0 (6.4.0 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+38 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+{"protocolVersion":"0.1.1","runnerVersion":null,"pid":93286,"type":"start","time":0}
+{"suite":{"id":0,"platform":"vm","path":"/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"suite","time":0}
+{"test":{"id":1,"name":"loading /Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart","suiteID":0,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":0}
+{"suite":{"id":2,"platform":"vm","path":"/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/widget_test.dart"},"type":"suite","time":2}
+{"test":{"id":3,"name":"loading /Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/widget_test.dart","suiteID":2,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":2}
+{"suite":{"id":4,"platform":"vm","path":"/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/role_picker_test.dart"},"type":"suite","time":2}
+{"test":{"id":5,"name":"loading /Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/role_picker_test.dart","suiteID":4,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":2}
+{"suite":{"id":6,"platform":"vm","path":"/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/ai_service_test.dart"},"type":"suite","time":2}
+{"test":{"id":7,"name":"loading /Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/ai_service_test.dart","suiteID":6,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":2}
+{"suite":{"id":8,"platform":"vm","path":"/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/auth_service_test.dart"},"type":"suite","time":2}
+{"test":{"id":9,"name":"loading /Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/auth_service_test.dart","suiteID":8,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":2}
+{"count":7,"time":2,"type":"allSuites"}
+
+[{"event":"test.startedProcess","params":{"vmServiceUri":null}}]
+
+[{"event":"test.startedProcess","params":{"vmServiceUri":null}}]
+
+[{"event":"test.startedProcess","params":{"vmServiceUri":null}}]
+
+[{"event":"test.startedProcess","params":{"vmServiceUri":null}}]
+
+[{"event":"test.startedProcess","params":{"vmServiceUri":null}}]
+{"testID":3,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":1204}
+{"group":{"id":10,"suiteID":2,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":3,"line":null,"column":null,"url":null},"type":"group","time":1205}
+{"test":{"id":11,"name":"LoginScreen shows validation errors on an empty submit","suiteID":2,"groupIDs":[10],"metadata":{"skip":false,"skipReason":null},"line":174,"column":5,"url":"package:flutter_test/src/widget_tester.dart","root_line":21,"root_column":3,"root_url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/widget_test.dart"},"type":"testStart","time":1205}
+{"testID":5,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":1285}
+{"group":{"id":12,"suiteID":4,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":6,"line":null,"column":null,"url":null},"type":"group","time":1286}
+{"group":{"id":13,"suiteID":4,"parentID":12,"name":"RolePickerScreen","metadata":{"skip":false,"skipReason":null},"testCount":3,"line":22,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/role_picker_test.dart"},"type":"group","time":1286}
+{"test":{"id":14,"name":"RolePickerScreen shows both persona options","suiteID":4,"groupIDs":[12,13],"metadata":{"skip":false,"skipReason":null},"line":174,"column":5,"url":"package:flutter_test/src/widget_tester.dart","root_line":23,"root_column":5,"root_url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/role_picker_test.dart"},"type":"testStart","time":1286}
+{"testID":1,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":1336}
+{"group":{"id":15,"suiteID":0,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":17,"line":null,"column":null,"url":null},"type":"group","time":1336}
+{"group":{"id":16,"suiteID":0,"parentID":15,"name":"Validators.email","metadata":{"skip":false,"skipReason":null},"testCount":2,"line":5,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"group","time":1336}
+{"test":{"id":17,"name":"Validators.email accepts a well-formed address","suiteID":0,"groupIDs":[15,16],"metadata":{"skip":false,"skipReason":null},"line":6,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1336}
+{"testID":7,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":1338}
+{"group":{"id":18,"suiteID":6,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":2,"line":null,"column":null,"url":null},"type":"group","time":1338}
+{"group":{"id":19,"suiteID":6,"parentID":18,"name":"AiService.createPlan","metadata":{"skip":false,"skipReason":null},"testCount":1,"line":30,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/ai_service_test.dart"},"type":"group","time":1338}
+{"test":{"id":20,"name":"AiService.createPlan posts the objective and returns the created plan","suiteID":6,"groupIDs":[18,19],"metadata":{"skip":false,"skipReason":null},"line":31,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/ai_service_test.dart"},"type":"testStart","time":1338}
+{"testID":17,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1346}
+{"test":{"id":21,"name":"Validators.email rejects a missing @","suiteID":0,"groupIDs":[15,16],"metadata":{"skip":false,"skipReason":null},"line":10,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1347}
+{"testID":21,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1348}
+{"group":{"id":22,"suiteID":0,"parentID":15,"name":"Validators.password","metadata":{"skip":false,"skipReason":null},"testCount":2,"line":15,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"group","time":1348}
+{"test":{"id":23,"name":"Validators.password accepts 8+ characters","suiteID":0,"groupIDs":[15,22],"metadata":{"skip":false,"skipReason":null},"line":16,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1348}
+{"testID":23,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1350}
+{"test":{"id":24,"name":"Validators.password rejects fewer than 8 characters","suiteID":0,"groupIDs":[15,22],"metadata":{"skip":false,"skipReason":null},"line":20,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1350}
+{"testID":24,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1351}
+{"group":{"id":25,"suiteID":0,"parentID":15,"name":"Validators.nationalId","metadata":{"skip":false,"skipReason":null},"testCount":4,"line":25,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"group","time":1351}
+{"test":{"id":26,"name":"Validators.nationalId accepts 9 digits + V","suiteID":0,"groupIDs":[15,25],"metadata":{"skip":false,"skipReason":null},"line":26,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1351}
+{"testID":26,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1352}
+{"test":{"id":27,"name":"Validators.nationalId accepts 9 digits + lowercase x","suiteID":0,"groupIDs":[15,25],"metadata":{"skip":false,"skipReason":null},"line":30,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1353}
+{"testID":27,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1354}
+{"test":{"id":28,"name":"Validators.nationalId accepts 12 digits","suiteID":0,"groupIDs":[15,25],"metadata":{"skip":false,"skipReason":null},"line":34,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1354}
+{"testID":28,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1355}
+{"test":{"id":29,"name":"Validators.nationalId rejects the wrong digit count","suiteID":0,"groupIDs":[15,25],"metadata":{"skip":false,"skipReason":null},"line":38,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1355}
+{"testID":29,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1356}
+{"testID":20,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1356}
+{"group":{"id":30,"suiteID":0,"parentID":15,"name":"Validators.phoneNumber","metadata":{"skip":false,"skipReason":null},"testCount":3,"line":43,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"group","time":1356}
+{"test":{"id":31,"name":"Validators.phoneNumber accepts a 10-digit number starting with 0","suiteID":0,"groupIDs":[15,30],"metadata":{"skip":false,"skipReason":null},"line":44,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1356}
+{"group":{"id":32,"suiteID":6,"parentID":18,"name":"AiService.getPlans","metadata":{"skip":false,"skipReason":null},"testCount":1,"line":49,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/ai_service_test.dart"},"type":"group","time":1356}
+{"test":{"id":33,"name":"AiService.getPlans returns the list of plans for the patient","suiteID":6,"groupIDs":[18,32],"metadata":{"skip":false,"skipReason":null},"line":50,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/ai_service_test.dart"},"type":"testStart","time":1356}
+{"testID":31,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1357}
+{"test":{"id":34,"name":"Validators.phoneNumber rejects a number without the leading 0","suiteID":0,"groupIDs":[15,30],"metadata":{"skip":false,"skipReason":null},"line":48,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1357}
+{"testID":34,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1358}
+{"test":{"id":35,"name":"Validators.phoneNumber rejects a number that is too short","suiteID":0,"groupIDs":[15,30],"metadata":{"skip":false,"skipReason":null},"line":52,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1358}
+{"testID":33,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1359}
+{"testID":35,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1363}
+{"group":{"id":36,"suiteID":0,"parentID":15,"name":"Validators.dateOfBirth","metadata":{"skip":false,"skipReason":null},"testCount":3,"line":57,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"group","time":1363}
+{"test":{"id":37,"name":"Validators.dateOfBirth accepts a date in the past","suiteID":0,"groupIDs":[15,36],"metadata":{"skip":false,"skipReason":null},"line":58,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1363}
+{"suite":{"id":38,"platform":"vm","path":"/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/patient_service_test.dart"},"type":"suite","time":1367}
+{"test":{"id":39,"name":"loading /Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/patient_service_test.dart","suiteID":38,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":1367}
+{"testID":37,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1367}
+{"test":{"id":40,"name":"Validators.dateOfBirth rejects a null date","suiteID":0,"groupIDs":[15,36],"metadata":{"skip":false,"skipReason":null},"line":62,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1368}
+{"testID":40,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1369}
+{"test":{"id":41,"name":"Validators.dateOfBirth rejects a date in the future","suiteID":0,"groupIDs":[15,36],"metadata":{"skip":false,"skipReason":null},"line":66,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1370}
+{"testID":41,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1371}
+{"group":{"id":42,"suiteID":0,"parentID":15,"name":"Validators.requiredField","metadata":{"skip":false,"skipReason":null},"testCount":3,"line":72,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"group","time":1371}
+{"test":{"id":43,"name":"Validators.requiredField rejects null","suiteID":0,"groupIDs":[15,42],"metadata":{"skip":false,"skipReason":null},"line":73,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1371}
+{"testID":43,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1373}
+{"test":{"id":44,"name":"Validators.requiredField rejects blank/whitespace-only text","suiteID":0,"groupIDs":[15,42],"metadata":{"skip":false,"skipReason":null},"line":77,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1373}
+{"testID":44,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1374}
+{"test":{"id":45,"name":"Validators.requiredField accepts non-empty text","suiteID":0,"groupIDs":[15,42],"metadata":{"skip":false,"skipReason":null},"line":81,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/validators_test.dart"},"type":"testStart","time":1374}
+{"testID":45,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1375}
+{"suite":{"id":46,"platform":"vm","path":"/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/dispatch_session_test.dart"},"type":"suite","time":1383}
+{"test":{"id":47,"name":"loading /Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/dispatch_session_test.dart","suiteID":46,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":1383}
+{"testID":9,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":1452}
+{"group":{"id":48,"suiteID":8,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":3,"line":null,"column":null,"url":null},"type":"group","time":1515}
+{"group":{"id":49,"suiteID":8,"parentID":48,"name":"AuthService.login","metadata":{"skip":false,"skipReason":null},"testCount":2,"line":11,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/auth_service_test.dart"},"type":"group","time":1524}
+{"test":{"id":50,"name":"AuthService.login returns an AuthUser when the server responds 200","suiteID":8,"groupIDs":[48,49],"metadata":{"skip":false,"skipReason":null},"line":12,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/auth_service_test.dart"},"type":"testStart","time":1537}
+
+[{"event":"test.startedProcess","params":{"vmServiceUri":null}}]
+{"testID":50,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1558}
+{"test":{"id":51,"name":"AuthService.login throws ApiException with the server message on invalid credentials","suiteID":8,"groupIDs":[48,49],"metadata":{"skip":false,"skipReason":null},"line":40,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/auth_service_test.dart"},"type":"testStart","time":1558}
+{"testID":51,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1565}
+{"group":{"id":52,"suiteID":8,"parentID":48,"name":"AuthService.register","metadata":{"skip":false,"skipReason":null},"testCount":1,"line":54,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/auth_service_test.dart"},"type":"group","time":1565}
+{"test":{"id":53,"name":"AuthService.register sends the Patient role and returns the created user","suiteID":8,"groupIDs":[48,52],"metadata":{"skip":false,"skipReason":null},"line":55,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/auth_service_test.dart"},"type":"testStart","time":1565}
+{"testID":53,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1567}
+
+[{"event":"test.startedProcess","params":{"vmServiceUri":null}}]
+{"testID":14,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1599}
+{"test":{"id":54,"name":"RolePickerScreen tapping Patient reports the patient role","suiteID":4,"groupIDs":[12,13],"metadata":{"skip":false,"skipReason":null},"line":174,"column":5,"url":"package:flutter_test/src/widget_tester.dart","root_line":31,"root_column":5,"root_url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/role_picker_test.dart"},"type":"testStart","time":1599}
+{"testID":54,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1670}
+{"test":{"id":55,"name":"RolePickerScreen tapping Field Nurse reports the nurse role","suiteID":4,"groupIDs":[12,13],"metadata":{"skip":false,"skipReason":null},"line":174,"column":5,"url":"package:flutter_test/src/widget_tester.dart","root_line":41,"root_column":5,"root_url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/role_picker_test.dart"},"type":"testStart","time":1671}
+{"testID":55,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1693}
+{"group":{"id":56,"suiteID":4,"parentID":12,"name":"AppEntryScreen","metadata":{"skip":false,"skipReason":null},"testCount":3,"line":52,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/role_picker_test.dart"},"type":"group","time":1694}
+{"test":{"id":57,"name":"AppEntryScreen always shows the role picker on launch","suiteID":4,"groupIDs":[12,56],"metadata":{"skip":false,"skipReason":null},"line":174,"column":5,"url":"package:flutter_test/src/widget_tester.dart","root_line":53,"root_column":5,"root_url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/role_picker_test.dart"},"type":"testStart","time":1694}
+{"testID":57,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1714}
+{"test":{"id":58,"name":"AppEntryScreen selecting Field Nurse navigates to the /login route","suiteID":4,"groupIDs":[12,56],"metadata":{"skip":false,"skipReason":null},"line":174,"column":5,"url":"package:flutter_test/src/widget_tester.dart","root_line":59,"root_column":5,"root_url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/role_picker_test.dart"},"type":"testStart","time":1714}
+{"testID":11,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1745}
+{"test":{"id":59,"name":"LoginScreen renders the CarePulse branding and a register link","suiteID":2,"groupIDs":[10],"metadata":{"skip":false,"skipReason":null},"line":174,"column":5,"url":"package:flutter_test/src/widget_tester.dart","root_line":31,"root_column":3,"root_url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/widget_test.dart"},"type":"testStart","time":1745}
+{"testID":58,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1757}
+{"test":{"id":60,"name":"AppEntryScreen selecting Patient navigates to the /patient route","suiteID":4,"groupIDs":[12,56],"metadata":{"skip":false,"skipReason":null},"line":174,"column":5,"url":"package:flutter_test/src/widget_tester.dart","root_line":68,"root_column":5,"root_url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/role_picker_test.dart"},"type":"testStart","time":1757}
+{"testID":59,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1784}
+{"test":{"id":61,"name":"tapping the register link navigates to RegisterScreen","suiteID":2,"groupIDs":[10],"metadata":{"skip":false,"skipReason":null},"line":174,"column":5,"url":"package:flutter_test/src/widget_tester.dart","root_line":38,"root_column":3,"root_url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/widget_test.dart"},"type":"testStart","time":1784}
+{"testID":60,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1788}
+{"testID":47,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":1872}
+{"group":{"id":62,"suiteID":46,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":3,"line":null,"column":null,"url":null},"type":"group","time":1872}
+{"test":{"id":63,"name":"expired shared session rejects before sending telemetry","suiteID":46,"groupIDs":[62],"metadata":{"skip":false,"skipReason":null},"line":23,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/dispatch_session_test.dart"},"type":"testStart","time":1872}
+{"testID":39,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":1877}
+{"group":{"id":64,"suiteID":38,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":5,"line":null,"column":null,"url":null},"type":"group","time":1877}
+{"group":{"id":65,"suiteID":38,"parentID":64,"name":"PatientService.createProfile","metadata":{"skip":false,"skipReason":null},"testCount":1,"line":31,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/patient_service_test.dart"},"type":"group","time":1877}
+{"test":{"id":66,"name":"PatientService.createProfile sends the profile fields and at least one emergency contact","suiteID":38,"groupIDs":[64,65],"metadata":{"skip":false,"skipReason":null},"line":32,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/patient_service_test.dart"},"type":"testStart","time":1877}
+{"testID":61,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1883}
+{"testID":63,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1886}
+{"test":{"id":67,"name":"dispatch sends the shared JWT and reports a server-rejected location","suiteID":46,"groupIDs":[62],"metadata":{"skip":false,"skipReason":null},"line":28,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/dispatch_session_test.dart"},"type":"testStart","time":1887}
+{"testID":66,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1895}
+{"group":{"id":68,"suiteID":38,"parentID":64,"name":"PatientService.getMyProfile","metadata":{"skip":false,"skipReason":null},"testCount":2,"line":61,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/patient_service_test.dart"},"type":"group","time":1896}
+{"test":{"id":69,"name":"PatientService.getMyProfile returns the profile on 200","suiteID":38,"groupIDs":[64,68],"metadata":{"skip":false,"skipReason":null},"line":62,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/patient_service_test.dart"},"type":"testStart","time":1896}
+{"testID":69,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1897}
+{"test":{"id":70,"name":"PatientService.getMyProfile throws a not-found ApiException when no profile exists yet","suiteID":38,"groupIDs":[64,68],"metadata":{"skip":false,"skipReason":null},"line":74,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/patient_service_test.dart"},"type":"testStart","time":1897}
+{"testID":67,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1898}
+{"test":{"id":71,"name":"completion conflict propagates instead of showing success","suiteID":46,"groupIDs":[62],"metadata":{"skip":false,"skipReason":null},"line":41,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/dispatch_session_test.dart"},"type":"testStart","time":1898}
+{"testID":71,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1900}
+{"testID":70,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1902}
+{"group":{"id":72,"suiteID":38,"parentID":64,"name":"PatientService.updateProfile","metadata":{"skip":false,"skipReason":null},"testCount":1,"line":88,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/patient_service_test.dart"},"type":"group","time":1902}
+{"test":{"id":73,"name":"PatientService.updateProfile omits null fields from the request body","suiteID":38,"groupIDs":[64,72],"metadata":{"skip":false,"skipReason":null},"line":89,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/patient_service_test.dart"},"type":"testStart","time":1902}
+{"testID":73,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1904}
+{"group":{"id":74,"suiteID":38,"parentID":64,"name":"PatientService.uploadDocument","metadata":{"skip":false,"skipReason":null},"testCount":1,"line":102,"column":3,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/patient_service_test.dart"},"type":"group","time":1904}
+{"test":{"id":75,"name":"PatientService.uploadDocument sends a multipart request with the file bytes and the numeric document type","suiteID":38,"groupIDs":[64,74],"metadata":{"skip":false,"skipReason":null},"line":103,"column":5,"url":"file:///Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/mobile-app/test/services/patient_service_test.dart"},"type":"testStart","time":1904}
+{"testID":75,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":1909}
+{"success":true,"type":"done","time":1913}

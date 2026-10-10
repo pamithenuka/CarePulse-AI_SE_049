@@ -1,0 +1,510 @@
+v22.23.3
+10.9.9
+
+> web-admin@0.1.0 test
+> react-scripts test --watchAll=false --runInBand --json --outputFile=../docs/qm/evidence/baseline-20261001/web-results.json
+
+PASS src/pages/NurseDetailPage.test.js
+  ● Console
+
+    console.warn
+      ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+
+       8 | const nurse = { id: 'n1', fullName: 'Demo nurse', specialization: 'Emergency', status: 'Active', isAvailable: false, licenseNumber: 'TEST-1' };
+       9 | function show() {
+    > 10 |   render(<MemoryRouter initialEntries={['/nurses/n1']}><Routes><Route path="/nurses/:id" element={<NurseDetailPage />} /></Routes></MemoryRouter>);
+         |         ^
+      11 | }
+      12 | beforeEach(() => jest.resetAllMocks());
+      13 |
+
+      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)
+      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)
+      at logV6DeprecationWarnings (node_modules/react-router/lib/deprecations.ts:26:5)
+      at create (node_modules/react-router/lib/components.tsx:257:25)
+      at Object.callback [as react_stack_bottom_frame] (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at callback (node_modules/react-dom/cjs/react-dom-client.development.js:17923:15)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at actImplementation (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:25)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at show (src/pages/NurseDetailPage.test.js:10:9)
+      at Object.<anonymous> (src/pages/NurseDetailPage.test.js:17:3)
+
+    console.warn
+      ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+       8 | const nurse = { id: 'n1', fullName: 'Demo nurse', specialization: 'Emergency', status: 'Active', isAvailable: false, licenseNumber: 'TEST-1' };
+       9 | function show() {
+    > 10 |   render(<MemoryRouter initialEntries={['/nurses/n1']}><Routes><Route path="/nurses/:id" element={<NurseDetailPage />} /></Routes></MemoryRouter>);
+         |         ^
+      11 | }
+      12 | beforeEach(() => jest.resetAllMocks());
+      13 |
+
+      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)
+      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)
+      at logV6DeprecationWarnings (node_modules/react-router/lib/deprecations.ts:37:5)
+      at create (node_modules/react-router/lib/components.tsx:257:25)
+      at Object.callback [as react_stack_bottom_frame] (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at callback (node_modules/react-dom/cjs/react-dom-client.development.js:17923:15)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at actImplementation (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:25)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at show (src/pages/NurseDetailPage.test.js:10:9)
+      at Object.<anonymous> (src/pages/NurseDetailPage.test.js:17:3)
+
+PASS src/App.test.js
+  ● Console
+
+    console.warn
+      ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+
+      4 |
+      5 | test('unauthenticated users are redirected to the login page', () => {
+    > 6 |   render(
+        |         ^
+      7 |     <MemoryRouter initialEntries={['/']}>
+      8 |       <App />
+      9 |     </MemoryRouter>
+
+      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)
+      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)
+      at logV6DeprecationWarnings (node_modules/react-router/lib/deprecations.ts:26:5)
+      at create (node_modules/react-router/lib/components.tsx:257:25)
+      at Object.callback [as react_stack_bottom_frame] (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at callback (node_modules/react-dom/cjs/react-dom-client.development.js:17923:15)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at actImplementation (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:25)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at Object.<anonymous> (src/App.test.js:6:9)
+
+    console.warn
+      ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+      4 |
+      5 | test('unauthenticated users are redirected to the login page', () => {
+    > 6 |   render(
+        |         ^
+      7 |     <MemoryRouter initialEntries={['/']}>
+      8 |       <App />
+      9 |     </MemoryRouter>
+
+      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)
+      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)
+      at logV6DeprecationWarnings (node_modules/react-router/lib/deprecations.ts:37:5)
+      at create (node_modules/react-router/lib/components.tsx:257:25)
+      at Object.callback [as react_stack_bottom_frame] (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at callback (node_modules/react-dom/cjs/react-dom-client.development.js:17923:15)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at actImplementation (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:25)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at Object.<anonymous> (src/App.test.js:6:9)
+
+PASS src/components/patient/AiPlanTab.test.js
+PASS src/pages/RegisterPatientPage.test.js
+  ● Console
+
+    console.warn
+      ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+
+       7 |
+       8 | function renderPage() {
+    >  9 |   return render(
+         |                ^
+      10 |     <MemoryRouter initialEntries={['/patients/new']}>
+      11 |       <Routes>
+      12 |         <Route path="/patients/new" element={<RegisterPatientPage />} />
+
+      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)
+      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)
+      at logV6DeprecationWarnings (node_modules/react-router/lib/deprecations.ts:26:5)
+      at create (node_modules/react-router/lib/components.tsx:257:25)
+      at Object.callback [as react_stack_bottom_frame] (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at callback (node_modules/react-dom/cjs/react-dom-client.development.js:17923:15)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at actImplementation (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:25)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at renderPage (src/pages/RegisterPatientPage.test.js:9:16)
+      at Object.<anonymous> (src/pages/RegisterPatientPage.test.js:34:5)
+
+    console.warn
+      ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+       7 |
+       8 | function renderPage() {
+    >  9 |   return render(
+         |                ^
+      10 |     <MemoryRouter initialEntries={['/patients/new']}>
+      11 |       <Routes>
+      12 |         <Route path="/patients/new" element={<RegisterPatientPage />} />
+
+      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)
+      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)
+      at logV6DeprecationWarnings (node_modules/react-router/lib/deprecations.ts:37:5)
+      at create (node_modules/react-router/lib/components.tsx:257:25)
+      at Object.callback [as react_stack_bottom_frame] (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at callback (node_modules/react-dom/cjs/react-dom-client.development.js:17923:15)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at actImplementation (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:25)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at renderPage (src/pages/RegisterPatientPage.test.js:9:16)
+      at Object.<anonymous> (src/pages/RegisterPatientPage.test.js:34:5)
+
+PASS src/pages/PatientsListPage.test.js
+  ● Console
+
+    console.warn
+      ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+
+       8 |
+       9 | const renderPage = () =>
+    > 10 |   render(
+         |         ^
+      11 |     <MemoryRouter>
+      12 |       <AuthProvider>
+      13 |         <PatientsListPage />
+
+      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)
+      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)
+      at logV6DeprecationWarnings (node_modules/react-router/lib/deprecations.ts:26:5)
+      at create (node_modules/react-router/lib/components.tsx:257:25)
+      at Object.callback [as react_stack_bottom_frame] (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at callback (node_modules/react-dom/cjs/react-dom-client.development.js:17923:15)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at actImplementation (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:25)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at renderPage (src/pages/PatientsListPage.test.js:10:9)
+      at Object.<anonymous> (src/pages/PatientsListPage.test.js:33:5)
+
+    console.warn
+      ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+       8 |
+       9 | const renderPage = () =>
+    > 10 |   render(
+         |         ^
+      11 |     <MemoryRouter>
+      12 |       <AuthProvider>
+      13 |         <PatientsListPage />
+
+      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)
+      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)
+      at logV6DeprecationWarnings (node_modules/react-router/lib/deprecations.ts:37:5)
+      at create (node_modules/react-router/lib/components.tsx:257:25)
+      at Object.callback [as react_stack_bottom_frame] (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at callback (node_modules/react-dom/cjs/react-dom-client.development.js:17923:15)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at actImplementation (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:25)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at renderPage (src/pages/PatientsListPage.test.js:10:9)
+      at Object.<anonymous> (src/pages/PatientsListPage.test.js:33:5)
+
+PASS src/pages/PatientDetailPage.test.js
+  ● Console
+
+    console.warn
+      ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+
+      32 |   localStorage.setItem('carepulse_user', JSON.stringify({ userId: 'u1', fullName: 'Dr. Test', email: 'doc@carepulse.dev', roles }));
+      33 |
+    > 34 |   return render(
+         |                ^
+      35 |     <MemoryRouter initialEntries={['/patients/p1']}>
+      36 |       <AuthProvider>
+      37 |         <Routes>
+
+      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)
+      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)
+      at logV6DeprecationWarnings (node_modules/react-router/lib/deprecations.ts:26:5)
+      at create (node_modules/react-router/lib/components.tsx:257:25)
+      at Object.callback [as react_stack_bottom_frame] (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at callback (node_modules/react-dom/cjs/react-dom-client.development.js:17923:15)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at actImplementation (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:25)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at renderAsRole (src/pages/PatientDetailPage.test.js:34:16)
+      at Object.<anonymous> (src/pages/PatientDetailPage.test.js:54:5)
+
+    console.warn
+      ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+      32 |   localStorage.setItem('carepulse_user', JSON.stringify({ userId: 'u1', fullName: 'Dr. Test', email: 'doc@carepulse.dev', roles }));
+      33 |
+    > 34 |   return render(
+         |                ^
+      35 |     <MemoryRouter initialEntries={['/patients/p1']}>
+      36 |       <AuthProvider>
+      37 |         <Routes>
+
+      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)
+      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)
+      at logV6DeprecationWarnings (node_modules/react-router/lib/deprecations.ts:37:5)
+      at create (node_modules/react-router/lib/components.tsx:257:25)
+      at Object.callback [as react_stack_bottom_frame] (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at callback (node_modules/react-dom/cjs/react-dom-client.development.js:17923:15)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at actImplementation (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:25)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at renderAsRole (src/pages/PatientDetailPage.test.js:34:16)
+      at Object.<anonymous> (src/pages/PatientDetailPage.test.js:54:5)
+
+PASS src/components/patient/MedicalHistoryTab.test.js
+PASS src/pages/LoginPage.test.js
+  ● Console
+
+    console.warn
+      ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+
+       8 |
+       9 | function renderLoginPage() {
+    > 10 |   return render(
+         |                ^
+      11 |     <MemoryRouter initialEntries={['/login']}>
+      12 |       <AuthProvider>
+      13 |         <Routes>
+
+      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)
+      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)
+      at logV6DeprecationWarnings (node_modules/react-router/lib/deprecations.ts:26:5)
+      at create (node_modules/react-router/lib/components.tsx:257:25)
+      at Object.callback [as react_stack_bottom_frame] (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at callback (node_modules/react-dom/cjs/react-dom-client.development.js:17923:15)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at actImplementation (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:25)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at renderLoginPage (src/pages/LoginPage.test.js:10:16)
+      at Object.<anonymous> (src/pages/LoginPage.test.js:29:5)
+
+    console.warn
+      ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+       8 |
+       9 | function renderLoginPage() {
+    > 10 |   return render(
+         |                ^
+      11 |     <MemoryRouter initialEntries={['/login']}>
+      12 |       <AuthProvider>
+      13 |         <Routes>
+
+      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)
+      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)
+      at logV6DeprecationWarnings (node_modules/react-router/lib/deprecations.ts:37:5)
+      at create (node_modules/react-router/lib/components.tsx:257:25)
+      at Object.callback [as react_stack_bottom_frame] (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at callback (node_modules/react-dom/cjs/react-dom-client.development.js:17923:15)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at actImplementation (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:25)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at renderLoginPage (src/pages/LoginPage.test.js:10:16)
+      at Object.<anonymous> (src/pages/LoginPage.test.js:29:5)
+
+PASS src/components/patient/OverviewTab.test.js
+PASS src/components/ProtectedRoute.test.js
+  ● Console
+
+    console.warn
+      ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+
+       5 |
+       6 | function renderWithAuth(initialEntry, allowedRoles) {
+    >  7 |   return render(
+         |                ^
+       8 |     <MemoryRouter initialEntries={[initialEntry]}>
+       9 |       <AuthProvider>
+      10 |         <Routes>
+
+      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)
+      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)
+      at logV6DeprecationWarnings (node_modules/react-router/lib/deprecations.ts:26:5)
+      at create (node_modules/react-router/lib/components.tsx:257:25)
+      at Object.callback [as react_stack_bottom_frame] (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at callback (node_modules/react-dom/cjs/react-dom-client.development.js:17923:15)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at actImplementation (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:25)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at renderWithAuth (src/components/ProtectedRoute.test.js:7:16)
+      at Object.<anonymous> (src/components/ProtectedRoute.test.js:28:5)
+
+    console.warn
+      ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+       5 |
+       6 | function renderWithAuth(initialEntry, allowedRoles) {
+    >  7 |   return render(
+         |                ^
+       8 |     <MemoryRouter initialEntries={[initialEntry]}>
+       9 |       <AuthProvider>
+      10 |         <Routes>
+
+      at warnOnce (node_modules/react-router/lib/deprecations.ts:9:13)
+      at logDeprecation (node_modules/react-router/lib/deprecations.ts:14:3)
+      at logV6DeprecationWarnings (node_modules/react-router/lib/deprecations.ts:37:5)
+      at create (node_modules/react-router/lib/components.tsx:257:25)
+      at Object.callback [as react_stack_bottom_frame] (node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+      at runWithFiberInDEV (node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+      at commitHookEffectListMount (node_modules/react-dom/cjs/react-dom-client.development.js:13249:29)
+      at commitHookPassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:13336:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15484:13)
+      at recursivelyTraversePassiveMountEffects (node_modules/react-dom/cjs/react-dom-client.development.js:15439:11)
+      at commitPassiveMountOnFiber (node_modules/react-dom/cjs/react-dom-client.development.js:15519:11)
+      at flushPassiveEffects (node_modules/react-dom/cjs/react-dom-client.development.js:18432:9)
+      at callback (node_modules/react-dom/cjs/react-dom-client.development.js:17923:15)
+      at flushActQueue (node_modules/react/cjs/react.development.js:590:34)
+      at actImplementation (node_modules/react/cjs/react.development.js:884:10)
+      at node_modules/@testing-library/react/dist/act-compat.js:46:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:189:25)
+      at render (node_modules/@testing-library/react/dist/pure.js:291:10)
+      at renderWithAuth (src/components/ProtectedRoute.test.js:7:16)
+      at Object.<anonymous> (src/components/ProtectedRoute.test.js:28:5)
+
+PASS src/store/useDispatchStore.test.js
+
+Test Suites: 11 passed, 11 total
+Tests:       33 passed, 33 total
+Snapshots:   0 total
+Time:        4.962 s
+Ran all test suites.
+Test results written to: ../docs/qm/evidence/baseline-20261001/web-results.json
+
+> web-admin@0.1.0 build
+> react-scripts build
+
+Creating an optimized production build...
+Compiled successfully.
+
+File sizes after gzip:
+
+  150.5 kB  build/static/js/main.07caa442.js
+  12.9 kB   build/static/css/main.74f1b5d7.css
+  1.76 kB   build/static/js/453.39f52ad0.chunk.js
+
+The project was built assuming it is hosted at /.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+You may serve it with a static server:
+
+  npm install -g serve
+  serve -s build
+
+Find out more about deployment here:
+
+  https://cra.link/deployment
+

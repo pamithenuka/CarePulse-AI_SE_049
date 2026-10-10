@@ -1,0 +1,35 @@
+{
+  "runDate": "2026-10-03",
+  "baseCommit": "1c638e6512e3e1ac6d87a5d4b06c0a11cda09dd7",
+  "uncommittedSource": true,
+  "sourceSha256": {
+    "web-admin/src/qm/accessibility.test.js": "4ac355df3b5f5d0d1ea66d4fb55f11a607e8585c85d6b0eb4109ee31e4385379",
+    "web-admin/package.json": "b99ab409ef02659437beb3f646f21109e34a7442810f27de0b641dde422fb022",
+    "web-admin/package-lock.json": "86b10fa9a56b45c2320f708106e8ea7ee2ae3ff3a8dbf3d2ea04a6c7d084a63c",
+    "tests/CarePulse.Api.Tests/IntegratedWorkflowTests.cs": "8452ae0ef02f95de6e2c1a3f96dd5f82bd4561d1c34f396079056d14568d4b6e",
+    "mobile-app/test/services/dispatch_session_test.dart": "db2a7dfb77916963a263e1cbdcff1b304dc038ca3eaf855e60e6a0de938a12f1"
+  },
+  "environment": {
+    "node": "24.11.1",
+    "npm": "11.6.2",
+    "axe-core": "4.13.0",
+    "dotnetSdk": "8.0.423",
+    "flutter": "3.47.1",
+    "dart": "3.13.1",
+    "database": "isolated local PostgreSQL on 55441; never shared Neon"
+  },
+  "results": {
+    "webPassed": 37,
+    "webSkipped": 1,
+    "accessibilityTestsIncludedInWeb": 4,
+    "backendReliabilityPassed": 2,
+    "flutterSessionPassed": 3
+  },
+  "limitations": [
+    "jsdom component checks, not browser/device acceptance",
+    "color contrast disabled",
+    "form-field-multiple-labels requires manual review on registration (14 nodes), consultation (3), dispatch (3)",
+    "backend recovery uses arranged interrupted state, not a killed process",
+    "Flutter HTTP responses mocked"
+  ]
+}

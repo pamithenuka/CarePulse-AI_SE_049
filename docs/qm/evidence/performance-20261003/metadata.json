@@ -1,0 +1,14 @@
+{
+  "baseCommit": "1c638e6512e3e1ac6d87a5d4b06c0a11cda09dd7",
+  "configuration": "Release",
+  "database": "isolated local PostgreSQL 18.4 port 55441",
+  "runtime": "8.0.423",
+  "python": "Python 3.13.5",
+  "exitCode": 0,
+  "sourceSha256": {
+    "scripts/qm-performance.py": "0b264465cef9095a821b46890bd1ec6eb5794d3740e1b9666a1aa72cb8df01ea",
+    "tests/CarePulse.ClientHarness/EntryPoint.cs": "47288345efb081195a704c428e34753b7b980889fc57cfbaa984d0cd7b8dcbdc"
+  },
+  "command": "python3 scripts/qm-performance.py --session <private-temp-file> --output <new-results-file>",
+  "tokenFileIncluded": false
+}

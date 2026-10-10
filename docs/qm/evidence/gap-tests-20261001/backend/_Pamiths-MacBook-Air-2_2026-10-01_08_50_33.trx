@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="b76f2687-6338-4521-bd8d-0ce15a855911" name="@Pamiths-MacBook-Air-2 2026-10-01 08:50:33" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T08:50:33.6189440+05:30" queuing="2026-10-01T08:50:33.6189440+05:30" start="2026-10-01T08:50:32.8774700+05:30" finish="2026-10-01T08:50:33.6218120+05:30" />
+  <TestSettings name="default" id="37272086-f766-4f1e-a427-a001f3a790e2">
+    <Deployment runDeploymentRoot="_Pamiths-MacBook-Air-2_2026-10-01_08_50_33" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="e1de21d2-2725-40bb-8ac5-c087ad34e38e" testId="b5127482-ed0f-6c06-211f-00577fcefbec" testName="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests.SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval(severity: 8.5099999999999998, eta: 31, severityFlag: True, etaFlag: True)" computerName="Pamiths-MacBook-Air-2" duration="00:00:00.0001504" startTime="2026-10-01T08:50:33.5659910+05:30" endTime="2026-10-01T08:50:33.5659910+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e1de21d2-2725-40bb-8ac5-c087ad34e38e" />
+    <UnitTestResult executionId="b437eaa8-7469-4479-ab1c-5885785709a1" testId="db959e39-83e3-feef-dd44-7f127e751e49" testName="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests.EvaluateDispatchSafetyAsync_FallbackRecovery_EnforcesDoctorApproval" computerName="Pamiths-MacBook-Air-2" duration="00:00:00.0011217" startTime="2026-10-01T08:50:33.5672200+05:30" endTime="2026-10-01T08:50:33.5672200+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b437eaa8-7469-4479-ab1c-5885785709a1" />
+    <UnitTestResult executionId="f6e7771a-3ec1-49e8-bb73-728188a6ef44" testId="4052487e-84cc-0ee8-f85b-fa9de22553af" testName="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests.SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval(severity: 8.5099999999999998, eta: 30, severityFlag: True, etaFlag: False)" computerName="Pamiths-MacBook-Air-2" duration="00:00:00.0037702" startTime="2026-10-01T08:50:33.5559140+05:30" endTime="2026-10-01T08:50:33.5559140+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f6e7771a-3ec1-49e8-bb73-728188a6ef44" />
+    <UnitTestResult executionId="662b9282-31fc-4e90-9543-dae0d9ac3f39" testId="98fb6505-9251-21ef-7786-859f0f04ce6b" testName="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests.EvaluateDispatchSafetyAsync_MissingConfiguration_LowRiskStillRequiresApproval" computerName="Pamiths-MacBook-Air-2" duration="00:00:00.0003006" startTime="2026-10-01T08:50:33.5675270+05:30" endTime="2026-10-01T08:50:33.5675270+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="662b9282-31fc-4e90-9543-dae0d9ac3f39" />
+    <UnitTestResult executionId="c2029e8d-fc0d-47e3-9ac7-444481e187eb" testId="8a00ee08-f2df-835d-9c00-a8d2aef0b27b" testName="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests.SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval(severity: 8.5, eta: 31, severityFlag: False, etaFlag: True)" computerName="Pamiths-MacBook-Air-2" duration="00:00:00.0036348" startTime="2026-10-01T08:50:33.5658380+05:30" endTime="2026-10-01T08:50:33.5658380+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c2029e8d-fc0d-47e3-9ac7-444481e187eb" />
+    <UnitTestResult executionId="5de76944-b5f3-4607-8327-c42198b5f807" testId="d61c8e53-dc14-b7fa-e068-b018c5996e34" testName="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests.SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval(severity: 8.5, eta: 30, severityFlag: False, etaFlag: False)" computerName="Pamiths-MacBook-Air-2" duration="00:00:00.3811877" startTime="2026-10-01T08:50:33.5524300+05:30" endTime="2026-10-01T08:50:33.5524380+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5de76944-b5f3-4607-8327-c42198b5f807" />
+    <UnitTestResult executionId="00b5cfc4-9fb6-422b-b311-704b586c0789" testId="889555b9-196c-ae25-b141-a61a18ea2662" testName="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests.SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval(severity: 8.4900000000000002, eta: 29, severityFlag: False, etaFlag: False)" computerName="Pamiths-MacBook-Air-2" duration="00:00:00.0062668" startTime="2026-10-01T08:50:33.5621720+05:30" endTime="2026-10-01T08:50:33.5621720+05:30" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="00b5cfc4-9fb6-422b-b311-704b586c0789" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests.SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval(severity: 8.5099999999999998, eta: 30, severityFlag: True, etaFlag: False)" storage="/users/pamithkaluarachchi/desktop/carepulse-ai_se_049/tests/carepulse.ai.goldentests/bin/release/net8.0/carepulse.ai.goldentests.dll" id="4052487e-84cc-0ee8-f85b-fa9de22553af">
+      <Execution id="f6e7771a-3ec1-49e8-bb73-728188a6ef44" />
+      <TestMethod codeBase="/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Ai.GoldenTests/bin/Release/net8.0/CarePulse.Ai.GoldenTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests" name="SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval" />
+    </UnitTest>
+    <UnitTest name="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests.EvaluateDispatchSafetyAsync_FallbackRecovery_EnforcesDoctorApproval" storage="/users/pamithkaluarachchi/desktop/carepulse-ai_se_049/tests/carepulse.ai.goldentests/bin/release/net8.0/carepulse.ai.goldentests.dll" id="db959e39-83e3-feef-dd44-7f127e751e49">
+      <Execution id="b437eaa8-7469-4479-ab1c-5885785709a1" />
+      <TestMethod codeBase="/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Ai.GoldenTests/bin/Release/net8.0/CarePulse.Ai.GoldenTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests" name="EvaluateDispatchSafetyAsync_FallbackRecovery_EnforcesDoctorApproval" />
+    </UnitTest>
+    <UnitTest name="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests.SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval(severity: 8.5099999999999998, eta: 31, severityFlag: True, etaFlag: True)" storage="/users/pamithkaluarachchi/desktop/carepulse-ai_se_049/tests/carepulse.ai.goldentests/bin/release/net8.0/carepulse.ai.goldentests.dll" id="b5127482-ed0f-6c06-211f-00577fcefbec">
+      <Execution id="e1de21d2-2725-40bb-8ac5-c087ad34e38e" />
+      <TestMethod codeBase="/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Ai.GoldenTests/bin/Release/net8.0/CarePulse.Ai.GoldenTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests" name="SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval" />
+    </UnitTest>
+    <UnitTest name="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests.SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval(severity: 8.5, eta: 31, severityFlag: False, etaFlag: True)" storage="/users/pamithkaluarachchi/desktop/carepulse-ai_se_049/tests/carepulse.ai.goldentests/bin/release/net8.0/carepulse.ai.goldentests.dll" id="8a00ee08-f2df-835d-9c00-a8d2aef0b27b">
+      <Execution id="c2029e8d-fc0d-47e3-9ac7-444481e187eb" />
+      <TestMethod codeBase="/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Ai.GoldenTests/bin/Release/net8.0/CarePulse.Ai.GoldenTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests" name="SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval" />
+    </UnitTest>
+    <UnitTest name="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests.EvaluateDispatchSafetyAsync_MissingConfiguration_LowRiskStillRequiresApproval" storage="/users/pamithkaluarachchi/desktop/carepulse-ai_se_049/tests/carepulse.ai.goldentests/bin/release/net8.0/carepulse.ai.goldentests.dll" id="98fb6505-9251-21ef-7786-859f0f04ce6b">
+      <Execution id="662b9282-31fc-4e90-9543-dae0d9ac3f39" />
+      <TestMethod codeBase="/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Ai.GoldenTests/bin/Release/net8.0/CarePulse.Ai.GoldenTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests" name="EvaluateDispatchSafetyAsync_MissingConfiguration_LowRiskStillRequiresApproval" />
+    </UnitTest>
+    <UnitTest name="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests.SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval(severity: 8.4900000000000002, eta: 29, severityFlag: False, etaFlag: False)" storage="/users/pamithkaluarachchi/desktop/carepulse-ai_se_049/tests/carepulse.ai.goldentests/bin/release/net8.0/carepulse.ai.goldentests.dll" id="889555b9-196c-ae25-b141-a61a18ea2662">
+      <Execution id="00b5cfc4-9fb6-422b-b311-704b586c0789" />
+      <TestMethod codeBase="/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Ai.GoldenTests/bin/Release/net8.0/CarePulse.Ai.GoldenTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests" name="SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval" />
+    </UnitTest>
+    <UnitTest name="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests.SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval(severity: 8.5, eta: 30, severityFlag: False, etaFlag: False)" storage="/users/pamithkaluarachchi/desktop/carepulse-ai_se_049/tests/carepulse.ai.goldentests/bin/release/net8.0/carepulse.ai.goldentests.dll" id="d61c8e53-dc14-b7fa-e068-b018c5996e34">
+      <Execution id="5de76944-b5f3-4607-8327-c42198b5f807" />
+      <TestMethod codeBase="/Users/pamithkaluarachchi/Desktop/CarePulse-AI_SE_049/tests/CarePulse.Ai.GoldenTests/bin/Release/net8.0/CarePulse.Ai.GoldenTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CarePulse.Ai.GoldenTests.ValidationAgentGoldenTests" name="SafetyThresholdBoundaries_FlagOnlyExceededLimits_AlwaysRequireApproval" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="b5127482-ed0f-6c06-211f-00577fcefbec" executionId="e1de21d2-2725-40bb-8ac5-c087ad34e38e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="db959e39-83e3-feef-dd44-7f127e751e49" executionId="b437eaa8-7469-4479-ab1c-5885785709a1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4052487e-84cc-0ee8-f85b-fa9de22553af" executionId="f6e7771a-3ec1-49e8-bb73-728188a6ef44" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="98fb6505-9251-21ef-7786-859f0f04ce6b" executionId="662b9282-31fc-4e90-9543-dae0d9ac3f39" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8a00ee08-f2df-835d-9c00-a8d2aef0b27b" executionId="c2029e8d-fc0d-47e3-9ac7-444481e187eb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d61c8e53-dc14-b7fa-e068-b018c5996e34" executionId="5de76944-b5f3-4607-8327-c42198b5f807" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="889555b9-196c-ae25-b141-a61a18ea2662" executionId="00b5cfc4-9fb6-422b-b311-704b586c0789" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="7" executed="7" passed="7" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.5.3.1+6b60a9e56a (64-bit .NET 8.0.29)
+[xUnit.net 00:00:00.03]   Discovering: CarePulse.Ai.GoldenTests
+[xUnit.net 00:00:00.05]   Discovered:  CarePulse.Ai.GoldenTests
+[xUnit.net 00:00:00.05]   Starting:    CarePulse.Ai.GoldenTests
+[xUnit.net 00:00:00.47]   Finished:    CarePulse.Ai.GoldenTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>
