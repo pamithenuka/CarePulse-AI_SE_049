@@ -146,11 +146,27 @@ public class DispatchController(CarePulseDbContext db, IGoogleMapsService routes
         var totalItems = await query.CountAsync();
         var tickets = await (from d in query
             join n in db.NurseProfiles on d.NurseId equals n.Id
+            join t in db.TriageTickets on d.TriageTicketId equals t.Id
+            join p in db.PatientProfiles on t.PatientProfileId equals p.Id
             orderby d.AssignedAt descending
-            select new { d.Id, d.NurseId, NurseName = n.FullName, d.TriageTicketId, d.Status, d.AssignedAt,
+            select new { d.Id, d.NurseId, NurseName = n.FullName, PatientName = p.FullName, PatientAddress = p.Address, d.TriageTicketId, d.Status, d.AssignedAt,
                 d.IsEscalated, d.EscalationNotes, d.DestinationLat, d.DestinationLng, n.CurrentLat, n.CurrentLng, n.LocationRecordedAt, d.SafetySummary })
             .Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
         return Ok(new { totalItems, page, pageSize, tickets });
+    }
+
+    [HttpGet("{id:guid}/patient-summary")]
+    [Authorize(Roles = "Nurse")]
+    public async Task<IActionResult> GetPatientSummary(Guid id)
+    {
+        var ticket = await OwnTicket(id);
+        if (!ActiveStatuses.Contains(ticket.Status)) return Conflict(new { message = "Dispatch is not active." });
+        var summary = await (from t in db.TriageTickets.AsNoTracking()
+            join p in db.PatientProfiles on t.PatientProfileId equals p.Id
+            where t.Id == ticket.TriageTicketId
+            select new { PatientName = p.FullName, PatientAddress = p.Address,
+                p.PhoneNumber, p.Allergies, p.BloodType, t.Symptoms }).SingleOrDefaultAsync();
+        return summary == null ? NotFound() : Ok(summary);
     }
 
     [HttpGet("{id:guid}/vitals")]
