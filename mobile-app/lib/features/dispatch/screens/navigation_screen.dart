@@ -36,11 +36,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
   }
 
   void _failed(Object e) {
-    if (mounted)
+    if (mounted) {
       setState(() {
         _error = e.toString();
         _tracking = false;
       });
+    }
   }
 
   Future<void> _start() async {
@@ -49,10 +50,11 @@ class _NavigationScreenState extends State<NavigationScreen> {
       _error = null;
     });
     try {
-      if (!await _location.requestPermission())
+      if (!await _location.requestPermission()) {
         throw Exception(
           'Enable GPS and location permission to start tracking.',
         );
+      }
       final p = await _location.getCurrentPosition();
       await _api.updateLocation(
         widget.dispatch['id'],
@@ -70,8 +72,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
       _location.startTracking(
         widget.dispatch['id'],
         onUpdate: (p) {
-          if (mounted)
+          if (mounted) {
             setState(() => _position = LatLng(p.latitude, p.longitude));
+          }
         },
         onError: _failed,
       );
@@ -87,11 +90,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
     _location.stopTracking();
     try {
       await _api.arrive(widget.dispatch['id']);
-      if (mounted)
+      if (mounted) {
         setState(() {
           _tracking = false;
           _status = 'ArrivedOnSite';
         });
+      }
     } catch (e) {
       _failed(e);
     } finally {
