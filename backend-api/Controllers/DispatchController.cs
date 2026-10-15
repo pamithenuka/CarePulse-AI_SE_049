@@ -32,6 +32,49 @@ public class DispatchController(CarePulseDbContext db, IGoogleMapsService routes
         return Ok(new { nurse.Id, nurse.IsAvailable });
     }
 
+    [HttpGet("nurses/me/availability")]
+    [Authorize(Roles = "Nurse")]
+    public async Task<IActionResult> MyAvailability()
+    {
+        var userId = User.UserId();
+        var nurse = await db.NurseProfiles.AsNoTracking().SingleOrDefaultAsync(n => n.UserId == userId);
+        if (nurse == null) return NotFound();
+        var busy = await db.DispatchTickets.AnyAsync(d => d.NurseId == nurse.Id && ActiveStatuses.Contains(d.Status));
+        return Ok(new { isAvailable = nurse.IsAvailable && !busy, hasActiveDispatch = busy, nurse.LocationRecordedAt });
+    }
+
+    [HttpPut("nurses/me/availability")]
+    [Authorize(Roles = "Nurse")]
+    public async Task<IActionResult> SetMyAvailability(NurseAvailabilityDto request)
+    {
+        var userId = User.UserId();
+        var nurse = await db.NurseProfiles.SingleOrDefaultAsync(n => n.UserId == userId);
+        if (nurse == null) return NotFound();
+        if (await db.DispatchTickets.AnyAsync(d => d.NurseId == nurse.Id && ActiveStatuses.Contains(d.Status)))
+            return Conflict(new { message = "Complete your active dispatch before changing availability." });
+        nurse.IsAvailable = request.IsAvailable!.Value;
+        // A new availability session must obtain a fresh GPS fix.
+        nurse.LocationRecordedAt = null;
+        await db.SaveChangesAsync();
+        return Ok(new { nurse.IsAvailable });
+    }
+
+    [HttpPut("nurses/me/location")]
+    [Authorize(Roles = "Nurse")]
+    public async Task<IActionResult> UpdateAvailableLocation(NurseLocationUpdateDto request)
+    {
+        var userId = User.UserId();
+        var nurse = await db.NurseProfiles.SingleOrDefaultAsync(n => n.UserId == userId);
+        if (nurse == null) return NotFound();
+        if (!nurse.IsAvailable || await db.DispatchTickets.AnyAsync(d => d.NurseId == nurse.Id && ActiveStatuses.Contains(d.Status)))
+            return Conflict(new { message = "Pre-assignment location sharing requires an available nurse without an active dispatch." });
+        nurse.CurrentLat = request.Latitude;
+        nurse.CurrentLng = request.Longitude;
+        nurse.LocationRecordedAt = DateTime.UtcNow;
+        await db.SaveChangesAsync();
+        return Ok(new { nurse.LocationRecordedAt });
+    }
+
     [HttpGet("waiting")]
     [Authorize(Roles = "Doctor,Admin")]
     public async Task<IActionResult> Waiting()
@@ -75,12 +118,12 @@ public class DispatchController(CarePulseDbContext db, IGoogleMapsService routes
         if (nurse == null || !nurse.IsAvailable || await db.DispatchTickets.AnyAsync(d => d.NurseId == request.NurseId && ActiveStatuses.Contains(d.Status)))
             return Conflict(new { message = "Nurse is unavailable. The approved case remains in the waiting queue." });
         // Location/ETA are only estimates; never substitute a fabricated location.
-        var eta = nurse.LocationRecordedAt >= DateTime.UtcNow.AddMinutes(-5)
+        int? eta = nurse.LocationRecordedAt >= DateTime.UtcNow.AddMinutes(-5) && nurse.LocationRecordedAt <= DateTime.UtcNow
             ? (int)Math.Ceiling((await routes.GetRouteMetricsAsync(nurse.CurrentLat, nurse.CurrentLng, triage.Latitude.Value, triage.Longitude.Value)).EtaMinutes)
-            : 0;
+            : null;
         var verdict = await safety.EvaluateDispatchSafetyAsync(new ValidationAgentRequest
         { TriageId = triage.Id, SeverityScore = triage.RiskScore, RecommendedNurseId = nurse.Id, EtaMinutes = eta });
-        if (eta == 0) verdict.FlaggedRules.Add("Current nurse location is unavailable; ETA is unknown.");
+        if (eta == null && !verdict.FlaggedRules.Contains("Current nurse location is unavailable; ETA is unknown.")) verdict.FlaggedRules.Add("Current nurse location is unavailable; ETA is unknown.");
         if (verdict.FlaggedRules.Count > 0 && !request.AcknowledgeSafetyFlags)
             return Conflict(new { message = "Review the safety warnings and explicitly acknowledge before assigning.", flaggedRules = verdict.FlaggedRules });
         // Recheck decision and availability after the external safety call. xmin and unique indexes

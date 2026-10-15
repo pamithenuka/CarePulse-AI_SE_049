@@ -41,7 +41,7 @@ public class TriageWorkflowRunner(CarePulseDbContext db, IAgentPlannerService pl
             await db.SaveChangesAsync();
             clock.Restart();
             var verdict = await safety.EvaluateDispatchSafetyAsync(new ValidationAgentRequest
-            { TriageId = ticket.Id, SeverityScore = ticket.RiskScore, EtaMinutes = 0 });
+            { TriageId = ticket.Id, SeverityScore = ticket.RiskScore, EtaMinutes = null });
             var failed = workflow.Status != AiWorkflowStatus.PlanCreated || ticket.AssessmentFailed;
             workflow.StepsJson = JsonSerializer.Serialize(new[] {
                 new AiPlanStepDto { Agent = "DomainAnalysis", Task = "Assess reported symptoms", Status = ticket.AssessmentFailed ? "Failed" : "Completed" },

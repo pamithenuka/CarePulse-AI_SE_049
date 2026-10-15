@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import apiClient from '../api/apiClient';
 export const useDispatchStore = create((set, get) => ({
+  mapPreviews: {},
+  setMapPreview: (id, preview) => set(state => ({ mapPreviews: { ...state.mapPreviews, [id]: preview } })),
+  clearMapPreview: id => set(state => { const next = { ...state.mapPreviews }; delete next[id]; return { mapPreviews: next }; }),
   activeDispatches: [], availableNurses: [], waitingCases: [], isLoading: false, error: null,
   fetchDispatchData: async () => {
     if (get().isLoading) return;

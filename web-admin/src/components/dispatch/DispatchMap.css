@@ -22,3 +22,29 @@
   margin-bottom: 4px;
   font-size: 14px;
 }
+
+.dispatch-map-container { display: flex; flex-direction: column; }
+.dispatch-map-container .leaflet-map-wrapper { flex: 1; min-height: 350px; }
+.dispatch-map-legend { padding: 10px 14px; background: white; color: #334155; font-size: 14px; }
+.dispatch-map-legend span { display: inline-block; margin-right: 16px; }
+.dispatch-map-legend [role="status"] { margin-top: 6px; color: #92400e; }
+
+.leaflet-tooltip.dispatch-person-label {
+  background: white;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  width: max-content;
+  min-width: 80px;
+  max-width: 200px;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  text-align: center;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+}
+.dispatch-person-name { display: block; color: #1e293b; line-height: 18px; overflow: hidden; text-overflow: ellipsis; }
+.dispatch-nurse-label { color: #1d4ed8; border-color: #bfdbfe; }
+.dispatch-patient-label { color: #b91c1c; border-color: #fecaca; }
