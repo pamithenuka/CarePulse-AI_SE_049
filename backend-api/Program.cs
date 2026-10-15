@@ -36,6 +36,15 @@ builder.Services.AddDbContext<CarePulseDbContext>((sp, options) =>
     options.UseNpgsql(sp.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")));
 
 builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("ValidationGemini")
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+    {
+        // Explicit local macOS workaround for RevocationStatusUnknown. All other
+        // TLS validation remains enabled; this option cannot weaken production.
+        CheckCertificateRevocationList = ValidationTransportPolicy.CheckCertificateRevocation(
+            builder.Environment.IsDevelopment(), OperatingSystem.IsMacOS(),
+            builder.Configuration.GetValue<bool>("AI:AllowLocalMacOsRevocationWorkaround"))
+    });
 
 builder.Services.AddScoped<ReadOnlyCarePulseDbContext>(sp => new ReadOnlyCarePulseDbContext(
     new DbContextOptionsBuilder<CarePulseDbContext>().UseNpgsql(sp.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")).Options,
@@ -122,7 +131,11 @@ builder.Services.AddScoped<CarePulse.Api.Services.ITriageService, CarePulse.Api.
 
 // Student 4
 builder.Services.AddScoped<IGoogleMapsService, GoogleMapsService>();
-builder.Services.AddScoped<IValidationAgent, ValidationAgent>();
+builder.Services.AddScoped<IValidationAgent>(sp => new ValidationAgent(
+    sp.GetRequiredService<CarePulseDbContext>(),
+    sp.GetRequiredService<IConfiguration>(),
+    sp.GetRequiredService<ILogger<ValidationAgent>>(),
+    sp.GetRequiredService<IHttpClientFactory>().CreateClient("ValidationGemini")));
 
 // 6. Swagger / OpenAPI Configuration
 builder.Services.AddSwaggerGen(c =>
