@@ -16,7 +16,7 @@ public class GeminiAiPlannerClient : IAiPlannerClient
     {
         _httpClient = httpClient;
         _logger = logger;
-        ModelName = configuration["AI:GeminiModel"] ?? "gemini-3-flash-preview";
+        ModelName = configuration["AI:GeminiModel"] ?? "gemini-3.5-flash-lite";
         _apiKey = configuration["AI:GeminiApiKey"] ?? "";
     }
 
