@@ -18,7 +18,7 @@ public class ValidationAgentRequest
     public Guid TriageId { get; set; }
     public double SeverityScore { get; set; }
     public Guid? RecommendedNurseId { get; set; }
-    public int EtaMinutes { get; set; }
+    public int? EtaMinutes { get; set; }
 }
 
 public class ValidationAgentResponse
@@ -126,6 +126,7 @@ You are Agent 4 (Validation & Safety Agent) for CarePulse.
 Your primary role is to evaluate emergency dispatch assignments for safety.
 You MUST use the Tool_GetSystemSafetyThresholds tool to fetch safety bounds.
 Evaluate the severity score and ETA against these bounds.
+If ETA is unknown, flag that uncertainty. Never interpret an unknown ETA as zero or invent an ETA.
 Output your response as JSON matching this schema exactly:
 {
   ""RequiresHumanApproval"": true,
@@ -134,7 +135,7 @@ Output your response as JSON matching this schema exactly:
 }
 CRITICAL SAFETY POLICY: Every emergency nurse dispatch MUST require an authorized Doctor approval. RequiresHumanApproval must ALWAYS be true.
 ");
-        chatHistory.AddUserMessage($"Evaluate dispatch: TriageId={request.TriageId}, Severity={request.SeverityScore}, ETA={request.EtaMinutes} mins.");
+        chatHistory.AddUserMessage($"Evaluate dispatch: TriageId={request.TriageId}, Severity={request.SeverityScore}, ETA={(request.EtaMinutes.HasValue ? $"{request.EtaMinutes.Value} mins" : "unknown (no recent nurse location)")}.");
 
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
         var result = await _chatService!.GetChatMessageContentAsync(chatHistory, settings, _kernel, timeout.Token);
@@ -185,6 +186,9 @@ CRITICAL SAFETY POLICY: Every emergency nurse dispatch MUST require an authorize
         if (request.SeverityScore > maxSeverity)
             response.FlaggedRules.Add($"Severity Score ({request.SeverityScore}) exceeds maximum allowed ({maxSeverity}).");
         
+        if (!request.EtaMinutes.HasValue)
+            response.FlaggedRules.Add("Current nurse location is unavailable; ETA is unknown.");
+
         if (request.EtaMinutes > maxEta)
             response.FlaggedRules.Add($"ETA ({request.EtaMinutes} mins) exceeds maximum allowed ({maxEta} mins).");
 

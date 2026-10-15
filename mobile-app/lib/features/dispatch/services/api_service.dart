@@ -4,6 +4,27 @@ import '../../../services/session_store.dart';
 class ApiService {
   final ApiClient _api;
   ApiService({ApiClient? api}) : _api = api ?? ApiClient();
+  Future<Map<String, dynamic>> getMyAvailability() async =>
+      Map<String, dynamic>.from(
+        await _api.get(
+          'dispatch/nurses/me/availability',
+          token: await SessionStore.token(),
+        ),
+      );
+
+  Future<void> setMyAvailability(bool available) async => _api.put(
+    'dispatch/nurses/me/availability',
+    token: await SessionStore.token(),
+    body: {'isAvailable': available},
+  );
+
+  Future<void> updateAvailableLocation(double lat, double lng) async =>
+      _api.put(
+        'dispatch/nurses/me/location',
+        token: await SessionStore.token(),
+        body: {'latitude': lat, 'longitude': lng, 'speedKmh': 0, 'heading': 0},
+      );
+
   Future<Map<String, dynamic>> getActiveDispatches({
     int page = 1,
     int pageSize = 100,

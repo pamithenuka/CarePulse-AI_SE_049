@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import '../services/location_service.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../../providers/auth_provider.dart';
@@ -15,15 +19,160 @@ class DispatchDashboardScreen extends StatefulWidget {
       _DispatchDashboardScreenState();
 }
 
-class _DispatchDashboardScreenState extends State<DispatchDashboardScreen> {
+class _DispatchDashboardScreenState extends State<DispatchDashboardScreen>
+    with WidgetsBindingObserver {
   final ApiService _apiService = ApiService();
   List<dynamic> _dispatches = [];
   bool _isLoading = true;
   String? _error;
+  final LocationService _location = LocationService();
+  Timer? _locationTimer;
+  bool _available = false;
+  bool _busy = false;
+  bool _availabilityLoaded = false;
+  bool _changingAvailability = false;
+  bool _sharing = false;
+  bool _sendingLocation = false;
+  int _locationGeneration = 0;
+  String _locationStatus = 'Location sharing is off. ETA may be unavailable.';
+
+  void _stopSharing() {
+    _locationGeneration++;
+    _locationTimer?.cancel();
+    _locationTimer = null;
+    _sharing = false;
+  }
+
+  @override
+  void dispose() {
+    _stopSharing();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.detached) {
+      _stopSharing();
+      if (mounted) {
+        setState(
+          () => _locationStatus =
+              'Location sharing paused. Tap Share location when you return.',
+        );
+      }
+    }
+  }
+
+  Future<void> _refreshAvailability() async {
+    final state = await _apiService.getMyAvailability();
+    if (!mounted) return;
+    setState(() {
+      _available = state['isAvailable'] == true;
+      _busy = state['hasActiveDispatch'] == true;
+      _availabilityLoaded = true;
+      if (!_available || _busy) _stopSharing();
+    });
+  }
+
+  Future<void> _sendAvailableLocation() async {
+    if (!_sharing || _sendingLocation) return;
+    final generation = _locationGeneration;
+    _sendingLocation = true;
+    try {
+      await _refreshAvailability();
+      if (!_sharing || generation != _locationGeneration) return;
+      final position = await _location.getCurrentPosition();
+      if (!_sharing || generation != _locationGeneration) return;
+      if (DateTime.now().difference(position.timestamp).abs() >
+          const Duration(minutes: 1)) {
+        throw StateError('GPS fix is stale');
+      }
+      await _apiService.updateAvailableLocation(
+        position.latitude,
+        position.longitude,
+      );
+      if (mounted && generation == _locationGeneration) {
+        setState(
+          () => _locationStatus =
+              'Location updated at ${DateFormat('h:mm a').format(DateTime.now())}. Sharing while this screen is open.',
+        );
+      }
+    } catch (e) {
+      if (mounted && generation == _locationGeneration) {
+        setState(() {
+          _stopSharing();
+          _locationStatus = 'Could not share location. Check GPS and connection, then retry. ETA may be unavailable.';
+        });
+      }
+    } finally {
+      _sendingLocation = false;
+    }
+  }
+
+  Future<void> _goAvailable() async {
+    setState(() => _changingAvailability = true);
+    final generation = _locationGeneration;
+    try {
+      // Availability remains usable when permission is denied, with unknown ETA.
+      final permitted = await _location.requestPermission();
+      if (!mounted || generation != _locationGeneration) return;
+      if (!_available) await _apiService.setMyAvailability(true);
+      if (!mounted || generation != _locationGeneration) return;
+      await _refreshAvailability();
+      if (!mounted || !_available || generation != _locationGeneration) return;
+      if (!permitted) {
+        setState(
+          () => _locationStatus = 'Location permission or GPS unavailable. Doctors will see ETA unavailable.',
+        );
+        return;
+      }
+      setState(() => _sharing = true);
+      await _sendAvailableLocation();
+      if (_sharing && mounted && generation == _locationGeneration) {
+        _locationTimer = Timer.periodic(
+          const Duration(seconds: 30),
+          (_) => _sendAvailableLocation(),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(
+          () => _locationStatus =
+              'Could not update availability. Refresh and try again.',
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _changingAvailability = false);
+    }
+  }
+
+  Future<void> _goUnavailable() async {
+    setState(() {
+      _changingAvailability = true;
+      _stopSharing();
+    });
+    try {
+      await _apiService.setMyAvailability(false);
+      await _refreshAvailability();
+      if (mounted) setState(() => _locationStatus = 'Location sharing is off.');
+    } catch (e) {
+      if (mounted) {
+        setState(
+          () => _locationStatus =
+              'Could not change availability. Refresh to check your status.',
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _changingAvailability = false);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadDispatches();
   }
 
@@ -34,6 +183,7 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen> {
     });
     try {
       final data = await _apiService.getActiveDispatches();
+      await _refreshAvailability();
       if (!mounted) return;
       setState(() {
         _dispatches = data['tickets'] ?? [];
@@ -114,6 +264,7 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen> {
             icon: const Icon(Icons.logout, color: Colors.white),
             tooltip: 'Sign out',
             onPressed: () async {
+              _stopSharing();
               await context.read<AuthProvider>().logout();
               if (context.mounted) {
                 Navigator.pushReplacementNamed(context, '/login');
@@ -138,6 +289,57 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen> {
               padding: const EdgeInsets.all(20),
               children: [
                 _profileCard(context),
+                const SizedBox(height: 16),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _busy
+                              ? 'On an active assignment'
+                              : _available
+                              ? 'Available for assignment'
+                              : 'Unavailable',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          _busy
+                              ? 'Open your dispatch to use route tracking.'
+                              : _locationStatus,
+                        ),
+                        if (!_busy)
+                          Wrap(
+                            spacing: 8,
+                            children: [
+                              FilledButton(
+                                onPressed:
+                                    !_availabilityLoaded ||
+                                        _changingAvailability ||
+                                        _sharing
+                                    ? null
+                                    : _goAvailable,
+                                child: Text(
+                                  _available
+                                      ? 'Share location'
+                                      : 'Go available',
+                                ),
+                              ),
+                              if (_available)
+                                OutlinedButton(
+                                  onPressed: _changingAvailability
+                                      ? null
+                                      : _goUnavailable,
+                                  child: const Text('Go unavailable'),
+                                ),
+                            ],
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 28),
                 Text(
                   'Active dispatches',
@@ -341,12 +543,14 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen> {
                   ),
                 ),
               ),
-              onTap: () {
-                Navigator.pushNamed(
+              onTap: () async {
+                _stopSharing();
+                await Navigator.pushNamed(
                   context,
                   '/navigation',
                   arguments: dispatch,
                 );
+                if (mounted) _loadDispatches();
               },
             ),
           ),

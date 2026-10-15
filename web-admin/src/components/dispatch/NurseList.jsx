@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatchStore } from '../../store/useDispatchStore';
 import api from '../../api/apiClient';
 import './NurseList.css';
@@ -11,6 +11,11 @@ function WaitingCase({ ticket, nurses, refresh }) {
   const [flags, setFlags] = useState([]);
   const [acknowledged, setAcknowledged] = useState(false);
   const [busy, setBusy] = useState(false);
+  const setMapPreview = useDispatchStore(s => s.setMapPreview);
+  const clearMapPreview = useDispatchStore(s => s.clearMapPreview);
+  useEffect(() => { setMapPreview(ticket.id, { nurseId, lat, lng }); }, [ticket.id, nurseId, lat, lng, setMapPreview]);
+  useEffect(() => () => clearMapPreview(ticket.id), [ticket.id, clearMapPreview]);
+
   async function assign(e) {
     e.preventDefault(); setBusy(true); setError('');
     try {

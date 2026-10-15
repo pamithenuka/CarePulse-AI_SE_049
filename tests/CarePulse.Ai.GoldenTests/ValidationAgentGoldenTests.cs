@@ -38,6 +38,18 @@ public class ValidationAgentGoldenTests
         return builder.Build();
     }
 
+    [Fact]
+    public async Task UnknownEta_IsFlagged_InsteadOfTreatedAsZero()
+    {
+        using var db = GetInMemoryDbContext();
+        var agent = new ValidationAgent(db, GetConfiguration(), NullLogger<ValidationAgent>.Instance);
+        var unknown = await agent.EvaluateDispatchSafetyAsync(new() { SeverityScore = 4, EtaMinutes = null });
+        Assert.True(unknown.RequiresHumanApproval);
+        Assert.Contains("Current nurse location is unavailable; ETA is unknown.", unknown.FlaggedRules);
+        var zero = await agent.EvaluateDispatchSafetyAsync(new() { SeverityScore = 4, EtaMinutes = 0 });
+        Assert.Empty(zero.FlaggedRules);
+    }
+
     [Theory]
     [InlineData(8.49, 29, false, false)]
     [InlineData(8.5, 30, false, false)]
