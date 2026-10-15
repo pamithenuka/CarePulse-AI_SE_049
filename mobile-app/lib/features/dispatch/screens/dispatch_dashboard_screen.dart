@@ -264,7 +264,7 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen> {
     final status = dispatch['status'] ?? 'Unknown';
     final assignedAt = dispatch['assignedAt'] != null
         ? DateFormat('MMM d, h:mm a')
-              .format(DateTime.parse(dispatch['assignedAt']))
+              .format(DateTime.parse(dispatch['assignedAt']).toLocal())
         : 'N/A';
 
     return Container(
