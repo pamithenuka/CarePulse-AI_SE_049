@@ -97,7 +97,7 @@ class _HomeShellState extends State<HomeShell> {
         for (var i = 0; i < _tabs.length; i++)
           Theme(
             data: buildAppTheme(accent: i == 4 ? AppColors.lavender : i == 6 ? AppColors.blue : i < 4 ? AppColors.mint : AppColors.primary),
-            child: _tabs[i],
+            child: i == 5 ? SymptomIntakeScreen(isActive: _index == 5) : _tabs[i],
           ),
       ]),
       // startFloat (bottom-left) deliberately, not the default endFloat: History,
@@ -105,7 +105,9 @@ class _HomeShellState extends State<HomeShell> {
       // the default bottom-right corner, and this outer FAB would otherwise paint
       // directly on top of - and swallow every tap intended for - those buttons.
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-      floatingActionButton: FloatingActionButton.extended(
+      // Triage provides SOS in its app bar, outside the scrollable form.
+      // Keep the existing floating access on the other patient sections.
+      floatingActionButton: _index == 5 ? null : FloatingActionButton.extended(
         onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SosScreen())),
         backgroundColor: Theme.of(context).colorScheme.error,
         foregroundColor: Theme.of(context).colorScheme.onError,
