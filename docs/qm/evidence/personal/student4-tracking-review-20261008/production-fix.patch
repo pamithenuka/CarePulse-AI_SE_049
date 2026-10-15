@@ -1,0 +1,54 @@
+diff --git a/mobile-app/lib/features/dispatch/services/location_service.dart b/mobile-app/lib/features/dispatch/services/location_service.dart
+index 6ab0187..c742af6 100644
+--- a/mobile-app/lib/features/dispatch/services/location_service.dart
++++ b/mobile-app/lib/features/dispatch/services/location_service.dart
+@@ -3,9 +3,14 @@ import 'package:geolocator/geolocator.dart';
+ import 'api_service.dart';
+ 
+ class LocationService {
+-  final ApiService _apiService = ApiService();
++  final ApiService _apiService;
++  final Stream<Position> Function() _positionStream;
++  LocationService({ApiService? apiService, Stream<Position> Function()? positionStream})
++      : _apiService = apiService ?? ApiService(),
++        _positionStream = positionStream ?? (() => Geolocator.getPositionStream(
++          locationSettings: const LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 10)));
+   StreamSubscription<Position>? _positionSubscription;
+-  bool _sending = false;
++  int _generation = 0;
+   Future<bool> requestPermission() async {
+     if (!await Geolocator.isLocationServiceEnabled()) return false;
+     var permission = await Geolocator.checkPermission();
+@@ -16,16 +21,23 @@ class LocationService {
+     locationSettings: const LocationSettings(accuracy: LocationAccuracy.high, timeLimit: Duration(seconds: 20)));
+   void startTracking(String id, {void Function(Position)? onUpdate, void Function(Object)? onError}) {
+     stopTracking();
+-    _positionSubscription = Geolocator.getPositionStream(locationSettings:
+-      const LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 10)).listen((position) async {
+-        if (_sending) return;
+-        _sending = true;
++    final generation = _generation;
++    var sending = false;
++    _positionSubscription = _positionStream().listen((position) async {
++        if (generation != _generation || sending) return;
++        sending = true;
+         try {
+           await _apiService.updateLocation(id, position.latitude, position.longitude, position.speed * 3.6, position.heading);
+-          onUpdate?.call(position);
+-        } catch (e) { stopTracking(); onError?.call(e); }
+-        finally { _sending = false; }
+-      }, onError: (Object e) { stopTracking(); onError?.call(e); });
++          if (generation == _generation) onUpdate?.call(position);
++        } catch (e) {
++          if (generation == _generation) { stopTracking(); onError?.call(e); }
++        }
++        finally { sending = false; }
++      }, onError: (Object e) {
++        if (generation == _generation) { stopTracking(); onError?.call(e); }
++      });
+   }
+-  void stopTracking() { _positionSubscription?.cancel(); _positionSubscription = null; }
++  // HTTP requests already in flight cannot be recalled. Invalidate their callbacks
++  // before cancelling the GPS stream so they cannot alter a newer session.
++  void stopTracking() { _generation++; _positionSubscription?.cancel(); _positionSubscription = null; }
+ }

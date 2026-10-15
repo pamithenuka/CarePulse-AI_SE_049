@@ -45,4 +45,27 @@ void main() {
     await expectLater(api.completeOnsite('synthetic-id', {}),
       throwsA(isA<ApiException>().having((e) => e.statusCode, 'status', 409)));
   });
+
+  test('expired session prevents a location request from being sent', () async {
+    session(expired: true);
+    var requestCount = 0;
+
+    final api = ApiService(
+      api: ApiClient(
+        client: MockClient((request) async {
+          requestCount++;
+          return http.Response('', 204);
+        }),
+      ),
+    );
+
+    await expectLater(
+      api.updateLocation('synthetic-id', 6.92, 79.86, 0, 0),
+      throwsA(
+        isA<ApiException>().having((e) => e.statusCode, 'status', 401),
+      ),
+    );
+
+    expect(requestCount, 0);
+  });
 }

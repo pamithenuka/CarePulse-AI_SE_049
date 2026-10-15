@@ -1,0 +1,14 @@
+bin/
+obj/
+**/bin/
+**/obj/
+.vs/
+.vscode/
+*.user
+
+# Local secrets and data must never be baked into the image
+appsettings.Local.json
+appsettings.*.Local.json
+App_Data/
+wwwroot/uploads/
+*.log

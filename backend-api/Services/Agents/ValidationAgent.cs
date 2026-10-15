@@ -70,7 +70,7 @@ public class ValidationAgent : IValidationAgent
     private readonly IChatCompletionService? _chatService;
     private readonly bool _hasAiConfigured;
 
-    public ValidationAgent(CarePulseDbContext context, IConfiguration config, ILogger<ValidationAgent> logger)
+    public ValidationAgent(CarePulseDbContext context, IConfiguration config, ILogger<ValidationAgent> logger, HttpClient? httpClient = null)
     {
         _logger = logger;
         var builder = Kernel.CreateBuilder();
@@ -82,7 +82,7 @@ public class ValidationAgent : IValidationAgent
         if (!string.IsNullOrWhiteSpace(apiKey) && !apiKey.Contains("YOUR_"))
         {
             // Use Google Gemini instead of OpenAI
-            builder.AddGoogleAIGeminiChatCompletion(model, apiKey);
+            builder.AddGoogleAIGeminiChatCompletion(model, apiKey, httpClient: httpClient);
             _hasAiConfigured = true;
         }
 
@@ -154,6 +154,7 @@ CRITICAL SAFETY POLICY: Every emergency nurse dispatch MUST require an authorize
                 var rules = await EvaluateWithRulesFallbackAsync(request);
                 response.FlaggedRules = rules.FlaggedRules.Union(response.FlaggedRules ?? new()).ToList();
                 response.RequiresHumanApproval = true; // Hard-enforce policy
+                _logger.LogInformation("Agent 4 Gemini evaluation succeeded for Triage {TriageId}; safety rules enforced.", request.TriageId);
                 return response;
             }
         }
