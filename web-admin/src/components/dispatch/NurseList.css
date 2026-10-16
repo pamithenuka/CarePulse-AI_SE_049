@@ -162,3 +162,34 @@
 .mt-4 {
   margin-top: 16px;
 }
+
+.dispatch-destination {
+  padding: 14px;
+  background: #f4fafb;
+  border: 1px solid #d9e9ec;
+  border-radius: 12px;
+}
+.dispatch-destination-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.dispatch-destination strong { font-size: 0.9rem; color: #164e59; }
+.dispatch-destination p { margin: 5px 0 0; font-size: 0.82rem; line-height: 1.5; color: #526773; }
+.dispatch-card .dispatch-location-toggle {
+  width: auto;
+  min-height: 36px;
+  padding: 6px 10px;
+  background: white;
+  color: #0b6973;
+  border: 1px solid #b7d5da;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.dispatch-card .dispatch-location-toggle:hover { background: #e4f3f4; }
+.dispatch-location-toggle:focus-visible { outline: 2px solid #087f89; outline-offset: 3px; }
+.dispatch-location-fields { display: grid; gap: 12px; margin-top: 12px; border-top: 1px solid #d9e9ec; padding-top: 8px; }

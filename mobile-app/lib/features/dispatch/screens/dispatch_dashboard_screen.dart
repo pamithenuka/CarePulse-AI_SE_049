@@ -238,21 +238,46 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6F8),
+      drawer: Drawer(
+        child: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Availability & location',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Close menu',
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              _availabilityCard(context),
+            ],
+          ),
+        ),
+      ),
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.location_on_outlined),
+            tooltip: 'Availability and location',
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
         backgroundColor: const Color(0xFF0B5F6B),
         elevation: 0,
-        title: const Row(
-          children: [
-            Icon(Icons.dashboard_rounded, color: Colors.white),
-            SizedBox(width: 10),
-            Text(
-              'Nurse home',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
-            ),
-          ],
+        title: const Text(
+          'Nurse home',
+          style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white),
         ),
         actions: [
           IconButton(
@@ -289,65 +314,10 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen>
               padding: const EdgeInsets.all(20),
               children: [
                 _profileCard(context),
-                const SizedBox(height: 16),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _busy
-                              ? 'On an active assignment'
-                              : _available
-                              ? 'Available for assignment'
-                              : 'Unavailable',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          _busy
-                              ? 'Open your dispatch to use route tracking.'
-                              : _locationStatus,
-                        ),
-                        if (!_busy)
-                          Wrap(
-                            spacing: 8,
-                            children: [
-                              FilledButton(
-                                onPressed:
-                                    !_availabilityLoaded ||
-                                        _changingAvailability ||
-                                        _sharing
-                                    ? null
-                                    : _goAvailable,
-                                child: Text(
-                                  _available
-                                      ? 'Share location'
-                                      : 'Go available',
-                                ),
-                              ),
-                              if (_available)
-                                OutlinedButton(
-                                  onPressed: _changingAvailability
-                                      ? null
-                                      : _goUnavailable,
-                                  child: const Text('Go unavailable'),
-                                ),
-                            ],
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
                 const SizedBox(height: 28),
                 Text(
                   'Active dispatches',
                   style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 6),
-                const Text(
-                  'Open an assignment to view details and start tracking.',
                 ),
                 const SizedBox(height: 16),
                 if (_isLoading)
@@ -373,6 +343,54 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen>
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _availabilityCard(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _busy
+                  ? 'On an active assignment'
+                  : _available
+                  ? 'Available for assignment'
+                  : 'Unavailable',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              _busy
+                  ? 'Open your dispatch to use route tracking.'
+                  : _locationStatus,
+            ),
+            if (!_busy)
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  FilledButton(
+                    onPressed:
+                        !_availabilityLoaded ||
+                            _changingAvailability ||
+                            _sharing
+                        ? null
+                        : _goAvailable,
+                    child: Text(_available ? 'Share location' : 'Go available'),
+                  ),
+                  if (_available)
+                    OutlinedButton(
+                      onPressed: _changingAvailability ? null : _goUnavailable,
+                      child: const Text('Go unavailable'),
+                    ),
+                ],
+              ),
+          ],
         ),
       ),
     );

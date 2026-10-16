@@ -16,13 +16,13 @@ export const DispatchMap = () => {
   const { activeDispatches, waitingCases, availableNurses, mapPreviews, fetchDispatchData } = useDispatchStore();
   useEffect(() => { fetchDispatchData(); const timer = setInterval(fetchDispatchData, 10000); return () => clearInterval(timer); }, [fetchDispatchData]);
   const cases = mapCases(activeDispatches, waitingCases, availableNurses, mapPreviews);
+  const locationWarnings = cases.filter(d => d.nurseSelected && (!d.location || d.stale));
   const geometry = JSON.stringify(cases.flatMap(d => [d.location, d.destination].filter(Boolean).map(p => [p.lat, p.lng])));
   return <div className="dispatch-map-container">
-    <div className="dispatch-map-legend" aria-label="Map legend">
-      <span>🔴 Patient destination</span><span>🔵 Nurse location (outer ring if overlapping)</span>
-      {cases.filter(d => d.nurseSelected && (!d.location || d.stale)).map(d =>
+    {locationWarnings.length > 0 && <div className="dispatch-map-legend" aria-label="Location warnings">
+      {locationWarnings.map(d =>
         <div key={d.key} role="status">{d.nurseName || d.label}: {d.location ? 'Nurse location is stale — ETA unavailable.' : 'Nurse location unavailable — ETA unavailable.'}</div>)}
-    </div>
+    </div>}
     <MapContainer center={[6.9271, 79.8612]} zoom={11} className="leaflet-map-wrapper">
       <TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <FitCases geometry={geometry} />

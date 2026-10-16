@@ -124,7 +124,7 @@ Do this before triage so the scheduling agent has real availability to find.
 4. In web **Dispatch Center**, check the nurse's position and last-update time.
 5. On the nurse screen, tap **Confirm arrival on site**, then **Record vitals**.
 6. Enter these synthetic measurements: heart rate **80**, systolic **120**, diastolic **80**, temperature **37**, oxygen **98**, and a short clinical note.
-7. Click **Complete & Submit Vitals** and wait for success.
+7. Tap **Save vitals** and wait for success. Confirm the visit remains active. In web **Patients → Patient One → Nurse visits & vitals**, check the saved measurements and notes. Then tap **Complete visit** and confirm; this closes the assignment.
 8. Refresh web **Dispatch Center**. Then sign in as Patient One in Flutter and reopen the case through **My cases**.
 
 **Expected:** the active dispatch disappears after completion, Nurse One becomes available again, and the patient sees **VISIT_COMPLETED**. The map is not turn-by-turn road navigation. GPS updates require the route screen to remain active.
@@ -134,7 +134,6 @@ Do this before triage so the scheduling agent has real availability to find.
 - **Wrong nurse:** before completion, log in as Nurse Two. Nurse One's case must not appear in Nurse Two's dashboard.
 - **Invalid vitals:** try oxygen `150`, temperature `abc`, or diastolic pressure higher than systolic. Submission must be blocked or rejected clearly.
 - **Network failure:** while a synthetic route is active, temporarily disconnect the nurse device. It must show a tracking/submission error. Reconnect and resume; failure must not show a completion success.
-- **Escalation:** on another arrived test case, enter notes and press **Escalate Emergency**. Confirm it and check that web displays the escalation. This records an alert; it does not place a real call or send a real SMS.
 - **No available nurse:** leave both nurses assigned to two active synthetic cases, then approve a third case. The third case must remain waiting. Complete one nurse's visit, refresh, and assign the waiting case.
 
 ## Final team run

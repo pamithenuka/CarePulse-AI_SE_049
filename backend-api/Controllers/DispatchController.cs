@@ -193,7 +193,7 @@ public class DispatchController(CarePulseDbContext db, IGoogleMapsService routes
             join p in db.PatientProfiles on t.PatientProfileId equals p.Id
             orderby d.AssignedAt descending
             select new { d.Id, d.NurseId, NurseName = n.FullName, PatientName = p.FullName, PatientAddress = p.Address, d.TriageTicketId, d.Status, d.AssignedAt,
-                d.IsEscalated, d.EscalationNotes, d.DestinationLat, d.DestinationLng, n.CurrentLat, n.CurrentLng, n.LocationRecordedAt, d.SafetySummary })
+                d.DestinationLat, d.DestinationLng, n.CurrentLat, n.CurrentLng, n.LocationRecordedAt, d.SafetySummary })
             .Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
         return Ok(new { totalItems, page, pageSize, tickets });
     }
@@ -220,17 +220,58 @@ public class DispatchController(CarePulseDbContext db, IGoogleMapsService routes
         return Ok(await db.OnSiteVitalsRecords.AsNoTracking().Where(v => v.DispatchTicketId == id).ToListAsync());
     }
 
-    [HttpPost("{id:guid}/escalate")]
+    [HttpGet("patients/{patientId:guid}/visits")]
+    [Authorize(Roles = "Doctor,Admin")]
+    public async Task<IActionResult> PatientVisits(Guid patientId)
+    {
+        if (!await db.PatientProfiles.AnyAsync(p => p.Id == patientId)) return NotFound();
+        var visits = await (from d in db.DispatchTickets.AsNoTracking()
+            join t in db.TriageTickets on d.TriageTicketId equals t.Id
+            join n in db.NurseProfiles on d.NurseId equals n.Id
+            where t.PatientProfileId == patientId
+            orderby d.AssignedAt descending
+            select new { d.Id, NurseName = n.FullName, d.Status, d.AssignedAt, d.CompletedAt,
+                Vitals = db.OnSiteVitalsRecords.Where(v => v.DispatchTicketId == d.Id).ToList() }).ToListAsync();
+        return Ok(visits);
+    }
+
+    [HttpPut("{id:guid}/vitals")]
     [Authorize(Roles = "Nurse")]
-    public async Task<IActionResult> Escalate(Guid id, ApproveTriageRequestDto request)
+    public async Task<IActionResult> SaveVitals(Guid id, CompleteOnsiteDto request)
     {
         var ticket = await OwnTicket(id);
-        if (!ActiveStatuses.Contains(ticket.Status)) return Conflict(new { message = "Dispatch is not active." });
-        ticket.IsEscalated = true;
-        ticket.EscalationNotes = request.Notes;
-        await WorkflowProgress.RecordAsync(db, ticket.TriageTicketId, "Escalated", "NurseEscalation", new { Actor = User.UserId(), request.Notes });
+        if (ticket.Status != "ArrivedOnSite") return Conflict(new { message = "Vitals can only be saved during an on-site visit." });
+        ticket.UpdatedAt = DateTime.UtcNow; // Participate in dispatch concurrency checks against completion.
+        var vitals = await StoreVitals(id, request);
         await db.SaveChangesAsync();
-        return Ok(new { message = "Escalation recorded on the staff dashboard. Contact the supervising doctor directly for an immediate response." });
+        return Ok(vitals);
+    }
+
+    private async Task<OnSiteVitalsRecords> StoreVitals(Guid id, CompleteOnsiteDto request)
+    {
+        var vitals = await db.OnSiteVitalsRecords.SingleOrDefaultAsync(v => v.DispatchTicketId == id);
+        if (vitals == null) { vitals = new OnSiteVitalsRecords { DispatchTicketId = id }; db.OnSiteVitalsRecords.Add(vitals); }
+        vitals.HeartRate = request.HeartRate;
+        vitals.BloodPressure = request.BloodPressure;
+        vitals.BodyTempC = request.BodyTempC;
+        vitals.OxygenSaturation = request.OxygenSaturation;
+        vitals.ClinicalNotes = request.ClinicalNotes.Trim();
+        vitals.RecordedAt = DateTime.UtcNow;
+        return vitals;
+    }
+
+    [HttpPost("{id:guid}/complete")]
+    [Authorize(Roles = "Nurse")]
+    public async Task<IActionResult> CompleteVisit(Guid id)
+    {
+        var ticket = await OwnTicket(id);
+        if (ticket.Status == "Completed") return Ok(new { message = "Visit already completed." });
+        if (ticket.Status != "ArrivedOnSite") return Conflict(new { message = "Record arrival before completing this visit." });
+        if (!await db.OnSiteVitalsRecords.AnyAsync(v => v.DispatchTicketId == id))
+            return Conflict(new { message = "Save vitals before completing this visit." });
+        await FinishVisit(ticket);
+        await db.SaveChangesAsync();
+        return Ok(new { message = "Visit completed." });
     }
 
     [HttpPost("{id:guid}/complete-onsite")]
@@ -241,10 +282,14 @@ public class DispatchController(CarePulseDbContext db, IGoogleMapsService routes
         if (ticket.Status == "Completed")
             return Ok(new { message = "Visit already completed.", vitals = await db.OnSiteVitalsRecords.SingleAsync(v => v.DispatchTicketId == id) });
         if (ticket.Status != "ArrivedOnSite") return Conflict(new { message = "Record arrival before completing this visit." });
-        var vitals = new OnSiteVitalsRecords { DispatchTicketId = id, HeartRate = request.HeartRate,
-            BloodPressure = request.BloodPressure, BodyTempC = request.BodyTempC,
-            OxygenSaturation = request.OxygenSaturation, ClinicalNotes = request.ClinicalNotes.Trim(), RecordedAt = DateTime.UtcNow };
-        db.OnSiteVitalsRecords.Add(vitals);
+        var vitals = await StoreVitals(id, request);
+        await FinishVisit(ticket);
+        await db.SaveChangesAsync();
+        return Ok(new { message = "On-site visit completed.", vitals });
+    }
+
+    private async Task FinishVisit(DispatchTickets ticket)
+    {
         ticket.Status = "Completed";
         ticket.CompletedAt = DateTime.UtcNow;
         var nurse = await db.NurseProfiles.SingleAsync(n => n.Id == ticket.NurseId);
@@ -252,8 +297,6 @@ public class DispatchController(CarePulseDbContext db, IGoogleMapsService routes
         var triage = await db.TriageTickets.SingleAsync(t => t.Id == ticket.TriageTicketId);
         triage.Status = "VISIT_COMPLETED";
         await WorkflowProgress.RecordAsync(db, triage.Id, "Completed", "OnsiteCompleted", new { ticket.Id, Actor = User.UserId() }, terminal: true);
-        await db.SaveChangesAsync();
-        return Ok(new { message = "On-site visit completed.", vitals });
     }
 
     private async Task<DispatchTickets> OwnTicket(Guid id)
