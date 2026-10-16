@@ -94,9 +94,36 @@ describe('AiPlanTab', () => {
     expect(await screen.findByText(/approved by admin user/i)).toBeInTheDocument();
   });
 
-  test('does not show review controls to a Doctor', async () => {
+  test('lets a Doctor approve a plan', async () => {
     aiApi.getAiPlans.mockResolvedValueOnce([createdPlan]);
+    aiApi.reviewAiPlan.mockResolvedValueOnce({ ...createdPlan, reviewStatus: 'Approved', reviewedByName: 'Dr. Test' });
     renderAsRole(['Doctor']);
+
+    await screen.findByText(/58-year-old, reports chest pain/i);
+    fireEvent.click(screen.getByRole('button', { name: /review this plan/i }));
+    fireEvent.click(screen.getByRole('button', { name: /^approve$/i }));
+
+    await waitFor(() => expect(aiApi.reviewAiPlan).toHaveBeenCalledWith('p1', 'w1', expect.objectContaining({ approved: true })));
+    expect(await screen.findByText(/approved by dr\. test/i)).toBeInTheDocument();
+  });
+
+  test('lets a Doctor reject a plan with review notes', async () => {
+    aiApi.getAiPlans.mockResolvedValueOnce([createdPlan]);
+    aiApi.reviewAiPlan.mockResolvedValueOnce({ ...createdPlan, reviewStatus: 'Rejected', reviewedByName: 'Dr. Test', reviewNotes: 'Not safe' });
+    renderAsRole(['Doctor']);
+
+    await screen.findByText(/58-year-old, reports chest pain/i);
+    fireEvent.click(screen.getByRole('button', { name: /review this plan/i }));
+    fireEvent.change(screen.getByPlaceholderText(/review notes/i), { target: { value: 'Not safe' } });
+    fireEvent.click(screen.getByRole('button', { name: /^reject$/i }));
+
+    await waitFor(() => expect(aiApi.reviewAiPlan).toHaveBeenCalledWith('p1', 'w1', expect.objectContaining({ approved: false, reviewNotes: 'Not safe' })));
+    expect(await screen.findByText(/rejected by dr\. test/i)).toBeInTheDocument();
+  });
+
+  test('does not show review controls to roles that cannot review', async () => {
+    aiApi.getAiPlans.mockResolvedValueOnce([createdPlan]);
+    renderAsRole(['Nurse']);
 
     await screen.findByText(/58-year-old, reports chest pain/i);
     expect(screen.queryByRole('button', { name: /review this plan/i })).not.toBeInTheDocument();

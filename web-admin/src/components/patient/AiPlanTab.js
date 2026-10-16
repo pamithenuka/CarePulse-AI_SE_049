@@ -14,7 +14,7 @@ const STATUS_LABELS = {
 
 export default function AiPlanTab({ patientId }) {
   const { hasRole } = useAuth();
-  const isAdmin = hasRole("Admin");
+  const canReview = hasRole("Admin", "Doctor");
 
   const [plans, setPlans] = useState([]);
   const [status, setStatus] = useState("loading");
@@ -145,7 +145,7 @@ export default function AiPlanTab({ patientId }) {
               {plan.status === "PlanCreated" && (
                 <div className="ai-plan-review">
                   {plan.reviewStatus === "NotReviewed" ? (
-                    isAdmin && (
+                    canReview && (
                       <>
                         {reviewingId === plan.id ? (
                           <div className="ai-review-form">
