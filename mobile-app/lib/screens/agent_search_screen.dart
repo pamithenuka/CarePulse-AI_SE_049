@@ -6,6 +6,7 @@ import '../api/api_client.dart';
 import '../models/agent_response.dart';
 import '../models/slot.dart';
 import '../theme/app_theme.dart';
+import '../widgets/app_card.dart';
 
 
 class AgentSearchScreen extends StatefulWidget {
@@ -134,7 +135,7 @@ class _AgentSearchScreenState extends State<AgentSearchScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Card(
+        AppCard(
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
@@ -153,7 +154,7 @@ class _AgentSearchScreenState extends State<AgentSearchScreen> {
             final isBooking = _bookingSlotId == slot.slotId;
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: Card(
+              child: AppCard(
                 child: ListTile(
                   title: Text(slot.doctorName, style: Theme.of(context).textTheme.titleMedium),
                   subtitle: Text(

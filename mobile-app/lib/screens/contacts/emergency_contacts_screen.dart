@@ -5,6 +5,8 @@ import '../../models/emergency_contact.dart';
 import '../../providers/patient_provider.dart';
 import '../../utils/validators.dart';
 import '../../widgets/empty_view.dart';
+import '../../widgets/app_card.dart';
+import '../../widgets/fade_slide_in.dart';
 
 class EmergencyContactsScreen extends StatelessWidget {
   const EmergencyContactsScreen({super.key});
@@ -28,7 +30,7 @@ class EmergencyContactsScreen extends StatelessWidget {
             : ListView.builder(
                 padding: const EdgeInsets.all(16),
                 itemCount: contacts.length,
-                itemBuilder: (context, index) => _ContactCard(contact: contacts[index], canDelete: contacts.length > 1),
+                itemBuilder: (context, index) => FadeSlideIn(delay: Duration(milliseconds: (index > 7 ? 7 : index) * 60), child: _ContactCard(contact: contacts[index], canDelete: contacts.length > 1)),
               ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -72,7 +74,7 @@ class _ContactCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return AppCard(
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
         leading: CircleAvatar(child: Text(contact.fullName.isNotEmpty ? contact.fullName[0].toUpperCase() : '?')),

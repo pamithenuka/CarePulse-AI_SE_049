@@ -1,75 +1,162 @@
+/* App shell: sidebar + top bar. Selectors use two classes so they win over the older theme files. */
 .app-shell {
   min-height: 100vh;
+  display: grid;
+  grid-template-columns: 252px minmax(0, 1fr);
+  background: var(--ui-bg, #f2f6f7);
+}
+
+.app-shell .app-header {
+  position: sticky;
+  top: 0;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f4f6f8;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  gap: 8px;
+  padding: 22px 14px 16px;
+  background: linear-gradient(180deg, #0b3d45 0%, #072b32 100%);
+  color: #e8f4f3;
+  border-right: 0;
+  overflow-y: auto;
 }
 
-.app-header {
+.app-shell .brand {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  padding: 0.75rem 1.5rem;
-  background: #0b5f6b;
+  gap: 12px;
+  padding: 4px 10px 20px;
   color: #fff;
-  flex-wrap: wrap;
+  text-decoration: none;
+  letter-spacing: 0;
 }
+.app-shell .brand:hover { text-decoration: none; }
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #17b3a8, #0b8e94);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(23, 179, 168, 0.35);
+  flex: none;
+}
+.brand-text { display: flex; flex-direction: column; font-size: 1.2rem; font-weight: 700; line-height: 1.15; }
+.brand-text small { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #8fc3c4; }
 
-.brand {
+.app-shell .app-nav { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.nav-group-label {
+  margin: 16px 12px 6px;
+  font-size: 0.68rem;
   font-weight: 700;
-  font-size: 1.15rem;
-  color: #fff;
-  text-decoration: none;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6fa3a6;
 }
-
-.app-nav {
-  display: flex;
-  gap: 1rem;
-  flex: 1;
-}
-
-.app-nav a {
-  color: #e6f4f1;
-  text-decoration: none;
-  font-size: 0.95rem;
-}
-
-.app-nav a:hover {
-  text-decoration: underline;
-}
-
-.app-user {
+.nav-group-label:first-child { margin-top: 0; }
+.app-shell .app-nav a {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 0.9rem;
+  gap: 12px;
+  padding: 10px 12px;
+  color: #bfdcdc;
+  font-size: 0.93rem;
+  font-weight: 500;
+  border-radius: 10px;
+  text-decoration: none;
+  box-shadow: none;
+  transition: background 0.15s, color 0.15s;
 }
-
-.app-user button {
-  background: #ffffff22;
+.app-shell .app-nav a svg { flex: none; opacity: 0.85; }
+.app-shell .app-nav a:hover { background: rgba(255, 255, 255, 0.07); color: #fff; text-decoration: none; }
+.app-shell .app-nav a.active {
+  background: rgba(23, 179, 168, 0.18);
   color: #fff;
-  border: 1px solid #ffffff55;
-  border-radius: 4px;
-  padding: 0.35rem 0.75rem;
-  cursor: pointer;
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 #3fd3c8;
 }
+.app-shell .app-nav a.active svg { opacity: 1; color: #6ee7dd; }
 
-.app-user button:hover {
-  background: #ffffff33;
+.app-shell .app-user {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  margin-top: 8px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
+.app-user-card { display: flex; align-items: center; gap: 10px; padding: 0 4px; min-width: 0; }
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #17b3a8;
+  color: #04282d;
+  font-size: 0.82rem;
+  font-weight: 700;
+  flex: none;
+}
+.app-user-info { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.app-user-info strong { color: #fff; font-size: 0.88rem; font-weight: 600; overflow-wrap: anywhere; }
+.app-user-info em { font-style: normal; font-size: 0.75rem; color: #8fc3c4; }
+.app-shell .app-user button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  color: #d5ecec;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+.app-shell .app-user button:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
 
-.app-content {
+/* Right-hand side */
+.app-main { min-width: 0; display: flex; flex-direction: column; }
+.app-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 64px;
+  padding: 0 clamp(18px, 3vw, 44px);
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #dfe9ec;
+}
+.app-topbar-title { margin: 0; font-size: 1.1rem; font-weight: 650; color: #0f2a33; }
+.app-topbar-date { font-size: 0.85rem; color: #5c7580; white-space: nowrap; }
+.app-shell .app-content {
   flex: 1;
-  padding: 1.5rem;
-  max-width: 1100px;
   width: 100%;
-  margin: 0 auto;
+  max-width: 1500px;
+  margin: 0;
+  padding: 28px clamp(18px, 3vw, 44px) 56px;
   box-sizing: border-box;
 }
 
-@media (max-width: 600px) {
-  .app-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+@media (max-width: 900px) {
+  .app-shell { display: flex; flex-direction: column; }
+  .app-shell .app-header { position: static; height: auto; padding: 12px; gap: 8px; }
+  .app-shell .brand { padding: 0 6px 6px; }
+  .app-shell .app-nav { flex-direction: row; flex: none; overflow-x: auto; gap: 4px; padding-bottom: 4px; }
+  .app-shell .app-nav a { white-space: nowrap; padding: 8px 12px; }
+  .app-shell .app-nav a.active { box-shadow: none; }
+  .nav-group-label { display: none; }
+  .app-shell .app-user { flex-direction: row; align-items: center; justify-content: space-between; margin-top: 0; padding-top: 10px; }
+  .app-topbar { position: static; }
+  .app-topbar-date { display: none; }
 }

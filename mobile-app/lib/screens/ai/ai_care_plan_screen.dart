@@ -5,6 +5,7 @@ import '../../models/ai_workflow.dart';
 import '../../providers/patient_provider.dart';
 import '../../widgets/empty_view.dart';
 import '../../widgets/loading_view.dart';
+import '../../widgets/app_card.dart';
 
 /// Lets the Patient describe what they're experiencing (their own objective)
 /// and view the resulting Agent 1 plan. Review/approve stays Doctor/Admin-only
@@ -128,7 +129,7 @@ class _PlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return AppCard(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
         padding: const EdgeInsets.all(16),

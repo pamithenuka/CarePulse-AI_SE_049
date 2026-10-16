@@ -25,6 +25,7 @@ import { DoctorProvider } from "./components/DoctorContext";
 import "./App.css";
 import "./styles.css";
 import "./healthcare-theme.css";
+import "./ui-polish.css";
 
 export default function App() {
   return (

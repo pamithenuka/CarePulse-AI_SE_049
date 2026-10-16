@@ -6,6 +6,7 @@ import '../../providers/patient_provider.dart';
 import '../../utils/validators.dart';
 import '../../widgets/error_view.dart';
 import '../../widgets/loading_view.dart';
+import '../../widgets/app_card.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -37,7 +38,7 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   _ProfileHeader(fullName: profile.fullName, age: profile.age, gender: profile.gender),
                   const SizedBox(height: 16),
-                  Card(
+                  AppCard(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
@@ -57,7 +58,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Card(
+                  AppCard(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
