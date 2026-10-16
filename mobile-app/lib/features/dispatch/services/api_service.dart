@@ -63,11 +63,17 @@ class ApiService {
 
   Future<void> arrive(String id) async =>
       _api.put('dispatch/$id/arrive', token: await SessionStore.token());
-  Future<void> escalate(String id, String notes) async => _api.post(
-    'dispatch/$id/escalate',
-    token: await SessionStore.token(),
-    body: {'notes': notes},
+  Future<List<dynamic>> getVitals(String id) async => List<dynamic>.from(
+    await _api.get('dispatch/$id/vitals', token: await SessionStore.token()),
   );
+  Future<void> saveVitals(String id, Map<String, dynamic> vitals) async =>
+      _api.put(
+        'dispatch/$id/vitals',
+        token: await SessionStore.token(),
+        body: vitals,
+      );
+  Future<void> completeVisit(String id) async =>
+      _api.post('dispatch/$id/complete', token: await SessionStore.token());
   Future<Map<String, dynamic>> completeOnsite(
     String id,
     Map<String, dynamic> vitals,

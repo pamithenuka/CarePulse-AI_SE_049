@@ -1,0 +1,44 @@
+.nurse-visits { border: 1px solid #deeaee; border-radius: 16px; }
+.nurse-visits-toolbar, .nurse-visit-header, .nurse-visit-person { display: flex; align-items: center; gap: 12px; }
+.nurse-visits-toolbar, .nurse-visit-header { justify-content: space-between; flex-wrap: wrap; }
+.nurse-visits-toolbar { margin-bottom: 24px; }
+.nurse-visits-toolbar h2 { margin: 0; color: #164e59; font-size: 1.2rem; }
+.nurse-visits .nurse-visits-refresh { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #b9d9de; background: #f0f9f9; color: #086872; border-radius: 10px; padding: 9px 14px; min-height: 42px; font: inherit; font-size: .875rem; font-weight: 600; cursor: pointer; }
+.nurse-visits-refresh span { font-size: 1.4rem; line-height: 1; }
+.nurse-visits .nurse-visits-refresh:hover { background: #def1f2; }
+.nurse-visits .nurse-visits-refresh:focus-visible { outline: 3px solid #098590; outline-offset: 3px; }
+.nurse-visits .nurse-visits-refresh:disabled { opacity: .6; cursor: wait; }
+.nurse-visits-list { display: grid; gap: 20px; }
+.nurse-visit { min-width: 0; padding: 22px; border: 1px solid #dce8ec; border-radius: 14px; background: #fff; box-shadow: 0 3px 12px #164e5908; }
+.nurse-visit-person { min-width: 0; flex: 1; }
+.nurse-visit-avatar { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; border-radius: 50%; background: #dff2ef; color: #086872; font-weight: 700; }
+.nurse-visit-header h3 { margin: 0; font-size: 1rem; color: #243f4c; overflow-wrap: anywhere; }
+.nurse-visit-status { padding: 5px 12px; border-radius: 999px; background: #edf3f8; color: #355a76; font-size: .78rem; font-weight: 600; }
+.nurse-visit-status--Completed { background: #e3f3eb; color: #22634c; }
+.nurse-visit-status--ArrivedOnSite { background: #e1f3f3; color: #086872; }
+.nurse-visit-dates { display: flex; flex-wrap: wrap; gap: 12px 32px; margin: 18px 0; }
+.nurse-visit-dates p { margin: 0; font-size: .82rem; color: #405c69; }
+.nurse-visit-dates span { display: block; margin-bottom: 4px; font-size: .75rem; color: #647b87; }
+.nurse-visit-record { border-top: 1px solid #e6eef1; padding-top: 16px; }
+.nurse-visit-saved { margin: 0 0 14px; color: #637985; font-size: .78rem; }
+.nurse-vitals-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 0; }
+.nurse-vitals-grid > div { padding: 16px; border: 1px solid #e2edef; border-radius: 12px; background: #f5fafb; min-width: 0; }
+.nurse-vitals-grid dt { color: #526d79; font-size: .8rem; margin-bottom: 8px; }
+.nurse-vitals-grid dd { margin: 0; color: #164e59; font-size: 1.45rem; font-weight: 700; overflow-wrap: anywhere; }
+.nurse-vitals-grid small { font-size: .75rem; color: #637985; font-weight: 400; }
+.nurse-visit-notes { margin-top: 18px; padding: 14px 16px; border-left: 3px solid #79bbb7; background: #fafcfd; border-radius: 0 8px 8px 0; }
+.nurse-visit-notes h4 { margin: 0 0 6px; color: #365663; font-size: .85rem; }
+.nurse-visit-notes p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; color: #405c69; line-height: 1.65; font-size: .9rem; }
+.nurse-visits-message { padding: 20px; background: #f5fafb; border-radius: 10px; color: #526d79; }
+.nurse-visits-error { background: #fff3f1; color: #a33429; }
+@media (max-width: 1100px) { .nurse-vitals-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 540px) { .nurse-visits.detail-card { padding: 16px; } .nurse-visit { padding: 14px; } .nurse-vitals-grid { grid-template-columns: 1fr; } }
+
+.nurse-visits-filters { margin: 0 0 18px; padding: 14px 16px 16px; border: 1px solid #dce8ec; border-radius: 12px; background: #f5fafb; min-width: 0; }
+.nurse-visits-filters legend { padding: 0 6px; color: #164e59; font-weight: 600; font-size: .9rem; }
+.nurse-visits-filters p { margin: 0 0 12px; color: #637985; font-size: .8rem; }
+.nurse-visits-filter-controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px; }
+.nurse-visits-filter-controls label { display: flex; flex-direction: column; gap: 6px; color: #405c69; font-size: .82rem; }
+.nurse-visits-filter-controls input { min-height: 42px; max-width: 100%; box-sizing: border-box; padding: 8px 12px; border: 1px solid #b9d9de; border-radius: 8px; background: #fff; color: #243f4c; font: inherit; }
+.nurse-visits-filter-controls input:focus-visible { outline: 2px solid #098590; outline-offset: 2px; }
+.nurse-visits-filters p[role="alert"] { margin: 12px 0 0; color: #a33429; }
