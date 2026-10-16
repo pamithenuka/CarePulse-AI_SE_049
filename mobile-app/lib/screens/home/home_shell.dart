@@ -11,6 +11,7 @@ import '../history/medical_history_screen.dart';
 import '../profile/profile_screen.dart';
 import '../../screens/symptom_intake_screen.dart';
 import '../../screens/doctor_search_screen.dart';
+import '../../widgets/tab_fade_in.dart';
 
 /// Primary patient actions stay visible; secondary sections live in More.
 class HomeShell extends StatefulWidget {
@@ -51,10 +52,10 @@ class _HomeShellState extends State<HomeShell> {
       leading: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: (index == 4 ? AppColors.lavender : AppColors.mint).withValues(alpha: 0.12),
+          color: AppColors.primary.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(icon, color: index == 4 ? AppColors.lavender : AppColors.mint),
+        child: Icon(icon, color: AppColors.primary),
       ),
       title: Text(label),
       selected: _index == index,
@@ -76,15 +77,39 @@ class _HomeShellState extends State<HomeShell> {
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              Row(children: [
-                Expanded(child: Text('Your care', style: Theme.of(context).textTheme.headlineSmall)),
-                IconButton(tooltip: 'Close menu', icon: const Icon(Icons.close),
-                  onPressed: () => _scaffoldKey.currentState?.closeDrawer()),
-              ]),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Text('Records, contacts and your care plan'),
+              Container(
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [AppColors.deep, AppColors.primary],
+                  ),
+                ),
+                child: Row(children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.16), borderRadius: BorderRadius.circular(14)),
+                    child: const Icon(Icons.favorite_rounded, color: Colors.white),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text('Your care', style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white)),
+                      const SizedBox(height: 2),
+                      Text('Records, contacts and your care plan',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white70)),
+                    ]),
+                  ),
+                  IconButton(
+                    tooltip: 'Close menu',
+                    icon: const Icon(Icons.close, color: Colors.white),
+                    onPressed: () => _scaffoldKey.currentState?.closeDrawer(),
+                  ),
+                ]),
               ),
+              const SizedBox(height: 16),
               _drawerItem(1, Icons.history_outlined, 'Medical History'),
               _drawerItem(2, Icons.contacts_outlined, 'Emergency Contacts'),
               _drawerItem(3, Icons.folder_outlined, 'Documents'),
@@ -96,8 +121,11 @@ class _HomeShellState extends State<HomeShell> {
       body: IndexedStack(index: _index, children: [
         for (var i = 0; i < _tabs.length; i++)
           Theme(
-            data: buildAppTheme(accent: i == 4 ? AppColors.lavender : i == 6 ? AppColors.blue : i < 4 ? AppColors.mint : AppColors.primary),
-            child: i == 5 ? SymptomIntakeScreen(isActive: _index == 5) : _tabs[i],
+            data: buildAppTheme(),
+            child: TabFadeIn(
+              active: _index == i,
+              child: i == 5 ? SymptomIntakeScreen(isActive: _index == 5) : _tabs[i],
+            ),
           ),
       ]),
       // startFloat (bottom-left) deliberately, not the default endFloat: History,

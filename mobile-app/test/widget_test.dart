@@ -21,7 +21,7 @@ void main() {
   testWidgets('LoginScreen shows validation errors on an empty submit', (WidgetTester tester) async {
     await tester.pumpWidget(_wrapWithProviders(const LoginScreen()));
 
-    await tester.tap(find.widgetWithText(FilledButton, 'Log in'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Sign In'));
     await tester.pump();
 
     expect(find.text('Enter a valid email address.'), findsOneWidget);

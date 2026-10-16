@@ -35,13 +35,7 @@ class CarePulseApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: buildAppTheme(),
         builder: (context, child) => DecoratedBox(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFFC7E9E6), Color(0xFFDAE6F5), Color(0xFFD9D6F0)],
-            ),
-          ),
+          decoration: appBackground,
           child: child ?? const SizedBox.shrink(),
         ),
         initialRoute: '/',

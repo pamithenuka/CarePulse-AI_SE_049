@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../models/emergency_contact.dart';
 import '../../providers/patient_provider.dart';
 import '../../utils/validators.dart';
+import '../../widgets/app_card.dart';
 
 /// One-time form a Patient completes right after registering, mirroring
 /// backend-api's CreatePatientProfileDto. Requires at least one emergency
@@ -222,7 +223,7 @@ class _ProfileOnboardingScreenState extends State<ProfileOnboardingScreen> {
   }
 
   Widget _buildContactCard(int index, _ContactFormRow contact) {
-    return Card(
+    return AppCard(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Padding(
         padding: const EdgeInsets.all(12),

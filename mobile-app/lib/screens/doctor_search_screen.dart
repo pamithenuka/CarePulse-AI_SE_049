@@ -4,6 +4,7 @@ import '../models/doctor.dart';
 import '../theme/app_theme.dart';
 import 'booking_screen.dart';
 import 'agent_search_screen.dart';
+import '../widgets/app_card.dart';
 
 class DoctorSearchScreen extends StatefulWidget {
   const DoctorSearchScreen({super.key});
@@ -173,7 +174,7 @@ class _DoctorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: Card(
+      child: AppCard(
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
           onTap: () {

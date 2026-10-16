@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../services/api_service.dart';
+import '../../../widgets/app_card.dart';
 
 class DispatchDashboardScreen extends StatefulWidget {
   const DispatchDashboardScreen({super.key});
@@ -349,7 +350,7 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen>
   }
 
   Widget _availabilityCard(BuildContext context) {
-    return Card(
+    return AppCard(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -400,7 +401,7 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen>
     final user = context.watch<AuthProvider>().currentUser;
     final name = user?.fullName.trim() ?? '';
     final email = user?.email.trim() ?? '';
-    return Card(
+    return AppCard(
       margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -452,7 +453,7 @@ class _DispatchDashboardScreenState extends State<DispatchDashboardScreen>
     String message, {
     bool retry = false,
   }) {
-    return Card(
+    return AppCard(
       margin: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(24),

@@ -6,6 +6,7 @@ import '../api/api_client.dart';
 import '../models/doctor.dart';
 import '../models/slot.dart';
 import '../theme/app_theme.dart';
+import '../widgets/app_card.dart';
 
 
 class BookingScreen extends StatefulWidget {
@@ -259,7 +260,7 @@ class _BookingScreenState extends State<BookingScreen> {
         }
         final slot = _slots[i - 1];
         final isBooking = _bookingSlotId == slot.slotId;
-        return Card(
+        return AppCard(
           child: ListTile(
             title: Text(
               '${DateFormat.jm().format(slot.slotStart)} – ${DateFormat.jm().format(slot.slotEnd)}',

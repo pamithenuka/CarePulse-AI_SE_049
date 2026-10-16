@@ -4,6 +4,7 @@ import '../services/api_exception.dart';
 import '../services/triage_api_service.dart';
 import '../widgets/triage_widgets.dart';
 import 'triage_status_screen.dart';
+import '../widgets/app_card.dart';
 
 class TriageHistoryScreen extends StatefulWidget {
   final TriageApiService? apiService;
@@ -76,7 +77,7 @@ class _TriageHistoryScreenState extends State<TriageHistoryScreen> {
             separatorBuilder: (_, _) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final item = Map<String, dynamic>.from(snapshot.data![index]);
-              return Card(
+              return AppCard(
                 child: ListTile(
                   title: Text(triageStatusLabel(item['status']?.toString())),
                   subtitle: Text(item['reason']?.toString() ?? ''),

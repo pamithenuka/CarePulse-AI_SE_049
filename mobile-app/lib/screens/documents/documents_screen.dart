@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import '../../models/medical_document.dart';
 import '../../providers/patient_provider.dart';
 import '../../widgets/empty_view.dart';
+import '../../widgets/app_card.dart';
+import '../../widgets/fade_slide_in.dart';
 
 class DocumentsScreen extends StatelessWidget {
   const DocumentsScreen({super.key});
@@ -77,7 +79,7 @@ class DocumentsScreen extends StatelessWidget {
             : ListView.builder(
                 padding: const EdgeInsets.all(16),
                 itemCount: documents.length,
-                itemBuilder: (context, index) => _DocumentCard(document: documents[index]),
+                itemBuilder: (context, index) => FadeSlideIn(delay: Duration(milliseconds: (index > 7 ? 7 : index) * 60), child: _DocumentCard(document: documents[index])),
               ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -168,7 +170,7 @@ class _DocumentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return AppCard(
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
         leading: Icon(_icon),

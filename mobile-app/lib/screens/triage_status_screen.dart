@@ -8,6 +8,7 @@ import '../theme/app_theme.dart';
 import '../widgets/triage_widgets.dart';
 import 'doctor_search_screen.dart';
 import 'triage_history_screen.dart';
+import '../widgets/app_card.dart';
 
 class TriageStatusScreen extends StatefulWidget {
   final Map<String, dynamic> triageData;
@@ -520,7 +521,7 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
             'HIGH' => scheme.error,
             _ => scheme.primary,
           };
-    return Card(
+    return AppCard(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -776,7 +777,7 @@ class _TriageStatusScreenState extends State<TriageStatusScreen> {
                   _summary(symptoms, specialty),
                   const SizedBox(height: 16),
                   if (reason.isNotEmpty) ...[
-                    Card(
+                    AppCard(
                       clipBehavior: Clip.antiAlias,
                       child: ExpansionTile(
                         title: Text(

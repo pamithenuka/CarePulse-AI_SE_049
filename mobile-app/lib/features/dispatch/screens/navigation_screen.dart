@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../services/location_service.dart';
 import '../services/api_service.dart';
+import '../../../widgets/app_card.dart';
 
 class NavigationScreen extends StatefulWidget {
   final Map<String, dynamic> dispatch;
@@ -142,7 +143,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
         return text.isEmpty ? 'Not provided' : text;
       }
 
-      return Card(
+      return AppCard(
         margin: const EdgeInsets.all(16),
         child: Padding(
           padding: const EdgeInsets.all(16),

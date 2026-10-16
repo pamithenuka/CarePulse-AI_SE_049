@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
 import '../screens/emergency/sos_screen.dart';
+import './app_card.dart';
 
 enum CareStageState { completed, inProgress, pending, failed }
 
@@ -192,7 +193,7 @@ class TriageSection extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Card(
+  Widget build(BuildContext context) => AppCard(
     child: Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
