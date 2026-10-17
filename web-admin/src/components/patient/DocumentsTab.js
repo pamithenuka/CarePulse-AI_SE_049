@@ -5,7 +5,7 @@ import "./PatientTabs.css";
 
 const DOCUMENT_TYPES = ["Prescription", "LabReport", "ImagingScan", "Other"];
 
-export default function DocumentsTab({ patientId, initialDocuments, isAdmin, onChanged }) {
+export default function DocumentsTab({ patientId, initialDocuments, isAdmin, canUpload = isAdmin, onChanged }) {
   const [documents, setDocuments] = useState(initialDocuments);
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState(null);
@@ -155,7 +155,7 @@ export default function DocumentsTab({ patientId, initialDocuments, isAdmin, onC
         </ul>
       )}
 
-      {isAdmin && (
+      {canUpload && (
         <form className="inline-add-form" onSubmit={handleUpload}>
           <h3>Upload Document</h3>
           <div className="history-form-row">

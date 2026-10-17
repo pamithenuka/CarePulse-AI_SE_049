@@ -33,5 +33,7 @@ export const api = {
   completeConsultation: (payload) =>
     request('/consultations/complete', { method: 'POST', body: JSON.stringify(payload) }),
 
-  getConsultation: (id) => request(`/consultations/${id}`)
+  getConsultation: (id) => request(`/consultations/${id}`),
+
+  getPatientConsultations: (patientId) => request(`/consultations/patient/${patientId}`)
 };

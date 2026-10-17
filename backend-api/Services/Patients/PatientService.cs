@@ -584,7 +584,7 @@ public class PatientService : IPatientService
             return ServiceResult<MedicalDocumentDto>.Fail(ServiceErrorType.NotFound, "Patient profile not found.");
         }
 
-        if (!CanModifyContacts(profile, requestingUserId, requestingRoles))
+        if (!CanUploadDocument(profile, requestingUserId, requestingRoles))
         {
             return ServiceResult<MedicalDocumentDto>.Fail(ServiceErrorType.Forbidden, "You are not allowed to upload documents for this patient.");
         }
@@ -947,6 +947,11 @@ public class PatientService : IPatientService
     /// <summary>Contacts/documents may be changed by the owning patient or an Admin correcting a mistake.</summary>
     private static bool CanModifyContacts(PatientProfile profile, string requestingUserId, IList<string> requestingRoles) =>
         profile.UserId == requestingUserId || requestingRoles.Contains("Admin");
+
+    /// <summary>Documents may be uploaded by the owning patient, or by a Doctor or Admin adding a result to the record.
+    /// Renaming and removing stay with the owner or an Admin (see <see cref="CanModifyContacts"/>).</summary>
+    private static bool CanUploadDocument(PatientProfile profile, string requestingUserId, IList<string> requestingRoles) =>
+        profile.UserId == requestingUserId || requestingRoles.Any(ClinicalRoles.Contains);
 
     private static int CalculateAge(DateOnly dateOfBirth)
     {

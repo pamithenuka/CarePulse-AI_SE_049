@@ -35,3 +35,15 @@ public record ConsultationCompleteRequestDto(
     string? Prescription
 );
 
+/// <summary>One past consultation, as shown in a patient's Consultation History.</summary>
+public record ConsultationSummaryDto(
+    Guid Id,
+    Guid SlotId,
+    Guid DoctorId,
+    string DoctorName,
+    string Specialty,
+    DateTime AppointmentStart,
+    DateTime AppointmentEnd,
+    string Notes,
+    string? Prescription
+);
