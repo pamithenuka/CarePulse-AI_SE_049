@@ -27,6 +27,7 @@ export default function PatientDetailPage() {
   const { id } = useParams();
   const { hasRole } = useAuth();
   const isAdmin = hasRole("Admin");
+  const canUploadDocuments = hasRole("Admin", "Doctor");
 
   const [profile, setProfile] = useState(null);
   const [status, setStatus] = useState("loading");
@@ -169,7 +170,7 @@ export default function PatientDetailPage() {
           <EmergencyContactsTab patientId={id} initialContacts={profile.emergencyContacts} isAdmin={isAdmin} onChanged={loadProfile} />
         )}
         {activeTab === "documents" && (
-          <DocumentsTab patientId={id} initialDocuments={profile.medicalDocuments} isAdmin={isAdmin} onChanged={loadProfile} />
+          <DocumentsTab patientId={id} initialDocuments={profile.medicalDocuments} isAdmin={isAdmin} canUpload={canUploadDocuments} onChanged={loadProfile} />
         )}
         {activeTab === "consultations" && <ConsultationHistoryTab patientId={id} />}
         {activeTab === "nurse-visits" && <NurseVisitsTab patientId={id} />}

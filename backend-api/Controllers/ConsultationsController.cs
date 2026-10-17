@@ -37,6 +37,46 @@ public class ConsultationsController : ControllerBase
         return Ok(record);
     }
 
+    // GET /api/v1/consultations/patient/{patientId}
+    // A patient's consultation history, newest first. A patient sees only their own;
+    // Doctor and Admin accounts may view any patient (same rule as the other patient endpoints).
+    [HttpGet("patient/{patientId:guid}")]
+    public async Task<ActionResult<IEnumerable<ConsultationSummaryDto>>> GetPatientConsultations(Guid patientId)
+    {
+        await _db.RequirePatientAsync(User, patientId);
+
+        var records = await _db.ConsultationRecords
+            .AsNoTracking()
+            .Include(c => c.Slot)
+            .Where(c => c.PatientId == patientId)
+            .ToListAsync();
+
+        // Soft-deleted doctors are still named on their old consultations.
+        var doctorIds = records.Select(c => c.DoctorId).Distinct().ToList();
+        var doctors = await _db.DoctorProfiles
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .Where(d => doctorIds.Contains(d.Id))
+            .ToDictionaryAsync(d => d.Id);
+
+        var history = records
+            .Select(c =>
+            {
+                doctors.TryGetValue(c.DoctorId, out var doctor);
+                return new ConsultationSummaryDto(
+                    c.Id, c.SlotId, c.DoctorId,
+                    doctor?.FullName ?? "Unknown doctor",
+                    doctor?.Specialty ?? string.Empty,
+                    c.Slot?.SlotStart ?? default,
+                    c.Slot?.SlotEnd ?? default,
+                    c.Notes, c.Prescription);
+            })
+            .OrderByDescending(c => c.AppointmentStart)
+            .ToList();
+
+        return Ok(history);
+    }
+
     // POST /api/v1/consultations/complete
     // Business operation: doctor finishes a visit, logs notes/prescription.
     [HttpPost("complete")]

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import DoctorPicker from '../components/DoctorPicker';
+import PatientPicker from '../components/PatientPicker';
 import { useDoctor } from '../components/DoctorContext';
 import { api } from '../api/client';
 
@@ -14,7 +15,7 @@ function formatDate(iso) {
 export default function SlotsPage() {
   const { selectedDoctor, selectedDoctorId } = useDoctor();
   const [date, setDate] = useState('');
-  const [patientId, setPatientId] = useState('');
+  const [patient, setPatient] = useState(null);
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -46,8 +47,8 @@ export default function SlotsPage() {
     setBookingId(slotId);
     setBookMessage(null);
     try {
-      await api.bookAppointment({ slotId, patientId });
-      setBookMessage({ type: 'success', text: 'Appointment booked.' });
+      await api.bookAppointment({ slotId, patientId: patient.id });
+      setBookMessage({ type: 'success', text: `Appointment booked for ${patient.fullName}.` });
       loadSlots();
     } catch (err) {
       setBookMessage({ type: 'error', text: err.message });
@@ -60,11 +61,11 @@ export default function SlotsPage() {
     <div>
       <div className="page-header">
         <h1>Appointment slots</h1>
-        <p>Slots generated from the weekly roster. Select the patient from the registry and use their profile ID to book.</p>
+        <p>Slots generated from the weekly roster. Choose a patient, then book one of the open slots for them.</p>
       </div>
 
       <DoctorPicker />
-      <label>Patient profile ID <input value={patientId} onChange={e => setPatientId(e.target.value.trim())} placeholder="Patient profile ID from the registry" /></label>
+      <PatientPicker value={patient} onChange={setPatient} />
 
       <div className="card">
         <h2>Filter</h2>
@@ -78,6 +79,7 @@ export default function SlotsPage() {
           </button>
         </div>
 
+        {!patient && <p className="hint-text">Choose a patient above to enable booking.</p>}
         {bookMessage && <div className={`status-msg ${bookMessage.type}`}>{bookMessage.text}</div>}
 
         {loading && <p className="empty-state">Loading slots…</p>}
@@ -106,7 +108,7 @@ export default function SlotsPage() {
                   <span className="slot-badge open">Open</span>
                   <button
                     className="btn btn-secondary"
-                    disabled={bookingId === slot.slotId || !patientId}
+                    disabled={bookingId === slot.slotId || !patient}
                     onClick={() => handleBook(slot.slotId)}
                   >
                     {bookingId === slot.slotId ? 'Booking…' : 'Book appointment'}

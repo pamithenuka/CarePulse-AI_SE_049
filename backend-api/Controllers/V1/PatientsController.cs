@@ -185,7 +185,7 @@ public class PatientsController : ControllerBase
     }
 
     [HttpPost("{id:guid}/documents")]
-    [Authorize(Roles = "Patient,Admin")]
+    [Authorize(Roles = "Patient,Doctor,Admin")]
     public async Task<ActionResult<MedicalDocumentDto>> UploadDocument(
         Guid id, IFormFile file, [FromForm] MedicalDocumentType documentType = MedicalDocumentType.Other)
     {
