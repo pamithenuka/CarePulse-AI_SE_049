@@ -748,8 +748,10 @@ public class PatientService : IPatientService
         var query = _db.PatientAuditLogs.AsQueryable();
         if (patientProfileId.HasValue) query = query.Where(a => a.PatientProfileId == patientProfileId.Value);
         if (!string.IsNullOrWhiteSpace(changedByUserId)) query = query.Where(a => a.ChangedByUserId == changedByUserId);
-        if (from.HasValue) query = query.Where(a => a.ChangedAt >= from.Value);
-        if (to.HasValue) query = query.Where(a => a.ChangedAt <= to.Value);
+        // Dates arrive without a time zone; PostgreSQL only accepts UTC, so normalise them first.
+        var (fromUtc, toExclusiveUtc) = AuditDateRange.Normalize(from, to);
+        if (fromUtc.HasValue) query = query.Where(a => a.ChangedAt >= fromUtc.Value);
+        if (toExclusiveUtc.HasValue) query = query.Where(a => a.ChangedAt < toExclusiveUtc.Value);
 
         query = query.OrderByDescending(a => a.ChangedAt);
 
